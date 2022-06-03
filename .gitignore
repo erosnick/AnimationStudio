@@ -1,3 +1,8 @@
+.vs/
+x64/
+Animation/x64
+AllChapters/
+
 # Prerequisites
 *.d
 
@@ -30,3 +35,7 @@
 *.exe
 *.out
 *.app
+*.ilk
+*.pch
+*.pdb
+*.log
