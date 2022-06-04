@@ -19,6 +19,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Includes\Utils">
+      <UniqueIdentifier>{1672a316-a6c7-4a34-aa34-90a5b45f0d76}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -40,6 +43,9 @@
       <Filter>Sources\Math</Filter>
     </ClCompile>
     <ClCompile Include="src\Math\Matrix4.cpp">
+      <Filter>Sources\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\Quaternion.cpp">
       <Filter>Sources\Math</Filter>
     </ClCompile>
   </ItemGroup>
@@ -66,6 +72,12 @@
       <Filter>Includes\Math</Filter>
     </ClInclude>
     <ClInclude Include="src\Math\Math.h">
+      <Filter>Includes\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\Timer.h">
+      <Filter>Includes\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Quaternion.h">
       <Filter>Includes\Math</Filter>
     </ClInclude>
   </ItemGroup>

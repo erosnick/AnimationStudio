@@ -24,6 +24,7 @@
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Math\Math.cpp" />
     <ClCompile Include="src\Math\Matrix4.cpp" />
+    <ClCompile Include="src\Math\Quaternion.cpp" />
     <ClCompile Include="src\Math\Vector3.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
   </ItemGroup>
@@ -32,10 +33,12 @@
     <ClInclude Include="src\DemoApplication.h" />
     <ClInclude Include="src\Math\Math.h" />
     <ClInclude Include="src\Math\Matrix4.h" />
+    <ClInclude Include="src\Math\Quaternion.h" />
     <ClInclude Include="src\Math\Vector2.h" />
     <ClInclude Include="src\Math\Vector3.h" />
     <ClInclude Include="src\Math\Vector4.h" />
     <ClInclude Include="src\stb_image.h" />
+    <ClInclude Include="src\Utils\Timer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
