@@ -58,7 +58,9 @@ namespace Math
 					   m02(inM02), m12(inM12), m22(inM22), m32(inM32),
 					   m03(inM03), m13(inM13), m23(inM23), m33(inM33) {}
 
-		static Matrix4 IDENTITY;
+		inline float operator[](int index) const { return elements[index]; }
+
+		static Matrix4 Identity;
 	};
 
 	bool operator==(const Matrix4& a, const Matrix4& b);
@@ -68,9 +70,11 @@ namespace Math
 	Matrix4 operator/(const Matrix4& a, float scaleFactor);
 	Matrix4 operator*(const Matrix4& a, const Matrix4& b);
 	Vector4 operator*(const Matrix4& matrix, const Vector4& vector);
+	
 	Vector3 transformVector(const Matrix4& matrix, const Vector3& vector);
-	Vector3 transformPoint(const Matrix4& matrix, const Vector3& vector);
-	Vector3 transformPoint(const Matrix4& matrix, const Vector3& vector, float& w);
+	Vector3 transformPoint(const Matrix4& matrix, const Vector3& point);
+	Vector3 transformPoint(const Matrix4& matrix, const Vector3& point, float& w);
+	
 	void transpose(Matrix4& matrix);
 	Matrix4 transposed(const Matrix4& matrix);
 	float determinant(const Matrix4& matrix);

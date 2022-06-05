@@ -48,6 +48,9 @@
     <ClCompile Include="src\Math\Quaternion.cpp">
       <Filter>Sources\Math</Filter>
     </ClCompile>
+    <ClCompile Include="src\Math\Transform.cpp">
+      <Filter>Sources\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -78,6 +81,9 @@
       <Filter>Includes\Utils</Filter>
     </ClInclude>
     <ClInclude Include="src\Math\Quaternion.h">
+      <Filter>Includes\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Transform.h">
       <Filter>Includes\Math</Filter>
     </ClInclude>
   </ItemGroup>

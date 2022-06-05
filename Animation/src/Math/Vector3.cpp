@@ -4,22 +4,30 @@
 
 namespace Math
 {
-	Math::Vector3 Math::operator+(const Vector3& v1, const Vector3& v2)
+	// TODO: 使用elements[0]的形式访问
+	Vector3 Vector3::Zero = Vector3();
+	Vector3 Vector3::One = Vector3(1.0f);
+	Vector3 Vector3::X = Vector3(1.0f, 0.0f, 0.0f);
+	Vector3 Vector3::Y = Vector3(0.0f, 1.0f, 0.0f);
+	Vector3 Vector3::Z = Vector3(0.0f, 0.0f, 1.0f);
+
+	
+	Math::Vector3 operator+(const Vector3& v1, const Vector3& v2)
 	{
 		return Vector3(v1.x + v2.x, v2.y + v2.y, v1.z + v2.z);
 	}
 
-	Math::Vector3 Math::operator-(const Vector3& v1, const Vector3& v2)
+	Math::Vector3 operator-(const Vector3& v1, const Vector3& v2)
 	{
 		return Vector3(v1.x - v2.x, v2.y - v2.y, v1.z - v2.z);
 	}
 
-	Math::Vector3 Math::operator*(const Vector3& v, float scalefactor)
+	Math::Vector3 operator*(const Vector3& v, float scalefactor)
 	{
 		return Vector3(v.x * scalefactor, v.y * scalefactor, v.z * scalefactor);
 	}
 
-	Math::Vector3 Math::operator*(float scalefactor, const Vector3& v)
+	Math::Vector3 operator*(float scalefactor, const Vector3& v)
 	{
 		return v * scalefactor;
 	}

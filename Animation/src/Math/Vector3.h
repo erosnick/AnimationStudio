@@ -15,9 +15,18 @@ namespace Math
 			float elements[3];
 		};
 
+		inline float operator[](int index) { return elements[index]; }
+
 		inline Vector3() : x(0.0f), y(0.0f), z(0.0f) {}
+		inline Vector3(float value) : x(value), y(value), z(value) {}
 		inline Vector3(float inX, float inY, float inZ) : x(inX), y(inY), z(inZ) {}
 		inline Vector3(float* data) : x(data[0]), y(data[1]), z(data[3]) {}
+
+		static Vector3 Zero;
+		static Vector3 One;
+		static Vector3 X;
+		static Vector3 Y;
+		static Vector3 Z;
 	};
 
 	Vector3 operator+(const Vector3& v1, const Vector3& v2);

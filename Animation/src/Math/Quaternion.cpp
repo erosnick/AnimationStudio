@@ -3,6 +3,8 @@
 
 namespace Math
 {
+	Quaternion Quaternion::Identity = Quaternion();
+	
 	Quaternion angleAxis(float angle, const Vector3& axis)
 	{
 		Vector3 norm = normalized(axis);
@@ -248,7 +250,7 @@ namespace Math
 		Vector3 forward = normalized(Vector3(matrix.forward.x, matrix.forward.y, matrix.forward.z));
 		Vector3 right = cross(up, forward);
 		up = cross(forward, right);
-
+		
 		return lookRotation(forward, up);
 	}
 }

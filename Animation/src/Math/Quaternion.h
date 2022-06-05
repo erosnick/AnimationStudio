@@ -26,6 +26,8 @@ namespace Math
 			float elements[4];
 		};
 
+		static Quaternion Identity;
+
 		inline Quaternion() : x(0.0f), y(0.0f), z(0.0f), w(1.0f) {}
 		inline Quaternion(float inX, float inY, float inZ, float inW) : x(inX), y(inY), z(inZ), w(inW) {}
 
