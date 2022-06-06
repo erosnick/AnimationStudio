@@ -262,12 +262,15 @@ namespace Math
 	{
 		Vector3 forward = normalized(target - position) * -1.0f;
 		Vector3 right = cross(worldUp, forward); // Right handed
+		
 		if (right == Vector3(0.0f, 0.0f, 0.0f)) {
 			return Matrix4(); // Error
 		}
 		
 		normalize(right);
+		
 		Vector3 realUp = normalized(cross(forward, right)); // Right handed
+		
 		Vector3 translate = Vector3(
 			-dot(right, position),
 			-dot(realUp, position),

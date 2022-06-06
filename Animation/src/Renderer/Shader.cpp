@@ -169,7 +169,7 @@ namespace Renderer
 						uniforms[testName] = uniformLocation;
 					}
 				}
-				uniforms[testName] = uniformLocation;
+				uniforms[uniformName] = uniformLocation;
 			}
 		}
 		glUseProgram(0);

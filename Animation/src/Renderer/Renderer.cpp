@@ -1,4 +1,4 @@
-#include "Render.h"
+#include "Renderer.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -28,12 +28,12 @@ namespace Renderer
 		return 0;
 	}
 
-	void render(uint32_t vertexCount, RenderMode renderMode)
+	void draw(uint32_t vertexCount, RenderMode renderMode)
 	{
 		glDrawArrays(renderModeToGLEnum(renderMode), 0, vertexCount);
 	}
 
-	void render(const IndexBuffer& indexBuffer, RenderMode renderMode)
+	void draw(const IndexBuffer& indexBuffer, RenderMode renderMode)
 	{
 		uint32_t handle = indexBuffer.getHandle();
 		uint32_t numIndices = indexBuffer.getCount();
@@ -43,12 +43,12 @@ namespace Renderer
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
-	void renderInstanced(uint32_t vertexCount, RenderMode renderMode, uint32_t numInstances)
+	void drawInstanced(uint32_t vertexCount, RenderMode renderMode, uint32_t numInstances)
 	{
 		glDrawArraysInstanced(renderModeToGLEnum(renderMode), 0, vertexCount, numInstances);
 	}
 
-	void renderInstanced(const IndexBuffer& indexBuffer, RenderMode renderMode, uint32_t instanceCount)
+	void drawInstanced(const IndexBuffer& indexBuffer, RenderMode renderMode, uint32_t instanceCount)
 	{
 		uint32_t handle = indexBuffer.getHandle();
 		uint32_t numIndices = indexBuffer.getCount();

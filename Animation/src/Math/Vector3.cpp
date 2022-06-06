@@ -14,12 +14,12 @@ namespace Math
 	
 	Math::Vector3 operator+(const Vector3& v1, const Vector3& v2)
 	{
-		return Vector3(v1.x + v2.x, v2.y + v2.y, v1.z + v2.z);
+		return Vector3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
 	}
 
 	Math::Vector3 operator-(const Vector3& v1, const Vector3& v2)
 	{
-		return Vector3(v1.x - v2.x, v2.y - v2.y, v1.z - v2.z);
+		return Vector3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
 	}
 
 	Math::Vector3 operator*(const Vector3& v, float scalefactor)
@@ -55,7 +55,7 @@ namespace Math
 
 	float lengthSqure(const Vector3& v)
 	{
-		return (v.x * v.x + v.y * v.y + v.z * v.z);
+		return dot(v, v);
 	}
 
 	float length(const Vector3& v)
@@ -154,8 +154,8 @@ namespace Math
 	Vector3 cross(const Vector3& a, const Vector3& b)
 	{
 		return Vector3(a.y * b.z - a.z * b.y,
-			a.z * b.x - a.x * b.z,
-			a.x * b.y - a.y * b.x);
+					   a.z * b.x - a.x * b.z,
+					   a.x * b.y - a.y * b.x);
 	}
 
 	Vector3 lerp(const Vector3& source, const Vector3& target, float t)

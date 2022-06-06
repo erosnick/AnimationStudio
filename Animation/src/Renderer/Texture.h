@@ -22,9 +22,9 @@ namespace Renderer
 		Texture& operator=(const Texture& texture) = delete;
 
 	private:
-		uint32_t width;
-		uint32_t height;
-		uint32_t channels;
+		int32_t width;
+		int32_t height;
+		int32_t channels;
 		uint32_t handle;
 	};
 }

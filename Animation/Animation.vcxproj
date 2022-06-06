@@ -29,8 +29,9 @@
     <ClCompile Include="src\Math\Vector3.cpp" />
     <ClCompile Include="src\Renderer\Attribute.cpp" />
     <ClCompile Include="src\Renderer\IndexBuffer.cpp" />
-    <ClCompile Include="src\Renderer\Render.cpp" />
+    <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Renderer\Shader.cpp" />
+    <ClCompile Include="Src\Renderer\Texture.cpp" />
     <ClCompile Include="src\Renderer\Uniform.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
   </ItemGroup>
@@ -46,7 +47,7 @@
     <ClInclude Include="src\Math\Vector4.h" />
     <ClInclude Include="src\Renderer\Attribute.h" />
     <ClInclude Include="src\Renderer\IndexBuffer.h" />
-    <ClInclude Include="src\Renderer\Render.h" />
+    <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Renderer\Shader.h" />
     <ClInclude Include="src\Renderer\Uniform.h" />
     <ClInclude Include="src\stb_image.h" />

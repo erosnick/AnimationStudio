@@ -30,12 +30,12 @@ namespace Math
 
 		inline Quaternion() : x(0.0f), y(0.0f), z(0.0f), w(1.0f) {}
 		inline Quaternion(float inX, float inY, float inZ, float inW) : x(inX), y(inY), z(inZ), w(inW) {}
-
-		Quaternion angleAxis(float angle, const Vector3& axis);
-		Quaternion fromTo(const Vector3& from, const Vector3& to);
-		Vector3 getAxis(const Quaternion& quaternion);
-		float getAngle(const Quaternion& quaternion);
 	};
+	
+	Quaternion angleAxis(float angle, const Vector3& axis);
+	Quaternion fromTo(const Vector3& from, const Vector3& to);
+	Vector3 getAxis(const Quaternion& quaternion);
+	float getAngle(const Quaternion& quaternion);
 	
 	Quaternion operator+(const Quaternion& a, const Quaternion& b);
 	Quaternion operator-(const Quaternion& a, const Quaternion& b);
@@ -46,6 +46,7 @@ namespace Math
 	Vector3 operator*(const Quaternion& quaternion, const Vector3& vector);
 	bool operator==(const Quaternion& a, const Quaternion& b);
 	bool operator!=(const Quaternion& a, const Quaternion& b);
+	
 	bool sameOrientation(const Quaternion& a, const Quaternion& b);
 	float dot(const Quaternion& a, const Quaternion& b);
 	float lengthSqured(const Quaternion& quaternion);

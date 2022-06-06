@@ -8,13 +8,6 @@
     <Filter Include="Includes\Math">
       <UniqueIdentifier>{5a1669fe-21f3-481c-b6a1-c2a4ab9d75f8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sources">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Sources\Math">
-      <UniqueIdentifier>{586da84a-6801-4c9d-a07a-a32652b8a505}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -24,6 +17,13 @@
     </Filter>
     <Filter Include="Includes\Renderer">
       <UniqueIdentifier>{39a000a1-216a-416a-af1e-c441e7dc0b6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Sources\Math">
+      <UniqueIdentifier>{586da84a-6801-4c9d-a07a-a32652b8a505}</UniqueIdentifier>
     </Filter>
     <Filter Include="Sources\Renderer">
       <UniqueIdentifier>{c51e4469-67b8-4ffd-9632-3d5db91afab5}</UniqueIdentifier>
@@ -69,7 +69,10 @@
     <ClCompile Include="src\Renderer\IndexBuffer.cpp">
       <Filter>Sources\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer\Render.cpp">
+    <ClCompile Include="src\Renderer\Renderer.cpp">
+      <Filter>Sources\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Renderer\Texture.cpp">
       <Filter>Sources\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
@@ -119,7 +122,7 @@
     <ClInclude Include="src\Renderer\IndexBuffer.h">
       <Filter>Includes\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\Render.h">
+    <ClInclude Include="src\Renderer\Renderer.h">
       <Filter>Includes\Renderer</Filter>
     </ClInclude>
   </ItemGroup>

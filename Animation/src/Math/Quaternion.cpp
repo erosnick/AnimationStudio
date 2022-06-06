@@ -11,9 +11,9 @@ namespace Math
 		float sin = Sin(angle * 0.5f);
 
 		return Quaternion(norm.x * sin,
-			norm.y * sin,
-			norm.z * sin,
-			Cos(angle * 0.5f));
+						  norm.y * sin,
+						  norm.z * sin,
+						  Cos(angle * 0.5f));
 	}
 
 	Quaternion fromTo(const Vector3& from, const Vector3& to)
@@ -234,9 +234,9 @@ namespace Math
 
 	Matrix4 quaternionToMatrix4(const Quaternion& quaternion)
 	{
-		Vector3 right = quaternion * Vector3(1, 0, 0);
-		Vector3 up = quaternion * Vector3(0, 1, 0);
-		Vector3 forward = quaternion * Vector3(0, 0, 1);
+		Vector3 right = quaternion * Vector3::X;
+		Vector3 up = quaternion * Vector3::Y;
+		Vector3 forward = quaternion * Vector3::Z;
 		
 		return Matrix4(right.x, right.y, right.z, 0.0f,
 					   up.x, up.y, up.z, 0.0f,
