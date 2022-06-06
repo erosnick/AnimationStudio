@@ -1,13 +1,13 @@
 #version 460 core
 
-in vec3 normal;
-in vec3 fragPos;
-in vec2 uv;
+layout (location = 0) in vec3 normal;
+layout (location = 1) in vec3 fragPos;
+layout (location = 2) in vec2 uv;
 
 uniform vec3 lightDirection;
 uniform sampler2D baseTexture;
 
-out vec4 FragColor;
+layout (location = 0) out vec4 FragColor;
 
 void main()
 {

@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <map>
 #include <string>
+#include <vector>
 
 namespace Renderer
 {
@@ -14,6 +15,7 @@ namespace Renderer
 		~Shader();
 
 		void load(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
+		void loadSPIRV(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
 
 		void bind();
 		void unbind();
@@ -26,7 +28,9 @@ namespace Renderer
 		Shader& operator=(const Shader& shader) = delete;
 		
 		std::string readFile(const std::string& path);
+		std::vector<char> readFileSPIRV(const std::string& path);
 		uint32_t compileShader(const std::string& shaderSource, int32_t shaderType);
+		uint32_t compileShaderSPIRV(const std::vector<char>& shaderSource, int32_t shaderType);
 		bool linkShaders(uint32_t vertexShader, uint32_t fragmentShader);
 
 		void populateAttributes();

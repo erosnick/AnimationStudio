@@ -18,7 +18,8 @@ namespace Renderer
 	Shader::Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
 	{
 		handle = glCreateProgram();
-		load(vertexShaderPath, fragmentShaderPath);
+		//load(vertexShaderPath, fragmentShaderPath);
+		loadSPIRV(vertexShaderPath, fragmentShaderPath);
 	}
 
 	Shader::~Shader()
@@ -42,6 +43,16 @@ namespace Renderer
 		return contents.str();
 	}
 
+	std::vector<char> Shader::readFileSPIRV(const std::string& path)
+	{
+		// Load the shader into a std::vector
+		std::ifstream inStream(path, std::ios::binary);
+		std::istreambuf_iterator<char> startIt(inStream), endIt;
+		std::vector<char> buffer(startIt, endIt);
+		inStream.close();
+		return buffer;
+	}
+
 	uint32_t Shader::compileShader(const std::string& shaderSource, int32_t shaderType)
 	{
 		uint32_t id = glCreateShader(shaderType);
@@ -57,6 +68,33 @@ namespace Renderer
 
 		if (!success)
 		{
+			char infoLog[512];
+			glGetShaderInfoLog(id, 512, nullptr, infoLog);
+			std::cout << "Error: Shader compilation failed: \n" << infoLog << std::endl;
+			glDeleteProgram(id);
+			return 0;
+		}
+
+		return id;
+	}
+
+	uint32_t Shader::compileShaderSPIRV(const std::vector<char>& shaderSource, int32_t shaderType)
+	{
+		uint32_t id = glCreateShader(shaderType);
+		
+		// Load using glShaderBinary
+		glShaderBinary(1, &id, GL_SHADER_BINARY_FORMAT_SPIR_V, shaderSource.data(), shaderSource.size());
+
+		// Specialize the shader (specify the entry point)
+		glSpecializeShader(id, "main", 0, 0, 0);
+
+		// Check for success/failure
+		GLint status;
+		glGetShaderiv(id, GL_COMPILE_STATUS, &status);
+
+		if (GL_FALSE == status)
+		{
+			// Loading failed
 			char infoLog[512];
 			glGetShaderInfoLog(id, 512, nullptr, infoLog);
 			std::cout << "Error: Shader compilation failed: \n" << infoLog << std::endl;
@@ -182,6 +220,21 @@ namespace Renderer
 
 		uint32_t vertexShader = compileShader(vertexShaderSource, GL_VERTEX_SHADER);
 		uint32_t fragmentShader = compileShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
+
+		if (linkShaders(vertexShader, fragmentShader))
+		{
+			populateAttributes();
+			populateUniforms();
+		}
+	}
+
+	void Shader::loadSPIRV(const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
+	{
+		std::vector<char> vertexShaderSource = readFileSPIRV(vertexShaderPath);
+		std::vector<char> fragmentShaderSource = readFileSPIRV(fragmentShaderPath);
+
+		uint32_t vertexShader = compileShaderSPIRV(vertexShaderSource, GL_VERTEX_SHADER);
+		uint32_t fragmentShader = compileShaderSPIRV(fragmentShaderSource, GL_FRAGMENT_SHADER);
 
 		if (linkShaders(vertexShader, fragmentShader))
 		{

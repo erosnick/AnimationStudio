@@ -116,7 +116,7 @@ void DemoApplication::startup()
 	}
 
 	angle = 0.0f;
-	shader = std::make_shared<Shader>("Assets/Shaders/Static.vert", "Assets/Shaders/Lit.frag");
+	shader = std::make_shared<Shader>("Assets/Shaders/Static.vert.spv", "Assets/Shaders/Lit.frag.spv");
 	displayTexture = std::make_shared<Texture>("Assets/Textures/uv.png");
 
 	prepareCubeData();
@@ -407,7 +407,7 @@ void DemoApplication::run()
 
 		std::chrono::duration<double> elapsedSeconds = now - start;
 
-		float realTime = elapsedSeconds.count();
+		float realTime = static_cast<float>(elapsedSeconds.count());
 
 		while (simulationTime < realTime)
 		{
@@ -483,5 +483,7 @@ void DemoApplication::framebufferSizeCallback(GLFWwindow* window, int width, int
 void DemoApplication::processInput()
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	{
 		glfwSetWindowShouldClose(window, true);
+	}
 }
