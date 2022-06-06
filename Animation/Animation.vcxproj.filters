@@ -8,10 +8,6 @@
     <Filter Include="Includes\Math">
       <UniqueIdentifier>{5a1669fe-21f3-481c-b6a1-c2a4ab9d75f8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Includes\Utils">
       <UniqueIdentifier>{1672a316-a6c7-4a34-aa34-90a5b45f0d76}</UniqueIdentifier>
     </Filter>
@@ -27,6 +23,13 @@
     </Filter>
     <Filter Include="Sources\Renderer">
       <UniqueIdentifier>{c51e4469-67b8-4ffd-9632-3d5db91afab5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Assets\Shaders">
+      <UniqueIdentifier>{b4886472-2d69-43d4-8d8f-d89e51d40e3a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +76,9 @@
       <Filter>Sources\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="Src\Renderer\Texture.cpp">
+      <Filter>Sources\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Renderer\DebugDraw.cpp">
       <Filter>Sources\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
@@ -125,5 +131,22 @@
     <ClInclude Include="src\Renderer\Renderer.h">
       <Filter>Includes\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Renderer\DebugDraw.h">
+      <Filter>Includes\Renderer</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Assets\Shaders\Lit.frag">
+      <Filter>Assets\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\Static.vert">
+      <Filter>Assets\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\Debug.vert">
+      <Filter>Assets\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\Debug.frag">
+      <Filter>Assets\Shaders</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

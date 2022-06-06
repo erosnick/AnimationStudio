@@ -118,6 +118,11 @@ void DemoApplication::startup()
 	angle = 0.0f;
 	shader = std::make_shared<Shader>("Assets/Shaders/Static.vert.spv", "Assets/Shaders/Lit.frag.spv");
 	displayTexture = std::make_shared<Texture>("Assets/Textures/uv.png");
+	debugDraw = std::make_shared<DebugDraw>();
+
+	debugDraw->Push(Vector3(-0.3f, -0.3f, 0.0f));
+	debugDraw->Push(Vector3( 0.3f,  0.3f, 0.0f));
+	debugDraw->UpdateOpenGLBuffers();
 
 	prepareCubeData();
 
@@ -437,6 +442,8 @@ void DemoApplication::render()
 
 	Matrix4 model = quaternionToMatrix4(rotation);
 
+	Matrix4 mvp = projection * view * model;
+
 	//model = Matrix4::Identity;
 
 	shader->bind();
@@ -457,6 +464,7 @@ void DemoApplication::render()
 
 	draw(*indexBuffer.get(), RenderMode::Triangles);
 
+
 	displayTexture->unbind(0);
 
 	vertexPositions->unbindFrom(shader->getAttribute("aPosition"));
@@ -464,6 +472,8 @@ void DemoApplication::render()
 	vertexTexCoords->unbindFrom(shader->getAttribute("aUV"));
 
 	shader->unbind();
+
+	debugDraw->Draw(DebugDrawMode::Lines, Vector3(1.0f, 0.0f, 0.0f), mvp);
 
 	glBindVertexArray(0);
 	

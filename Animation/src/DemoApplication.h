@@ -11,6 +11,7 @@
 #include "Renderer/Attribute.h"
 #include "Renderer/IndexBuffer.h"
 #include "Renderer/Texture.h"
+#include "Renderer/DebugDraw.h"
 
 using namespace Math;
 using namespace Renderer;
@@ -49,6 +50,7 @@ protected:
 	std::shared_ptr<Attribute<Vector2>> vertexTexCoords;
 	std::shared_ptr<IndexBuffer> indexBuffer;
 	std::shared_ptr<Texture> displayTexture;
+	std::shared_ptr<DebugDraw> debugDraw;
 	float angle;
 	Vector3 eye = { 0.0f, 1.0f, 3.0f };
 	Vector3 center = { 0.0f, 0.0f, 0.0f };
