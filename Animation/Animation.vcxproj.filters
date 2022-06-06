@@ -22,6 +22,12 @@
     <Filter Include="Includes\Utils">
       <UniqueIdentifier>{1672a316-a6c7-4a34-aa34-90a5b45f0d76}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Includes\Renderer">
+      <UniqueIdentifier>{39a000a1-216a-416a-af1e-c441e7dc0b6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Renderer">
+      <UniqueIdentifier>{c51e4469-67b8-4ffd-9632-3d5db91afab5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -50,6 +56,21 @@
     </ClCompile>
     <ClCompile Include="src\Math\Transform.cpp">
       <Filter>Sources\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Shader.cpp">
+      <Filter>Sources\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Attribute.cpp">
+      <Filter>Sources\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Uniform.cpp">
+      <Filter>Sources\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\IndexBuffer.cpp">
+      <Filter>Sources\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Render.cpp">
+      <Filter>Sources\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +106,21 @@
     </ClInclude>
     <ClInclude Include="src\Math\Transform.h">
       <Filter>Includes\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\Shader.h">
+      <Filter>Includes\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\Attribute.h">
+      <Filter>Includes\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\Uniform.h">
+      <Filter>Includes\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\IndexBuffer.h">
+      <Filter>Includes\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\Render.h">
+      <Filter>Includes\Renderer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

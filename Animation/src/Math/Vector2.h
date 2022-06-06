@@ -20,6 +20,6 @@ namespace Math
 		inline TVector2(T* data) : x(data[0]), y(data[1]) {}
 	};
 
-	typedef TVector2<float> Vector3;
-	typedef TVector2<int> Vector3i;
+	typedef TVector2<float> Vector2;
+	typedef TVector2<int> Vector2i;
 }
