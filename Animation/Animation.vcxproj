@@ -21,7 +21,11 @@
   <ItemGroup>
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\DemoApplication.cpp" />
-    <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\Loader\cgltf.cpp" />
+    <ClCompile Include="src\Loader\glad.c" />
+    <ClCompile Include="src\Loader\GLTFLoader.cpp" />
+    <ClCompile Include="src\Loader\stb_image.cpp" />
+    <ClCompile Include="src\Math\Bezier.cpp" />
     <ClCompile Include="src\Math\Math.cpp" />
     <ClCompile Include="src\Math\Matrix4.cpp" />
     <ClCompile Include="src\Math\Quaternion.cpp" />
@@ -34,11 +38,15 @@
     <ClCompile Include="src\Renderer\Shader.cpp" />
     <ClCompile Include="Src\Renderer\Texture.cpp" />
     <ClCompile Include="src\Renderer\Uniform.cpp" />
-    <ClCompile Include="src\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\DemoApplication.h" />
+    <ClInclude Include="src\Loader\cgltf.h" />
+    <ClInclude Include="src\Loader\cgltf_write.h" />
+    <ClInclude Include="src\Loader\GLTFLoader.h" />
+    <ClInclude Include="src\Loader\stb_image.h" />
+    <ClInclude Include="src\Math\Bezier.h" />
     <ClInclude Include="src\Math\Math.h" />
     <ClInclude Include="src\Math\Matrix4.h" />
     <ClInclude Include="src\Math\Quaternion.h" />
@@ -168,12 +176,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./src;../Thirdparty/includes</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;../Thirdparty/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../Thirdparty//lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../Thirdparty/GLFW</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

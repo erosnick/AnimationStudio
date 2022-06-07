@@ -31,18 +31,18 @@
     <Filter Include="Assets\Shaders">
       <UniqueIdentifier>{b4886472-2d69-43d4-8d8f-d89e51d40e3a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Includes\Loader">
+      <UniqueIdentifier>{9e6daabd-ae48-4fa1-9506-15bd6b0647b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Loader">
+      <UniqueIdentifier>{0c6ee39c-9add-45a6-9181-2995f08232cc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\DemoApplication.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\glad.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\stb_image.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\Math\Vector3.cpp">
@@ -80,6 +80,21 @@
     </ClCompile>
     <ClCompile Include="Src\Renderer\DebugDraw.cpp">
       <Filter>Sources\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Loader\cgltf.cpp">
+      <Filter>Sources\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Loader\glad.c">
+      <Filter>Sources\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Loader\stb_image.cpp">
+      <Filter>Sources\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Loader\GLTFLoader.cpp">
+      <Filter>Sources\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\Bezier.cpp">
+      <Filter>Sources\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -133,6 +148,21 @@
     </ClInclude>
     <ClInclude Include="Src\Renderer\DebugDraw.h">
       <Filter>Includes\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Loader\cgltf.h">
+      <Filter>Includes\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Loader\cgltf_write.h">
+      <Filter>Includes\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Loader\stb_image.h">
+      <Filter>Includes\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Loader\GLTFLoader.h">
+      <Filter>Includes\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Bezier.h">
+      <Filter>Includes\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

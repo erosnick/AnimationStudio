@@ -389,10 +389,6 @@ void DemoApplication::update(float deltaTime)
 {
 	angle += deltaTime * 45.0f;
 	
-	while (angle > 360.0f) {
-		angle -= 360.0f;
-	}
-	
 	// input
 	// -----
 	processInput();
