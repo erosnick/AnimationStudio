@@ -83,7 +83,7 @@ namespace Renderer
 		uint32_t id = glCreateShader(shaderType);
 		
 		// Load using glShaderBinary
-		glShaderBinary(1, &id, GL_SHADER_BINARY_FORMAT_SPIR_V, shaderSource.data(), shaderSource.size());
+		glShaderBinary(1, &id, GL_SHADER_BINARY_FORMAT_SPIR_V, shaderSource.data(), static_cast<GLsizei>(shaderSource.size()));
 
 		// Specialize the shader (specify the entry point)
 		glSpecializeShader(id, "main", 0, 0, 0);

@@ -37,6 +37,12 @@
     <Filter Include="Sources\Loader">
       <UniqueIdentifier>{0c6ee39c-9add-45a6-9181-2995f08232cc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Includes\Animation">
+      <UniqueIdentifier>{7b0c6c24-e560-4a5e-83ee-71ed2286d2e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Animation">
+      <UniqueIdentifier>{8ada8f15-40ad-476d-8df7-4496326796c1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -95,6 +101,21 @@
     </ClCompile>
     <ClCompile Include="src\Math\Bezier.cpp">
       <Filter>Sources\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\AnimationKeyFrame.cpp">
+      <Filter>Sources\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\AnimationTrack.cpp">
+      <Filter>Sources\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\AnimationTrackHelpers.cpp">
+      <Filter>Sources\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\Interpolation.cpp">
+      <Filter>Sources\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\AnimationTransformTrack.cpp">
+      <Filter>Sources\Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +184,21 @@
     </ClInclude>
     <ClInclude Include="src\Math\Bezier.h">
       <Filter>Includes\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\AnimationKeyFrame.h">
+      <Filter>Includes\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\AnimationTrack.h">
+      <Filter>Includes\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\AnimationTrackHelpers.h">
+      <Filter>Includes\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Interpolation.h">
+      <Filter>Includes\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\AnimationTransformTrack.h">
+      <Filter>Includes\Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

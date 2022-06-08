@@ -33,6 +33,7 @@ public:
 	// glfw: whenever the window size changed (by OS or user resize) this callback function executes
 	// ---------------------------------------------------------------------------------------------
 	static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
+	static void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 	
 	// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 	// ---------------------------------------------------------------------------------------------------------

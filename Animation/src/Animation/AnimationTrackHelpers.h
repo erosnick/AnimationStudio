@@ -46,10 +46,10 @@ namespace AnimationTrackHelpers
 		return normalized(value);
 	}
 
-	inline void neighborhood(const float& a, const float& b) {}
-	inline void neighborhood(const Vector3& a, const Vector3& b) {}
+	inline void neighborhood(const float& a, float& b) {}
+	inline void neighborhood(const Vector3& a, Vector3& b) {}
 
-	inline void Neighborhood(const Quaternion& a, Quaternion& b)
+	inline void neighborhood(const Quaternion& a, Quaternion& b)
 	{
 		if (dot(a, b) < 0.0f) {
 			b = -b;

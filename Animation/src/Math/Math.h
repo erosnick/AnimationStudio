@@ -31,5 +31,5 @@ namespace Math
 	inline float Sqrt(float value) { return std::sqrtf(value); }
 	inline float ACos(float value) { return std::acosf(value); }
 	inline float FastAbs(float value) { return std::fabsf(value); }
-	inline float FMod(float value) { return std::fmodf(value); }
+	inline float FMod(float x, float y) { return std::fmodf(x, y); }
 }

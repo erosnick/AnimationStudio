@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -19,6 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Animation\AnimationKeyFrame.cpp" />
+    <ClCompile Include="src\Animation\AnimationTrack.cpp" />
+    <ClCompile Include="src\Animation\AnimationTrackHelpers.cpp" />
+    <ClCompile Include="src\Animation\AnimationTransformTrack.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\DemoApplication.cpp" />
     <ClCompile Include="src\Loader\cgltf.cpp" />
@@ -26,6 +30,7 @@
     <ClCompile Include="src\Loader\GLTFLoader.cpp" />
     <ClCompile Include="src\Loader\stb_image.cpp" />
     <ClCompile Include="src\Math\Bezier.cpp" />
+    <ClCompile Include="src\Math\Interpolation.cpp" />
     <ClCompile Include="src\Math\Math.cpp" />
     <ClCompile Include="src\Math\Matrix4.cpp" />
     <ClCompile Include="src\Math\Quaternion.cpp" />
@@ -40,6 +45,10 @@
     <ClCompile Include="src\Renderer\Uniform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Animation\AnimationKeyFrame.h" />
+    <ClInclude Include="src\Animation\AnimationTrack.h" />
+    <ClInclude Include="src\Animation\AnimationTrackHelpers.h" />
+    <ClInclude Include="src\Animation\AnimationTransformTrack.h" />
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\DemoApplication.h" />
     <ClInclude Include="src\Loader\cgltf.h" />
@@ -47,6 +56,7 @@
     <ClInclude Include="src\Loader\GLTFLoader.h" />
     <ClInclude Include="src\Loader\stb_image.h" />
     <ClInclude Include="src\Math\Bezier.h" />
+    <ClInclude Include="src\Math\Interpolation.h" />
     <ClInclude Include="src\Math\Math.h" />
     <ClInclude Include="src\Math\Matrix4.h" />
     <ClInclude Include="src\Math\Quaternion.h" />
@@ -176,7 +186,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./src;../Thirdparty/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;../Thirdparty/;../Thirdparty/spdlog-1.10.0/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -16,6 +16,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include <spdlog/spdlog.h>
+
 #include <iostream>
 #include <chrono>
 
@@ -37,40 +39,42 @@ void APIENTRY glDebugOutput(GLenum source,
 	// ignore non-significant error/warning codes
 	if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
 
-	std::cout << "---------------" << std::endl;
-	std::cout << "Debug message (" << id << "): " << message << std::endl;
+	spdlog::info("---------------\n");
+	spdlog::info("Debug message ({0}): {1}\n", id, message);
 
 	switch (source)
 	{
-		case GL_DEBUG_SOURCE_API:             std::cout << "Source: API"; break;
-		case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   std::cout << "Source: Window System"; break;
-		case GL_DEBUG_SOURCE_SHADER_COMPILER: std::cout << "Source: Shader Compiler"; break;
-		case GL_DEBUG_SOURCE_THIRD_PARTY:     std::cout << "Source: Third Party"; break;
-		case GL_DEBUG_SOURCE_APPLICATION:     std::cout << "Source: Application"; break;
-		case GL_DEBUG_SOURCE_OTHER:           std::cout << "Source: Other"; break;
-	} std::cout << std::endl;
+		case GL_DEBUG_SOURCE_API:             spdlog::info("Source: API"); ; break;
+		case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   spdlog::info("Source: Window System"); break;
+		case GL_DEBUG_SOURCE_SHADER_COMPILER: spdlog::info("Source: Shader Compiler"); break;
+		case GL_DEBUG_SOURCE_THIRD_PARTY:     spdlog::info("Source: Third Party"); break;
+		case GL_DEBUG_SOURCE_APPLICATION:     spdlog::info("Source: Application"); break;
+		case GL_DEBUG_SOURCE_OTHER:           spdlog::info("Source: Other"); break;
+	}
+	spdlog::info("\n");
 
 	switch (type)
 	{
-		case GL_DEBUG_TYPE_ERROR:               std::cout << "Type: Error"; break;
-		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: std::cout << "Type: Deprecated Behaviour"; break;
-		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  std::cout << "Type: Undefined Behaviour"; break;
-		case GL_DEBUG_TYPE_PORTABILITY:         std::cout << "Type: Portability"; break;
-		case GL_DEBUG_TYPE_PERFORMANCE:         std::cout << "Type: Performance"; break;
-		case GL_DEBUG_TYPE_MARKER:              std::cout << "Type: Marker"; break;
-		case GL_DEBUG_TYPE_PUSH_GROUP:          std::cout << "Type: Push Group"; break;
-		case GL_DEBUG_TYPE_POP_GROUP:           std::cout << "Type: Pop Group"; break;
-		case GL_DEBUG_TYPE_OTHER:               std::cout << "Type: Other"; break;
-	} std::cout << std::endl;
+		case GL_DEBUG_TYPE_ERROR:               spdlog::info("Type: Error"); break;
+		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: spdlog::info("Type: Deprecated Behaviour"); break;
+		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  spdlog::info("Type: Undefined Behaviour"); break;
+		case GL_DEBUG_TYPE_PORTABILITY:         spdlog::info("Type: Portability"); break;
+		case GL_DEBUG_TYPE_PERFORMANCE:         spdlog::info("Type: Performance"); break;
+		case GL_DEBUG_TYPE_MARKER:              spdlog::info("Type: Marker"); break;
+		case GL_DEBUG_TYPE_PUSH_GROUP:          spdlog::info("Type: Push Group"); break;
+		case GL_DEBUG_TYPE_POP_GROUP:           spdlog::info("Type: Pop Group"); break;
+		case GL_DEBUG_TYPE_OTHER:               spdlog::info("Type: Other"); break;
+	}
+	spdlog::info("\n");
 
 	switch (severity)
 	{
-		case GL_DEBUG_SEVERITY_HIGH:         std::cout << "Severity: high"; break;
-		case GL_DEBUG_SEVERITY_MEDIUM:       std::cout << "Severity: medium"; break;
-		case GL_DEBUG_SEVERITY_LOW:          std::cout << "Severity: low"; break;
-		case GL_DEBUG_SEVERITY_NOTIFICATION: std::cout << "Severity: notification"; break;
-	} std::cout << std::endl;
-	std::cout << std::endl;
+		case GL_DEBUG_SEVERITY_HIGH:         spdlog::info("Severity: high"); break;
+		case GL_DEBUG_SEVERITY_MEDIUM:       spdlog::info("Severity: medium"); break;
+		case GL_DEBUG_SEVERITY_LOW:          spdlog::info("Severity: low"); break;
+		case GL_DEBUG_SEVERITY_NOTIFICATION: spdlog::info("Severity: notification"); break;
+	} 
+	spdlog::info("\n\n");
 }
 
 void DemoApplication::startup()
@@ -89,18 +93,20 @@ void DemoApplication::startup()
 
 	if (window == nullptr)
 	{
-		std::cout << "Failed to create GLFW window" << std::endl;
+		spdlog::info("Failed to create GLFW window.\n");
 		glfwTerminate();
 	}
 
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
-
+	glfwSetScrollCallback(window, mouseScrollCallback);
+	glfwSetWindowUserPointer(window, this);
+	
 	// glad: load all OpenGL function pointers
 	// ---------------------------------------
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
+		spdlog::info("Failed to initialize GLAD\n");
 	}
 
 	glEnable(GL_DEPTH_TEST);
@@ -484,6 +490,22 @@ void DemoApplication::framebufferSizeCallback(GLFWwindow* window, int width, int
 	// make sure the viewport matches the new window dimensions; note that width and 
 	// height will be significantly larger than specified on retina displays.
 	glViewport(0, 0, width, height);
+}
+
+void DemoApplication::mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	spdlog::info("{0}, {1}", xoffset, yoffset);
+
+	auto* app = static_cast<DemoApplication*>(glfwGetWindowUserPointer(window));
+
+	if (yoffset > 0.0f)
+	{
+		app->eye.z -= 0.1f;
+	}
+	else if (yoffset < 0.0f)
+	{
+		app->eye.z += 0.1f;
+	}
 }
 
 void DemoApplication::processInput()
