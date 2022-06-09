@@ -10,8 +10,8 @@ namespace Animation
 	{
 	public:
 		AnimationTransformTrack();
-		uint32_t getBoneId() const;
-		void setBoneId(uint32_t inBoneId);
+		uint32_t getJointId() const;
+		void setJointId(uint32_t inJointId);
 		VectorTrack& getPositionTrack();
 		QuaternionTrack& getRotationTrack();
 		VectorTrack& getScaleTrack();
@@ -21,7 +21,7 @@ namespace Animation
 		
 		Transform sample(const Transform& reference, float time, bool bLooping);
 	protected:
-		uint32_t boneId;
+		uint32_t jointId;
 		VectorTrack position;
 		QuaternionTrack rotation;
 		VectorTrack scale;

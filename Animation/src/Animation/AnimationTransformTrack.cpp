@@ -4,17 +4,17 @@ namespace Animation
 {
 	AnimationTransformTrack::AnimationTransformTrack()
 	{
-		boneId = 0;
+		jointId = 0;
 	}
 
-	uint32_t AnimationTransformTrack::getBoneId() const
+	uint32_t AnimationTransformTrack::getJointId() const
 	{
-		return boneId;
+		return jointId;
 	}
 
-	void AnimationTransformTrack::setBoneId(uint32_t inBoneId)
+	void AnimationTransformTrack::setJointId(uint32_t inJointId)
 	{
-		boneId = inBoneId;
+		jointId = inJointId;
 	}
 
 	VectorTrack& AnimationTransformTrack::getPositionTrack()

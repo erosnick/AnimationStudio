@@ -1,6 +1,11 @@
 #pragma once
 
 #include <cstdint>
+#include <vector>
+
+#include <Math/Transform.h>
+
+using namespace Math;
 
 namespace Animation
 {
@@ -9,7 +14,7 @@ namespace Animation
 	public:
 		AnimationPose();
 		AnimationPose(const AnimationPose& other);
-		AnimationPose(int32_t numBones);
+		AnimationPose(int32_t numJoints);
 		~AnimationPose();
 
 		AnimationPose& operator=(const AnimationPose& other);
@@ -19,5 +24,20 @@ namespace Animation
 
 		int32_t getParent(uint32_t index);
 		void setParent(uint32_t index, int parent);
+
+		Transform getLocalTransform(uint32_t index);
+		void setLocalTransform(uint32_t index, const Transform& transform);
+
+		Transform getGlobalTransform(uint32_t index);
+		Transform operator[](uint32_t index);
+
+		void getMatrixPalette(std::vector<Matrix4>& out);
+
+		bool operator==(const AnimationPose& other);
+		bool operator!=(const AnimationPose& other);
+
+	protected:
+		std::vector<Transform> joints;
+		std::vector<int32_t> parents;
 	};
 }
