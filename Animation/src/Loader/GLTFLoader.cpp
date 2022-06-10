@@ -9,6 +9,8 @@
 #include <Animation/AnimationPose.h>
 #include <Animation/AnimationTrack.h>
 
+#include <spdlog/spdlog.h>
+
 using namespace Math;
 
 namespace GLTFHelpers
@@ -139,7 +141,7 @@ namespace Loader
 		
 		if (result != cgltf_result_success)
 		{
-			std::cout << "Failed to parse glTF file: " << path << std::endl;
+			spdlog::info("Failed to parse glTF file: {0}\n");
 			freeGLTFFile(data);
 			return nullptr;
 		}
@@ -149,7 +151,7 @@ namespace Loader
 		if (result != cgltf_result_success)
 		{
 			cgltf_free(data);
-			std::cout << "Could not load buffers for: " << path << "\n";
+			spdlog::info("Could not load buffers for: {0}\n", path);
 			return 0;
 		}
 
@@ -157,7 +159,7 @@ namespace Loader
 
 		if (result != cgltf_result_success)
 		{
-			std::cout << "Failed to validate glTF file: " << path << std::endl;
+			spdlog::info("Failed to validate glTF file: {0}\n", path);
 			freeGLTFFile(data);
 			return nullptr;
 		}
