@@ -8,6 +8,7 @@
 
 #include "Renderer/Uniform.h"
 #include "Renderer/Renderer.h"
+#include "Loader/GLTFLoader.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -100,6 +101,7 @@ void DemoApplication::startup()
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 	glfwSetScrollCallback(window, mouseScrollCallback);
+	glfwSetKeyCallback(window, keyCallback);
 	glfwSetWindowUserPointer(window, this);
 	
 	// glad: load all OpenGL function pointers
@@ -124,14 +126,11 @@ void DemoApplication::startup()
 	angle = 0.0f;
 	shader = std::make_shared<Shader>("Assets/Shaders/Static.vert.spv", "Assets/Shaders/Lit.frag.spv");
 	displayTexture = std::make_shared<Texture>("Assets/Textures/uv.png");
-	debugDraw = std::make_shared<DebugDraw>();
-
-	debugDraw->Push(Vector3(-0.3f, -0.3f, 0.0f));
-	debugDraw->Push(Vector3( 0.3f,  0.3f, 0.0f));
-	debugDraw->UpdateOpenGLBuffers();
 
 	prepareCubeData();
-
+	prepareAnimationDebugData();
+	prepareDebugData();
+	
 	auto rotation = glm::angleAxis(45.0f * DEGREE2RADIAN, glm::vec3(0.0f, 0.0f, 1.0f));
 
 	auto rotatedVector = rotation * glm::vec3(1.0f, 0.0f, 0.0f);
@@ -246,11 +245,6 @@ void DemoApplication::prepareCubeData()
 		{ -0.5f,  0.5f, -0.5f }
 	};
 
-	//positions.push_back(Vector3(-1.0f, -1.0f, 0.0f));
-	//positions.push_back(Vector3(-1.0f,  1.0f, 0.0f));
-	//positions.push_back(Vector3( 1.0f, -1.0f, 0.0f));
-	//positions.push_back(Vector3( 1.0f,  1.0f, 0.0f));
-
 	vertexPositions->set(positions);
 
 	std::vector<Vector3> normals = {
@@ -298,7 +292,6 @@ void DemoApplication::prepareCubeData()
 		{ 0.0f,  1.0f,  0.0f }
 	};
 
-	//normals.resize(4, Vector3(0.0f, 0.0f, 1.0f));
 	vertexNormals->set(normals);
 
 	std::vector<Vector2> uvs = {
@@ -346,11 +339,6 @@ void DemoApplication::prepareCubeData()
 		{ 0.0f,  1.0f }
 	};
 
-	//uvs.push_back(Vector2(0.0f, 0.0f));
-	//uvs.push_back(Vector2(0.0f, 1.0f));
-	//uvs.push_back(Vector2(1.0f, 0.0f));
-	//uvs.push_back(Vector2(1.0f, 1.0f));
-
 	vertexTexCoords->set(uvs);
 
 	std::vector<uint32_t> indices = {
@@ -374,14 +362,38 @@ void DemoApplication::prepareCubeData()
 		33, 34, 35
 	};
 
-	//indices.push_back(0);
-	//indices.push_back(1);
-	//indices.push_back(2);
-	//indices.push_back(2);
-	//indices.push_back(1);
-	//indices.push_back(3);
-
 	indexBuffer->set(indices);
+}
+
+void DemoApplication::prepareDebugData()
+{
+	debugDraw = std::make_shared<DebugDraw>();
+
+	debugDraw->Push(Vector3(-0.3f, -0.3f, 0.5f));
+	debugDraw->Push(Vector3(0.3f, 0.3f, 0.5f));
+	debugDraw->UpdateOpenGLBuffers();
+}
+
+void DemoApplication::prepareAnimationDebugData()
+{
+	cgltf_data* data = Loader::loadGLTFFile("Assets/Models/Woman.gltf");
+
+	restPose = Loader::loadRestPose(data);
+	animationClips = Loader::loadAnimationClips(data);
+	Loader::freeGLTFFile(data);
+	
+	restPoseDebugDraw = std::make_shared<DebugDraw>();
+	restPoseDebugDraw->FromAnimationPose(restPose);
+	restPoseDebugDraw->UpdateOpenGLBuffers();
+
+	currentClip = 7;
+	currentPose = restPose;
+	currentFrame = 0;
+	animationClips[currentClip].sample(currentPose, fixTimestep * currentFrame);
+
+	currentPoseDebugDraw = std::make_shared<DebugDraw>();
+	currentPoseDebugDraw->FromAnimationPose(currentPose);
+	currentPoseDebugDraw->UpdateOpenGLBuffers();
 }
 
 void DemoApplication::shutdown()
@@ -393,8 +405,16 @@ void DemoApplication::shutdown()
 
 void DemoApplication::update(float deltaTime)
 {
-	angle += deltaTime * 45.0f;
+	if (bUpdateRotation)
+	{
+		angle += deltaTime * 45.0f;
+	}
 	
+	//animationClips[currentClip].sample(currentPose, fixTimestep * currentFrame);
+	playbackTime = animationClips[currentClip].sample(currentPose, playbackTime + deltaTime);
+	std::cout << currentFrame << std::endl;
+	currentPoseDebugDraw->FromAnimationPose(currentPose);
+
 	// input
 	// -----
 	processInput();
@@ -432,7 +452,7 @@ void DemoApplication::render()
 {
 	// render
 	// ------
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0.4f, 0.6f, 0.9f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	Matrix4 projection = perspective(60.0f, 1.333333333333333f, 0.01f, 1000.0f);
@@ -452,30 +472,34 @@ void DemoApplication::render()
 
 	glBindVertexArray(VAO);
 
-	vertexPositions->bindTo(shader->getAttribute("aPosition"));
-	vertexNormals->bindTo(shader->getAttribute("aNormal"));  
-	vertexTexCoords->bindTo(shader->getAttribute("aUV"));
+	//vertexPositions->bindTo(shader->getAttribute("aPosition"));
+	//vertexNormals->bindTo(shader->getAttribute("aNormal"));  
+	//vertexTexCoords->bindTo(shader->getAttribute("aUV"));
 
-	Uniform<Matrix4>::set(shader->getUniform("model"), model);
-	Uniform<Matrix4>::set(shader->getUniform("view"), view);
-	Uniform<Matrix4>::set(shader->getUniform("projection"), projection);
+	//Uniform<Matrix4>::set(shader->getUniform("model"), model);
+	//Uniform<Matrix4>::set(shader->getUniform("view"), view);
+	//Uniform<Matrix4>::set(shader->getUniform("projection"), projection);
 
-	Uniform<Vector3>::set(shader->getUniform("lightDirection"), Vector3(0.0f, 1.0f, 1.0f));
+	//Uniform<Vector3>::set(shader->getUniform("lightDirection"), Vector3(0.0f, 1.0f, 1.0f));
 
-	displayTexture->bind(shader->getUniform("baseTexture"), 0);
+	//displayTexture->bind(shader->getUniform("baseTexture"), 0);
 
-	draw(*indexBuffer.get(), RenderMode::Triangles);
+	//draw(*indexBuffer.get(), RenderMode::Triangles);
+	//
+	//displayTexture->unbind(0);
 
+	//vertexPositions->unbindFrom(shader->getAttribute("aPosition"));
+	//vertexNormals->unbindFrom(shader->getAttribute("aNormal"));
+	//vertexTexCoords->unbindFrom(shader->getAttribute("aUV"));
 
-	displayTexture->unbind(0);
+	//shader->unbind();
 
-	vertexPositions->unbindFrom(shader->getAttribute("aPosition"));
-	vertexNormals->unbindFrom(shader->getAttribute("aNormal"));
-	vertexTexCoords->unbindFrom(shader->getAttribute("aUV"));
+	//debugDraw->Draw(DebugDrawMode::Lines, Vector3(1.0f, 0.0f, 0.0f), mvp);
 
-	shader->unbind();
+	restPoseDebugDraw->Draw(DebugDrawMode::Lines, Vector3(1.0f, 0.0f, 0.0f), mvp);
 
-	debugDraw->Draw(DebugDrawMode::Lines, Vector3(1.0f, 0.0f, 0.0f), mvp);
+	currentPoseDebugDraw->UpdateOpenGLBuffers();
+	currentPoseDebugDraw->Draw(DebugDrawMode::Lines, Vector3(0, 0, 1), mvp);
 
 	glBindVertexArray(0);
 	
@@ -485,7 +509,7 @@ void DemoApplication::render()
 	glfwPollEvents();
 }
 
-void DemoApplication::framebufferSizeCallback(GLFWwindow* window, int width, int height)
+void DemoApplication::framebufferSizeCallback(GLFWwindow* window, int32_t width, int32_t height)
 {
 	// make sure the viewport matches the new window dimensions; note that width and 
 	// height will be significantly larger than specified on retina displays.
@@ -508,10 +532,35 @@ void DemoApplication::mouseScrollCallback(GLFWwindow* window, double xoffset, do
 	}
 }
 
+void DemoApplication::keyCallback(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods)
+{
+	auto* app = static_cast<DemoApplication*>(glfwGetWindowUserPointer(window));
+	
+	if (key == GLFW_KEY_R && action == GLFW_PRESS)
+	{
+		app->toggleUpdateRotation();
+	}
+
+	if (key == GLFW_KEY_UP && action == GLFW_PRESS)
+	{
+		app->currentFrame = (app->currentFrame + 1) % app->animationClips[app->currentClip].getSize();
+	}
+
+	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
+	{
+		app->currentFrame = (app->currentFrame - 1) % app->animationClips[app->currentClip].getSize();
+	}
+}
+
 void DemoApplication::processInput()
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, true);
 	}
+}
+
+void DemoApplication::toggleUpdateRotation()
+{
+	bUpdateRotation = !bUpdateRotation;
 }

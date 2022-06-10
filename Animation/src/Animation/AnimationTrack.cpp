@@ -91,7 +91,7 @@ namespace Animation
 	{
 		int32_t currentFrame = frameIndex(time, bLooping);
 
-		if (currentFrame < 0 || currentFrame >= keyframes.size() - 1)
+		if (currentFrame < 0 || currentFrame >= (keyframes.size() - 1))
 		{
 			return T();
 		}
@@ -206,7 +206,7 @@ namespace Animation
 			}
 		}
 
-		for (uint32_t i = 0; i < size; i++)
+		for (uint32_t i = size - 1; i >= 0 ; i--)
 		{
 			if (time >= keyframes[i].time)
 			{
@@ -241,7 +241,7 @@ namespace Animation
 		{
 			time = FMod(time - startTime, duration);
 			
-			if (time <= 0.0f)
+			if (time < 0.0f)
 			{
 				time += duration;
 			}

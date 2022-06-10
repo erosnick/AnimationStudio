@@ -69,7 +69,7 @@ namespace Math
 					   position.x, position.y, position.z, 1.0f); // Position
 	}
 
-	Transform matri4ToTransform(const Matrix4& matrtix)
+	Transform matrix4ToTransform(const Matrix4& matrtix)
 	{
 		Transform result;
 

@@ -120,6 +120,9 @@
     <ClCompile Include="src\Animation\AnimationPose.cpp">
       <Filter>Sources\Animation</Filter>
     </ClCompile>
+    <ClCompile Include="src\Animation\AnimationClip.cpp">
+      <Filter>Sources\Animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -204,6 +207,9 @@
       <Filter>Includes\Animation</Filter>
     </ClInclude>
     <ClInclude Include="src\Animation\AnimationPose.h">
+      <Filter>Includes\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\AnimationClip.h">
       <Filter>Includes\Animation</Filter>
     </ClInclude>
   </ItemGroup>
