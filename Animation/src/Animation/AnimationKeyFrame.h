@@ -4,7 +4,7 @@
 
 namespace Animation
 {
-	template <uint32_t N>
+	template <int32_t N>
 	class AnimationKeyFrame
 	{
 	public:

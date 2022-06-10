@@ -31,7 +31,7 @@ namespace Animation
 		return static_cast<uint32_t>(joints.size());
 	}
 
-	int32_t AnimationPose::getParent(uint32_t index)
+	int32_t AnimationPose::getParent(uint32_t index) const
 	{
 		return parents[index];
 	}
@@ -51,7 +51,7 @@ namespace Animation
 		joints[index] = transform;
 	}
 
-	Transform AnimationPose::getGlobalTransform(uint32_t index)
+	Transform AnimationPose::getGlobalTransform(uint32_t index) const
 	{
 		Transform result = joints[index];
 

@@ -4,49 +4,55 @@
 #include "Attribute.h"
 #include "Math/Vector3.h"
 #include "Math/Matrix4.h"
+#include "Animation/AnimationPose.h"
+
 #include <vector>
 
 #if 0
-#include "Pose.h"
 #include "CCDSolver.h"
 #include "FABRIKSolver.h"
 #endif
 
 using namespace Math;
 using namespace Renderer;
+using namespace Animation;
 
-enum class DebugDrawMode 
+namespace Debug
 {
-	Lines, Loop, Strip, Points
-};
+	enum class DebugDrawMode
+	{
+		Lines, Loop, Strip, Points
+	};
 
-class DebugDraw 
-{
-protected:
-	std::vector<Vector3> mPoints;
-	Attribute<Vector3>* mAttribs;
-	Shader* mShader;
-private:
-	DebugDraw(const DebugDraw&);
-	DebugDraw& operator=(const DebugDraw&);
-public:
-	DebugDraw();
-	DebugDraw(unsigned int size);
-	~DebugDraw();
+	class DebugDraw
+	{
+	public:
+		DebugDraw();
+		DebugDraw(unsigned int size);
+		~DebugDraw();
 
-	unsigned int Size();
-	void Resize(unsigned int newSize);
-	Vector3& operator[](unsigned int index);
-	void Push(const Vector3& v);
+		DebugDraw(const DebugDraw&) = delete;
+		DebugDraw& operator=(const DebugDraw&) = delete;
+
+		unsigned int Size();
+		void Resize(unsigned int newSize);
+		Vector3& operator[](unsigned int index);
+		void Push(const Vector3& v);
+
+		void UpdateOpenGLBuffers();
+		void Draw(DebugDrawMode mode, const Vector3& color, const Matrix4& mvp);
+
+		void FromAnimationPose(const AnimationPose& pose);
+	protected:
+		std::vector<Vector3> mPoints;
+		Attribute<Vector3>* mAttribs;
+		Shader* mShader;
 
 #if 0
-	void FromPose(Pose& pose);
-	void LinesFromIKSolver(CCDSolver& solver);
-	void PointsFromIKSolver(CCDSolver& solver);
-	void LinesFromIKSolver(FABRIKSolver& solver);
-	void PointsFromIKSolver(FABRIKSolver& solver);
+		void LinesFromIKSolver(CCDSolver& solver);
+		void PointsFromIKSolver(CCDSolver& solver);
+		void LinesFromIKSolver(FABRIKSolver& solver);
+		void PointsFromIKSolver(FABRIKSolver& solver);
 #endif
-	
-	void UpdateOpenGLBuffers();
-	void Draw(DebugDrawMode mode, const Vector3& color, const Matrix4& mvp);
-};
+	};
+}

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Animation\AnimationClip.cpp" />
     <ClCompile Include="src\Animation\AnimationKeyFrame.cpp" />
     <ClCompile Include="src\Animation\AnimationPose.cpp" />
     <ClCompile Include="src\Animation\AnimationTrack.cpp" />
@@ -46,6 +47,7 @@
     <ClCompile Include="src\Renderer\Uniform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Animation\AnimationClip.h" />
     <ClInclude Include="src\Animation\AnimationKeyFrame.h" />
     <ClInclude Include="src\Animation\AnimationPose.h" />
     <ClInclude Include="src\Animation\AnimationTrack.h" />

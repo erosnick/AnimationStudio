@@ -20,7 +20,7 @@ namespace Math
 	Transform inverse(const Transform& transform);
 	Transform lerp(const Transform& source, const Transform& target, float t);
 	Matrix4 transformToMatrix4(const Transform& transform);
-	Transform matri4ToTransform(const Matrix4& matrtix);
+	Transform matrix4ToTransform(const Matrix4& matrtix);
 	Vector3 transformPoint(const Transform& transform, const Vector3& point);
 	Vector3 transformVector(const Transform& transform, const Vector3& vector);
 }
