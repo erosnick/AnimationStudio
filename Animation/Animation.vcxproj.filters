@@ -123,6 +123,12 @@
     <ClCompile Include="src\Animation\AnimationClip.cpp">
       <Filter>Sources\Animation</Filter>
     </ClCompile>
+    <ClCompile Include="src\Animation\Skeleton.cpp">
+      <Filter>Sources\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\SkeletalMesh.cpp">
+      <Filter>Sources\Animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -212,6 +218,12 @@
     <ClInclude Include="src\Animation\AnimationClip.h">
       <Filter>Includes\Animation</Filter>
     </ClInclude>
+    <ClInclude Include="src\Animation\Skeleton.h">
+      <Filter>Includes\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\SkeletalMesh.h">
+      <Filter>Includes\Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Assets\Shaders\Lit.frag">
@@ -224,6 +236,12 @@
       <Filter>Assets\Shaders</Filter>
     </CustomBuild>
     <CustomBuild Include="Assets\Shaders\Debug.frag">
+      <Filter>Assets\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\Mesh.vert">
+      <Filter>Assets\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\Mesh.frag">
       <Filter>Assets\Shaders</Filter>
     </CustomBuild>
   </ItemGroup>

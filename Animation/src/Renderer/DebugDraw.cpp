@@ -6,14 +6,14 @@ namespace Debug
 {
 	DebugDraw::DebugDraw()
 	{
-		mAttribs = new Attribute<Vector3>();
+		mAttributes = new Attribute<Vector3>();
 
 		mShader = new Shader("Assets/Shaders/Debug.vert.spv", "Assets/Shaders/Debug.frag.spv");
 	}
 
 	DebugDraw::DebugDraw(unsigned int size)
 	{
-		mAttribs = new Attribute<Vector3>();
+		mAttributes = new Attribute<Vector3>();
 
 		mShader = new Shader("Assets/Shaders/Debug.vert.spv", "Assets/Shaders/Debug.frag.spv");
 
@@ -22,7 +22,7 @@ namespace Debug
 
 	DebugDraw::~DebugDraw()
 	{
-		delete mAttribs;
+		delete mAttributes;
 		delete mShader;
 	}
 
@@ -48,7 +48,7 @@ namespace Debug
 
 	void DebugDraw::UpdateOpenGLBuffers()
 	{
-		mAttribs->set(mPoints);
+		mAttributes->set(mPoints);
 	}
 
 #if 0
@@ -109,7 +109,7 @@ namespace Debug
 		mShader->bind();
 		Uniform<Matrix4>::set(mShader->getUniform("mvp"), mvp);
 		Uniform<Vector3>::set(mShader->getUniform("color"), color);
-		mAttribs->bindTo(mShader->getAttribute("position"));
+		mAttributes->bindTo(mShader->getAttribute("position"));
 
 		if (mode == DebugDrawMode::Lines)
 		{
@@ -128,7 +128,7 @@ namespace Debug
 			::draw(Size(), RenderMode::Points);
 		}
 
-		mAttribs->unbindFrom(mShader->getAttribute("position"));
+		mAttributes->unbindFrom(mShader->getAttribute("position"));
 		mShader->unbind();
 	}
 

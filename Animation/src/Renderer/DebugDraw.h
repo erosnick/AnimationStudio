@@ -45,7 +45,7 @@ namespace Debug
 		void FromAnimationPose(const AnimationPose& pose);
 	protected:
 		std::vector<Vector3> mPoints;
-		Attribute<Vector3>* mAttribs;
+		Attribute<Vector3>* mAttributes;
 		Shader* mShader;
 
 #if 0

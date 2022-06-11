@@ -25,6 +25,8 @@
     <ClCompile Include="src\Animation\AnimationTrack.cpp" />
     <ClCompile Include="src\Animation\AnimationTrackHelpers.cpp" />
     <ClCompile Include="src\Animation\AnimationTransformTrack.cpp" />
+    <ClCompile Include="src\Animation\SkeletalMesh.cpp" />
+    <ClCompile Include="src\Animation\Skeleton.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\DemoApplication.cpp" />
     <ClCompile Include="src\Loader\cgltf.cpp" />
@@ -53,6 +55,8 @@
     <ClInclude Include="src\Animation\AnimationTrack.h" />
     <ClInclude Include="src\Animation\AnimationTrackHelpers.h" />
     <ClInclude Include="src\Animation\AnimationTransformTrack.h" />
+    <ClInclude Include="src\Animation\SkeletalMesh.h" />
+    <ClInclude Include="src\Animation\Skeleton.h" />
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\DemoApplication.h" />
     <ClInclude Include="src\Loader\cgltf.h" />
@@ -98,6 +102,18 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).frag.spv</Outputs>
     </CustomBuild>
     <CustomBuild Include="Assets\Shaders\Debug.vert">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).vert.spv</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Assets\Shaders\Mesh.frag">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).frag.spv</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\Mesh.vert">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).vert.spv</Outputs>
