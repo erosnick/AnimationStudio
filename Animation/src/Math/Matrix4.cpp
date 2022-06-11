@@ -239,7 +239,7 @@ namespace Math
 
 	Matrix4 perspective(float fov, float aspect, float znear, float zfar)
 	{
-		float ymax = znear * tanf(fov * PI / DEGREE_360);
+		float ymax = znear * tanf(fov * PI / Degree_360);
 		float xmax = ymax * aspect;
 		return frustum(-xmax, xmax, -ymax, ymax, znear, zfar);
 	}

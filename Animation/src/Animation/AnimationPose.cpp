@@ -6,8 +6,9 @@ namespace Animation
 	{
 	}
 
-	AnimationPose::~AnimationPose()
+	AnimationPose::AnimationPose(const AnimationPose& other)
 	{
+		*this = other;
 	}
 
 	AnimationPose::AnimationPose(int32_t numJoints)
@@ -15,9 +16,38 @@ namespace Animation
 		resize(numJoints);
 	}
 
-	AnimationPose::AnimationPose(const AnimationPose& other)
+	AnimationPose::~AnimationPose()
 	{
-		*this = other;
+	}
+
+	AnimationPose& AnimationPose::operator=(const AnimationPose& other)
+	{
+		if (&other == this)
+		{
+			return *this;
+		}
+
+		if (parents.size() != other.parents.size())
+		{
+			parents.resize(other.parents.size());
+		}
+
+		if (joints.size() != other.joints.size())
+		{
+			joints.resize(other.joints.size());
+		}
+
+		if (parents.size() != 0)
+		{
+			memcpy_s(&parents[0], parents.size() * sizeof(int32_t), &other.parents[0], parents.size() * sizeof(int32_t));
+		}
+
+		if (joints.size() != 0)
+		{
+			memcpy_s(&joints[0], joints.size() * sizeof(Transform), &other.joints[0], joints.size() * sizeof(Transform));
+		}
+
+		return *this;
 	}
 
 	void AnimationPose::resize(uint32_t newSize)
@@ -41,7 +71,7 @@ namespace Animation
 		parents[index] = parent;
 	}
 
-	Transform AnimationPose::getLocalTransform(uint32_t index)
+	const Transform& AnimationPose::getLocalTransform(uint32_t index) const
 	{
 		return joints[index];
 	}
@@ -63,12 +93,12 @@ namespace Animation
 		return result;
 	}
 
-	Transform AnimationPose::operator[](uint32_t index)
+	const Transform AnimationPose::operator[](uint32_t index) const
 	{
 		return getGlobalTransform(index);
 	}
 
-	void AnimationPose::getMatrixPalette(std::vector<Matrix4>& out)
+	void AnimationPose::getMatrixPalette(std::vector<Matrix4>& out) const
 	{
 		uint32_t size = getSize();
 
@@ -132,36 +162,6 @@ namespace Animation
 		}
 
 		return true;
-	}
-
-	AnimationPose& AnimationPose::operator=(const AnimationPose& other)
-	{
-		if (&other == this)
-		{
-			return *this;
-		}
-
-		if (parents.size() != other.parents.size())
-		{
-			parents.resize(other.parents.size());
-		}
-
-		if (joints.size() != other.joints.size())
-		{
-			joints.resize(other.joints.size());
-		}
-		
-		if (parents.size() != 0)
-		{
-			memcpy_s(&parents[0], parents.size() * sizeof(int32_t), &other.parents[0], parents.size() * sizeof(int32_t));
-		}
-
-		if (joints.size() != 0)
-		{
-			memcpy_s(&joints[0], joints.size() * sizeof(Transform), &other.joints[0], joints.size() * sizeof(Transform));
-		}
-
-		return *this;
 	}
 }
 

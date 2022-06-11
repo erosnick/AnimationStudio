@@ -13,6 +13,7 @@
 #include "Renderer/Texture.h"
 #include "Renderer/DebugDraw.h"
 
+#include <Animation/SkeletalMesh.h>
 #include "Animation/AnimationPose.h"
 #include "Animation/AnimationClip.h"
 
@@ -54,6 +55,7 @@ protected:
 	GLFWwindow* window = nullptr;
 
 	std::shared_ptr<Shader> shader;
+	std::shared_ptr<Shader> meshShader;
 	std::shared_ptr<Attribute<Vector3>> vertexPositions;
 	std::shared_ptr<Attribute<Vector3>> vertexNormals;
 	std::shared_ptr<Attribute<Vector2>> vertexTexCoords;
@@ -67,6 +69,7 @@ protected:
 	Vector3 center = { 0.0f, 4.0f, 0.0f };
 	bool bUpdateRotation = false;
 
+	std::vector<SkeletalMesh> skeletalMeshs;
 	AnimationPose restPose;
 	AnimationPose currentPose;
 	uint32_t currentClip;

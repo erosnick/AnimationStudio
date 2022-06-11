@@ -24,7 +24,10 @@
 
 constexpr float fixTimestep = 0.016f;
 
+using namespace Animation;
+
 uint32_t VAO = 0;
+uint32_t animationVAO = 0;
 
 void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum severity,
 	GLsizei length, const char* message, const void* userParam);
@@ -125,13 +128,14 @@ void DemoApplication::startup()
 
 	angle = 0.0f;
 	shader = std::make_shared<Shader>("Assets/Shaders/Static.vert.spv", "Assets/Shaders/Lit.frag.spv");
+	meshShader = std::make_shared<Shader>("Assets/Shaders/Mesh.vert.spv", "Assets/Shaders/Mesh.frag.spv");
 	displayTexture = std::make_shared<Texture>("Assets/Textures/uv.png");
 
 	prepareCubeData();
 	prepareAnimationDebugData();
 	prepareDebugData();
 	
-	auto rotation = glm::angleAxis(45.0f * DEGREE2RADIAN, glm::vec3(0.0f, 0.0f, 1.0f));
+	auto rotation = glm::angleAxis(45.0f * Math::DegreeToRadian, glm::vec3(0.0f, 0.0f, 1.0f));
 
 	auto rotatedVector = rotation * glm::vec3(1.0f, 0.0f, 0.0f);
 
@@ -376,11 +380,12 @@ void DemoApplication::prepareDebugData()
 
 void DemoApplication::prepareAnimationDebugData()
 {
+	glGenVertexArrays(1, &animationVAO);
+	
 	cgltf_data* data = Loader::loadGLTFFile("Assets/Models/Woman.gltf");
 
 	restPose = Loader::loadRestPose(data);
 	animationClips = Loader::loadAnimationClips(data);
-	Loader::freeGLTFFile(data);
 	
 	restPoseDebugDraw = std::make_shared<DebugDraw>();
 	restPoseDebugDraw->FromAnimationPose(restPose);
@@ -389,11 +394,16 @@ void DemoApplication::prepareAnimationDebugData()
 	currentClip = 7;
 	currentPose = restPose;
 	currentFrame = 0;
+	
 	animationClips[currentClip].sample(currentPose, fixTimestep * currentFrame);
 
 	currentPoseDebugDraw = std::make_shared<DebugDraw>();
 	currentPoseDebugDraw->FromAnimationPose(currentPose);
 	currentPoseDebugDraw->UpdateOpenGLBuffers();
+
+	skeletalMeshs = Loader::loadMeshes(data);
+	
+	Loader::freeGLTFFile(data);
 }
 
 void DemoApplication::shutdown()
@@ -412,7 +422,6 @@ void DemoApplication::update(float deltaTime)
 	
 	//animationClips[currentClip].sample(currentPose, fixTimestep * currentFrame);
 	playbackTime = animationClips[currentClip].sample(currentPose, playbackTime + deltaTime);
-	std::cout << currentFrame << std::endl;
 	currentPoseDebugDraw->FromAnimationPose(currentPose);
 
 	// input
@@ -460,7 +469,7 @@ void DemoApplication::render()
 	
 	auto glmView = glm::lookAtRH(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	
-	auto rotation = angleAxis(angle * DEGREE2RADIAN, Vector3::Y);
+	auto rotation = angleAxis(angle * Math::DegreeToRadian, Vector3::Y);
 
 	Matrix4 model = quaternionToMatrix4(rotation);
 
@@ -468,40 +477,58 @@ void DemoApplication::render()
 
 	//model = Matrix4::Identity;
 
-	shader->bind();
-
 	glBindVertexArray(VAO);
+	
+	shader->bind();
 
 	//vertexPositions->bindTo(shader->getAttribute("aPosition"));
 	//vertexNormals->bindTo(shader->getAttribute("aNormal"));  
 	//vertexTexCoords->bindTo(shader->getAttribute("aUV"));
 
-	//Uniform<Matrix4>::set(shader->getUniform("model"), model);
-	//Uniform<Matrix4>::set(shader->getUniform("view"), view);
-	//Uniform<Matrix4>::set(shader->getUniform("projection"), projection);
+	Uniform<Matrix4>::set(shader->getUniform("model"), model);
+	Uniform<Matrix4>::set(shader->getUniform("view"), view);
+	Uniform<Matrix4>::set(shader->getUniform("projection"), projection);
 
-	//Uniform<Vector3>::set(shader->getUniform("lightDirection"), Vector3(0.0f, 1.0f, 1.0f));
+	Uniform<Vector3>::set(shader->getUniform("lightDirection"), Vector3(0.0f, 1.0f, 1.0f));
 
-	//displayTexture->bind(shader->getUniform("baseTexture"), 0);
+	displayTexture->bind(shader->getUniform("baseTexture"), 0);
 
 	//draw(*indexBuffer.get(), RenderMode::Triangles);
-	//
-	//displayTexture->unbind(0);
+	
+	displayTexture->unbind(0);
 
 	//vertexPositions->unbindFrom(shader->getAttribute("aPosition"));
 	//vertexNormals->unbindFrom(shader->getAttribute("aNormal"));
 	//vertexTexCoords->unbindFrom(shader->getAttribute("aUV"));
 
-	//shader->unbind();
+	shader->unbind();
+
+	glBindVertexArray(animationVAO);
+
+	meshShader->bind();
+	
+	rotation = angleAxis(-Math::Degree_90 * Math::DegreeToRadian, Vector3::Y);
+
+	model = quaternionToMatrix4(rotation);
+	
+	Uniform<Matrix4>::set(shader->getUniform("model"), model);
+	Uniform<Matrix4>::set(shader->getUniform("view"), view);
+	Uniform<Matrix4>::set(shader->getUniform("projection"), projection);
+
+	Uniform<Vector3>::set(shader->getUniform("lightDirection"), Vector3(0.0f, 1.0f, 1.0f));
+
+	skeletalMeshs[0].bind(0, 1, 2, -1, -1);
+	skeletalMeshs[0].draw();
+
+	meshShader->unbind();
 
 	//debugDraw->Draw(DebugDrawMode::Lines, Vector3(1.0f, 0.0f, 0.0f), mvp);
-
+	
 	restPoseDebugDraw->Draw(DebugDrawMode::Lines, Vector3(1.0f, 0.0f, 0.0f), mvp);
 
 	currentPoseDebugDraw->UpdateOpenGLBuffers();
 	currentPoseDebugDraw->Draw(DebugDrawMode::Lines, Vector3(0, 0, 1), mvp);
 
-	glBindVertexArray(0);
 	
 	// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 	// -------------------------------------------------------------------------------

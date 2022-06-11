@@ -25,13 +25,13 @@ namespace Animation
 		int32_t getParent(uint32_t index) const;
 		void setParent(uint32_t index, int parent);
 
-		Transform getLocalTransform(uint32_t index);
+		const Transform& getLocalTransform(uint32_t index) const;
 		void setLocalTransform(uint32_t index, const Transform& transform);
 
 		Transform getGlobalTransform(uint32_t index) const;
-		Transform operator[](uint32_t index);
+		const Transform operator[](uint32_t index) const;
 
-		void getMatrixPalette(std::vector<Matrix4>& out);
+		void getMatrixPalette(std::vector<Matrix4>& out) const;
 
 		bool operator==(const AnimationPose& other);
 		bool operator!=(const AnimationPose& other);
