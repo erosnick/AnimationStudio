@@ -8,7 +8,7 @@ namespace Math
 		Transform result;
 
 		result.scale = a.scale * b.scale;
-		result.rotation = a.rotation * b.rotation;
+		result.rotation = b.rotation * a.rotation;
 
 		result.position = a.rotation * (a.scale * b.position);
 		result.position = a.position + result.position;

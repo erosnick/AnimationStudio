@@ -6,12 +6,19 @@
 
 namespace Math
 {
+// TODO: Performance issue
+//#define Matrix4Dot(aRow, bColumn) \
+//	a.elements[0 * 4 + aRow] * b[bColumn * 4 + 0] + \
+//	a.elements[1 * 4 + aRow] * b[bColumn * 4 + 1] + \
+//	a.elements[2 * 4 + aRow] * b[bColumn * 4 + 2] + \
+//	a.elements[3 * 4 + aRow] * b[bColumn * 4 + 3]
+
 #define Matrix4Dot(aRow, bColumn) \
 	a[0 * 4 + aRow] * b[bColumn * 4 + 0] + \
 	a[1 * 4 + aRow] * b[bColumn * 4 + 1] + \
 	a[2 * 4 + aRow] * b[bColumn * 4 + 2] + \
 	a[3 * 4 + aRow] * b[bColumn * 4 + 3]
-
+	
 #define Matrix4Vector4Dot(row, x, y, z, w) \
 	x * matrix[0 * 4 + row] + \
 	y * matrix[1 * 4 + row] + \
@@ -58,19 +65,19 @@ namespace Math
 		return result;
 	}
 
-	Matrix4 operator*(const Matrix4& a, float scaleFactor)
+	Matrix4 operator*(const Matrix4& matrix, float scalar)
 	{
-		Matrix4 result;
-		for (auto i = 0; i < 16; i++)
-		{
-			result.elements[i] = a.elements[i] * scaleFactor;
-		}
-		return result;
+		return Matrix4(
+			matrix.xx * scalar, matrix.xy * scalar, matrix.xz * scalar, matrix.xw * scalar,
+			matrix.yx * scalar, matrix.yy * scalar, matrix.yz * scalar, matrix.yw * scalar,
+			matrix.zx * scalar, matrix.zy * scalar, matrix.zz * scalar, matrix.zw * scalar,
+			matrix.tx * scalar, matrix.ty * scalar, matrix.tz * scalar, matrix.tw * scalar
+		);								  
 	}
 
-	Matrix4 operator/(const Matrix4& a, float scaleFactor)
+	Matrix4 operator/(const Matrix4& matrix, float scalar)
 	{
-		return a * (1.0f / scaleFactor);
+		return matrix * (1.0f / scalar);
 	}
 
 	Matrix4 operator*(const Matrix4& a, const Matrix4& b)
@@ -91,9 +98,9 @@ namespace Math
 		//}
 		//return result;
 		return Matrix4(Matrix4Dot(0, 0), Matrix4Dot(1, 0), Matrix4Dot(2, 0), Matrix4Dot(3, 0),	// Column 0
-			Matrix4Dot(0, 1), Matrix4Dot(1, 1), Matrix4Dot(2, 1), Matrix4Dot(3, 1),	// Column 1
-			Matrix4Dot(0, 2), Matrix4Dot(1, 2), Matrix4Dot(2, 2), Matrix4Dot(3, 2),	// Column 2
-			Matrix4Dot(0, 3), Matrix4Dot(1, 3), Matrix4Dot(2, 3), Matrix4Dot(3, 3));	// Column 3
+					   Matrix4Dot(0, 1), Matrix4Dot(1, 1), Matrix4Dot(2, 1), Matrix4Dot(3, 1),	// Column 1
+				       Matrix4Dot(0, 2), Matrix4Dot(1, 2), Matrix4Dot(2, 2), Matrix4Dot(3, 2),	// Column 2
+					   Matrix4Dot(0, 3), Matrix4Dot(1, 3), Matrix4Dot(2, 3), Matrix4Dot(3, 3));	// Column 3
 	}
 
 	Vector4 operator*(const Matrix4& matrix, const Vector4& vector)

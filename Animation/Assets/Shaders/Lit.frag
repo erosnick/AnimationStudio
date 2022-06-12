@@ -16,7 +16,7 @@ void main()
     vec3 n = normalize(normal);
     vec3 l = normalize(lightDirection);
 
-    float diffuseIntensity = clamp(dot(n, l), 0.0, 1.0);
+    float diffuseIntensity = clamp(dot(n, l) + 0.1, 0.0, 1.0);
 
     FragColor = albedo * diffuseIntensity;
 }

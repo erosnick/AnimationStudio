@@ -18,4 +18,5 @@ void main()
 
     fragPos = vec3(model * vec4(aPosition, 1.0));
     normal = vec3(model * vec4(aNormal, 0.0));
+    uv = aUV;
 }

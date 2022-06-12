@@ -16,6 +16,7 @@
 #include <Animation/SkeletalMesh.h>
 #include "Animation/AnimationPose.h"
 #include "Animation/AnimationClip.h"
+#include <Animation/Skeleton.h>
 
 using namespace Math;
 using namespace Renderer;
@@ -65,11 +66,12 @@ protected:
 	std::shared_ptr<DebugDraw> restPoseDebugDraw;
 	std::shared_ptr<DebugDraw> currentPoseDebugDraw;
 	float angle;
-	Vector3 eye = { 0.0f, 4.0f, 7.0f };
-	Vector3 center = { 0.0f, 4.0f, 0.0f };
+	Vector3 eye = { 0.0f, 5.0f, 7.0f };
+	Vector3 center = { 0.0f, 3.0f, 0.0f };
 	bool bUpdateRotation = false;
 
 	std::vector<SkeletalMesh> skeletalMeshs;
+	Skeleton skeleton;
 	AnimationPose restPose;
 	AnimationPose currentPose;
 	uint32_t currentClip;

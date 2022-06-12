@@ -1,5 +1,8 @@
 #pragma once
 
+#include <iostream>
+#include <sstream>
+
 namespace Math
 {
 	struct Vector3
@@ -21,6 +24,14 @@ namespace Math
 		inline Vector3(float value) : x(value), y(value), z(value) {}
 		inline Vector3(float inX, float inY, float inZ) : x(inX), y(inY), z(inZ) {}
 		inline Vector3(float* data) : x(data[0]), y(data[1]), z(data[3]) {}
+
+		inline std::string toString() const
+		{
+			std::stringstream ss;
+			ss << "Matrix4(" << x << ", " << y << ", " << z << ", " << std::endl;
+
+			return ss.str();
+		}
 
 		static Vector3 Zero;
 		static Vector3 One;

@@ -3,6 +3,9 @@
 #include "Vector3.h"
 #include "Vector4.h"
 
+#include <iostream>
+#include <sstream>
+
 namespace Math
 {
 	struct Matrix4 
@@ -30,6 +33,7 @@ namespace Math
 
 			struct
 			{
+				// Row1    Row2       Row3       Row4
 				float m00; float m10; float m20; float m30;
 				float m01; float m11; float m21; float m31;
 				float m02; float m12; float m22; float m32;
@@ -58,7 +62,20 @@ namespace Math
 					   m02(inM02), m12(inM12), m22(inM22), m32(inM32),
 					   m03(inM03), m13(inM13), m23(inM23), m33(inM33) {}
 
+		// TODO: Performance issue
 		inline float operator[](int index) const { return elements[index]; }
+
+		inline std::string toString() const
+		{
+			std::stringstream ss;
+			ss << "Matrix4(" << m00 << ", " << m10 << ", " << m20 << ", " << m30 << ", " << std::endl;
+			ss << "        " << m01 << ", " << m11 << ", " << m21 << ", " << m31 << ", " << std::endl;
+			ss << "        " << m02 << ", " << m12 << ", " << m22 << ", " << m32 << ", " << std::endl;
+			ss << "        " << m03 << ", " << m13 << ", " << m23 << ", " << m33 << ", " << std::endl;
+			ss << std::endl;
+
+			return ss.str();
+		}
 
 		static Matrix4 Identity;
 	};
@@ -66,8 +83,8 @@ namespace Math
 	bool operator==(const Matrix4& a, const Matrix4& b);
 	bool operator!=(const Matrix4& a, const Matrix4& b);
 	Matrix4 operator+(const Matrix4& a, const Matrix4& b);
-	Matrix4 operator*(const Matrix4& a, float scaleFactor);
-	Matrix4 operator/(const Matrix4& a, float scaleFactor);
+	Matrix4 operator*(const Matrix4& matrix, float scalar);
+	Matrix4 operator/(const Matrix4& matrix, float scalar);
 	Matrix4 operator*(const Matrix4& a, const Matrix4& b);
 	Vector4 operator*(const Matrix4& matrix, const Vector4& vector);
 	

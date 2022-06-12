@@ -91,10 +91,10 @@ namespace Math
 		//result.vector = (a.vector * b.scalar) + (b.vector * a.scalar) + cross(b.vector, a.vector);
 		//return result;
 		
-		return Quaternion(a.w * b.x + a.x * b.w + a.y * b.z - a.y * b.z,
-						  a.w * b.y + a.y * b.w + a.z * b.x - a.z * b.x,
-						  a.w * b.z + a.z * b.w + a.x * b.y - a.x * b.y,
-						  a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z);
+		return Quaternion(b.x * a.w + b.y * a.z - b.z * a.y + b.w * a.x,
+						 -b.x * a.z + b.y * a.w + b.z * a.x + b.w * a.y,
+						  b.x * a.y - b.y * a.x + b.z * a.w + b.w * a.z,
+						 -b.x * a.x - b.y * a.y - b.z * a.z + b.w * a.w);
 	}
 
 	Vector3 operator*(const Quaternion& quaternion, const Vector3& vector)

@@ -16,7 +16,7 @@ namespace Util
 			start = std::chrono::high_resolution_clock::now();
 		}
 
-		~Timer()
+		inline void stop()
 		{
 			end = std::chrono::high_resolution_clock::now();
 
@@ -25,6 +25,11 @@ namespace Util
 			float ms = duration.count() * 1000.0f;
 
 			std::cout << "Timer took " << ms << "ms" << std::endl;
+		}
+
+		~Timer()
+		{
+			stop();
 		}
 
 	private:

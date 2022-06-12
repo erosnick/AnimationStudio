@@ -9,6 +9,7 @@
 #include "Renderer/Uniform.h"
 #include "Renderer/Renderer.h"
 #include "Loader/GLTFLoader.h"
+#include "Utils/Timer.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -129,7 +130,8 @@ void DemoApplication::startup()
 	angle = 0.0f;
 	shader = std::make_shared<Shader>("Assets/Shaders/Static.vert.spv", "Assets/Shaders/Lit.frag.spv");
 	meshShader = std::make_shared<Shader>("Assets/Shaders/Mesh.vert.spv", "Assets/Shaders/Mesh.frag.spv");
-	displayTexture = std::make_shared<Texture>("Assets/Textures/uv.png");
+	//displayTexture = std::make_shared<Texture>("Assets/Textures/uv.png");
+	displayTexture = std::make_shared<Texture>("Assets/Models/Woman.png");
 
 	prepareCubeData();
 	prepareAnimationDebugData();
@@ -395,13 +397,17 @@ void DemoApplication::prepareAnimationDebugData()
 	currentPose = restPose;
 	currentFrame = 0;
 	
-	animationClips[currentClip].sample(currentPose, fixTimestep * currentFrame);
-
+	animationClips[currentClip].sample(currentPose, 0.0f);
+	
 	currentPoseDebugDraw = std::make_shared<DebugDraw>();
 	currentPoseDebugDraw->FromAnimationPose(currentPose);
 	currentPoseDebugDraw->UpdateOpenGLBuffers();
 
+	skeleton = Loader::loadSkeleton(data);
+	
 	skeletalMeshs = Loader::loadMeshes(data);
+	
+	skeletalMeshs[0].cpuSkinUseMatrixPalette(skeleton, skeleton.getRestPose());
 	
 	Loader::freeGLTFFile(data);
 }
@@ -419,9 +425,12 @@ void DemoApplication::update(float deltaTime)
 	{
 		angle += deltaTime * 45.0f;
 	}
-	
 	//animationClips[currentClip].sample(currentPose, fixTimestep * currentFrame);
 	playbackTime = animationClips[currentClip].sample(currentPose, playbackTime + deltaTime);
+	{
+		Util::Timer timer;
+		skeletalMeshs[0].cpuSkinUseMatrixPalette(skeleton, currentPose);
+	}
 	currentPoseDebugDraw->FromAnimationPose(currentPose);
 
 	// input
@@ -445,11 +454,13 @@ void DemoApplication::run()
 
 		float realTime = static_cast<float>(elapsedSeconds.count());
 
-		while (simulationTime < realTime)
-		{
-			simulationTime += fixTimestep;
-			update(fixTimestep);
-		}
+		//while (simulationTime < realTime)
+		//{
+		//	simulationTime += fixTimestep;
+		//	update(fixTimestep);
+		//}
+
+		update(fixTimestep);
 
 		// render
 		// ------
@@ -461,7 +472,8 @@ void DemoApplication::render()
 {
 	// render
 	// ------
-	glClearColor(0.4f, 0.6f, 0.9f, 1.0f);
+	//glClearColor(0.4f, 0.6f, 0.9f, 1.0f);
+	glClearColor(0.5f, 0.6f, 0.7f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	Matrix4 projection = perspective(60.0f, 1.333333333333333f, 0.01f, 1000.0f);
@@ -489,7 +501,7 @@ void DemoApplication::render()
 	Uniform<Matrix4>::set(shader->getUniform("view"), view);
 	Uniform<Matrix4>::set(shader->getUniform("projection"), projection);
 
-	Uniform<Vector3>::set(shader->getUniform("lightDirection"), Vector3(0.0f, 1.0f, 1.0f));
+	Uniform<Vector3>::set(shader->getUniform("lightDirection"), Vector3(1.0f, 1.0f, 1.0f));
 
 	displayTexture->bind(shader->getUniform("baseTexture"), 0);
 
@@ -507,28 +519,28 @@ void DemoApplication::render()
 
 	meshShader->bind();
 	
-	rotation = angleAxis(-Math::Degree_90 * Math::DegreeToRadian, Vector3::Y);
-
-	model = quaternionToMatrix4(rotation);
-	
 	Uniform<Matrix4>::set(shader->getUniform("model"), model);
 	Uniform<Matrix4>::set(shader->getUniform("view"), view);
 	Uniform<Matrix4>::set(shader->getUniform("projection"), projection);
 
-	Uniform<Vector3>::set(shader->getUniform("lightDirection"), Vector3(0.0f, 1.0f, 1.0f));
+	Uniform<Vector3>::set(shader->getUniform("lightDirection"), Vector3(1.0f, 1.0f, 1.0f));
+
+	displayTexture->bind(shader->getUniform("baseTexture"), 0);
 
 	skeletalMeshs[0].bind(0, 1, 2, -1, -1);
-	skeletalMeshs[0].draw();
+	//skeletalMeshs[0].draw();
+	skeletalMeshs[0].unbind(0, 1, 2, -1, -1);
+
+	displayTexture->unbind(0);
 
 	meshShader->unbind();
 
 	//debugDraw->Draw(DebugDrawMode::Lines, Vector3(1.0f, 0.0f, 0.0f), mvp);
 	
 	restPoseDebugDraw->Draw(DebugDrawMode::Lines, Vector3(1.0f, 0.0f, 0.0f), mvp);
-
+	
 	currentPoseDebugDraw->UpdateOpenGLBuffers();
 	currentPoseDebugDraw->Draw(DebugDrawMode::Lines, Vector3(0, 0, 1), mvp);
-
 	
 	// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 	// -------------------------------------------------------------------------------

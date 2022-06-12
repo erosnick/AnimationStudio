@@ -119,6 +119,13 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).vert.spv</Outputs>
     </CustomBuild>
   </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Assets\Shaders\Skinned.vert">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).vert.spv</Outputs>
+    </CustomBuild>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

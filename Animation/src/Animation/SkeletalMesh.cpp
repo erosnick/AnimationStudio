@@ -1,6 +1,7 @@
 #include "SkeletalMesh.h"
 
 #include <Renderer/Renderer.h>
+#include <Utils/Timer.h>
 
 namespace Animation
 {
@@ -133,6 +134,7 @@ namespace Animation
 
 		skinnedPosition.resize(numVertices);
 		skinnedNormal.resize(numVertices);
+		
 		const AnimationPose& bindPose = skeleton.getBindPose();
 
 		for (uint32_t i = 0; i < numVertices; i++)
@@ -174,7 +176,8 @@ namespace Animation
 		}
 
 		skinnedPosition.resize(numVertices);
-
+		skinnedNormal.resize(numVertices);
+		
 		animationPose.getMatrixPalette(animationPosePalette);
 
 		std::vector<Matrix4> inversePosePalette = skeleton.getInverseBindPose();
@@ -184,7 +187,9 @@ namespace Animation
 			Vector4i& jointIds = influenceJoints[i];
 			Vector4& weight = weights[i];
 
+			Util::Timer timer;
 			Matrix4 matrix0 = (animationPosePalette[jointIds.x] * inversePosePalette[jointIds.x]) * weight.x;
+			timer.stop();
 			Matrix4 matrix1 = (animationPosePalette[jointIds.y] * inversePosePalette[jointIds.y]) * weight.y;
 			Matrix4 matrix2 = (animationPosePalette[jointIds.z] * inversePosePalette[jointIds.z]) * weight.z;
 			Matrix4 matrix3 = (animationPosePalette[jointIds.w] * inversePosePalette[jointIds.w]) * weight.w;
@@ -196,7 +201,7 @@ namespace Animation
 		}
 
 		positionsAttribute->set(skinnedPosition);
-		positionsAttribute->set(skinnedNormal);
+		normalsAttribute->set(skinnedNormal);
 	}
 
 	void SkeletalMesh::updateOpenGLBuffers()

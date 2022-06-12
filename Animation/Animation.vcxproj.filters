@@ -244,5 +244,8 @@
     <CustomBuild Include="Assets\Shaders\Mesh.frag">
       <Filter>Assets\Shaders</Filter>
     </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\Skinned.vert">
+      <Filter>Assets\Shaders</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>
