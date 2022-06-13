@@ -24,10 +24,22 @@ using namespace Debug;
 
 struct GLFWwindow;
 
+struct AnimationInstance {
+	AnimationPose animationPose;
+	std::vector <Matrix4> animationPosePalette;
+	unsigned int clip;
+	float playbackTime;
+	Transform model;
+
+	inline AnimationInstance() : clip(0), playbackTime(0.0f) { }
+};
+
 class DemoApplication : public Application
 {
 public:
 	void startup() override;
+
+	void initImGui();
 
 	void prepareCubeData();
 	void prepareDebugData();
@@ -40,23 +52,27 @@ public:
 	
 	// glfw: whenever the window size changed (by OS or user resize) this callback function executes
 	// ---------------------------------------------------------------------------------------------
-	static void framebufferSizeCallback(GLFWwindow* window, int32_t width, int32_t height);
-	static void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
-	static void keyCallback(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods);
+	static void onFramebufferSizeCallback(GLFWwindow* window, int32_t width, int32_t height);
+	static void onMouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
+	static void onKeyCallback(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods);
 	// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 	// ---------------------------------------------------------------------------------------------------------
 	void processInput();
 
 	void toggleUpdateRotation();
 
+private:
+	void updateImGui();
+
 protected:
 	// settings
-	const unsigned int SCREEN_WIDTH = 800;
-	const unsigned int SCREEN_HEIGHT = 600;
+	const unsigned int SCREEN_WIDTH = 1280;
+	const unsigned int SCREEN_HEIGHT = 720;
 	GLFWwindow* window = nullptr;
 
 	std::shared_ptr<Shader> shader;
 	std::shared_ptr<Shader> meshShader;
+	std::shared_ptr<Shader> skinnedMeshShader;
 	std::shared_ptr<Attribute<Vector3>> vertexPositions;
 	std::shared_ptr<Attribute<Vector3>> vertexNormals;
 	std::shared_ptr<Attribute<Vector2>> vertexTexCoords;
@@ -70,13 +86,21 @@ protected:
 	Vector3 center = { 0.0f, 3.0f, 0.0f };
 	bool bUpdateRotation = false;
 
-	std::vector<SkeletalMesh> skeletalMeshs;
+	std::vector<SkeletalMesh> CPUSkinnedMeshes;
+	std::vector<SkeletalMesh> GPUSkinnedMeshes;
 	Skeleton skeleton;
-	AnimationPose restPose;
-	AnimationPose currentPose;
 	uint32_t currentClip;
 	std::vector<AnimationClip> animationClips;
 
 	float playbackTime;
 	int32_t currentFrame = 0;
+	AnimationInstance GPUAnimationInfo;
+	AnimationInstance CPUAnimationInfo;
+
+	// Our state
+	bool show_demo_window = true;
+	bool show_another_window = false;
+	Vector4 clearColor = { 0.45f, 0.55f, 0.60f, 1.0f };
+private:
+	void renderImGui();
 };

@@ -6,24 +6,24 @@
 
 namespace Math
 {
+
 // TODO: Performance issue
 //#define Matrix4Dot(aRow, bColumn) \
-//	a.elements[0 * 4 + aRow] * b[bColumn * 4 + 0] + \
-//	a.elements[1 * 4 + aRow] * b[bColumn * 4 + 1] + \
-//	a.elements[2 * 4 + aRow] * b[bColumn * 4 + 2] + \
-//	a.elements[3 * 4 + aRow] * b[bColumn * 4 + 3]
-
+//	a[0 * 4 + aRow] * b[bColumn * 4 + 0] + \
+//	a[1 * 4 + aRow] * b[bColumn * 4 + 1] + \
+//	a[2 * 4 + aRow] * b[bColumn * 4 + 2] + \
+//	a[3 * 4 + aRow] * b[bColumn * 4 + 3]
 #define Matrix4Dot(aRow, bColumn) \
-	a[0 * 4 + aRow] * b[bColumn * 4 + 0] + \
-	a[1 * 4 + aRow] * b[bColumn * 4 + 1] + \
-	a[2 * 4 + aRow] * b[bColumn * 4 + 2] + \
-	a[3 * 4 + aRow] * b[bColumn * 4 + 3]
-	
+	a.elements[0 * 4 + aRow] * b.elements[bColumn * 4 + 0] + \
+	a.elements[1 * 4 + aRow] * b.elements[bColumn * 4 + 1] + \
+	a.elements[2 * 4 + aRow] * b.elements[bColumn * 4 + 2] + \
+	a.elements[3 * 4 + aRow] * b.elements[bColumn * 4 + 3]
+
 #define Matrix4Vector4Dot(row, x, y, z, w) \
-	x * matrix[0 * 4 + row] + \
-	y * matrix[1 * 4 + row] + \
-	z * matrix[2 * 4 + row] + \
-	w * matrix[3 * 4 + row]
+	x * matrix.elements[0 * 4 + row] + \
+	y * matrix.elements[1 * 4 + row] + \
+	z * matrix.elements[2 * 4 + row] + \
+	w * matrix.elements[3 * 4 + row]
 
 #define Matrix4Minor(elements, column0, column1, column2, row0, row1, row2) \
 	(elements[column0 * 4 + row0]  * (elements[column1 * 4 + row1]  *  elements[column2 * 4 + row2] -  elements[column1 * 4 + row2] * \
@@ -57,12 +57,12 @@ namespace Math
 
 	Matrix4 operator+(const Matrix4& a, const Matrix4& b)
 	{
-		Matrix4 result;
-		for (auto i = 0; i < 16; i++)
-		{
-			result.elements[i] = a.elements[i] + b.elements[i];
-		}
-		return result;
+		return Matrix4(
+			a.xx + b.xx, a.xy + b.xy, a.xz + b.xz, a.xw + b.xw,
+			a.yx + b.yx, a.yy + b.yy, a.yz + b.yz, a.yw + b.yw,
+			a.zx + b.zx, a.zy + b.zy, a.zz + b.zz, a.zw + b.zw,
+			a.tx + b.tx, a.ty + b.ty, a.tz + b.tz, a.tw + b.tw
+		);
 	}
 
 	Matrix4 operator*(const Matrix4& matrix, float scalar)
@@ -72,31 +72,16 @@ namespace Math
 			matrix.yx * scalar, matrix.yy * scalar, matrix.yz * scalar, matrix.yw * scalar,
 			matrix.zx * scalar, matrix.zy * scalar, matrix.zz * scalar, matrix.zw * scalar,
 			matrix.tx * scalar, matrix.ty * scalar, matrix.tz * scalar, matrix.tw * scalar
-		);								  
+		);
 	}
 
-	Matrix4 operator/(const Matrix4& matrix, float scalar)
+	Matrix4 operator/(const Matrix4& a, float scalar)
 	{
-		return matrix * (1.0f / scalar);
+		return a * (1.0f / scalar);
 	}
 
 	Matrix4 operator*(const Matrix4& a, const Matrix4& b)
 	{
-		// Github Copilot
-		//Matrix4 result;
-		//for (auto i = 0; i < 4; i++)
-		//{
-		//	for (auto j = 0; j < 4; j++)
-		//	{
-		//		float sum = 0.0f;
-		//		for (auto k = 0; k < 4; k++)
-		//		{
-		//			sum += a.elements[i * 4 + k] * b.elements[k * 4 + j];
-		//		}
-		//		result.elements[i * 4 + j] = sum;
-		//	}
-		//}
-		//return result;
 		return Matrix4(Matrix4Dot(0, 0), Matrix4Dot(1, 0), Matrix4Dot(2, 0), Matrix4Dot(3, 0),	// Column 0
 					   Matrix4Dot(0, 1), Matrix4Dot(1, 1), Matrix4Dot(2, 1), Matrix4Dot(3, 1),	// Column 1
 				       Matrix4Dot(0, 2), Matrix4Dot(1, 2), Matrix4Dot(2, 2), Matrix4Dot(3, 2),	// Column 2
@@ -106,16 +91,16 @@ namespace Math
 	Vector4 operator*(const Matrix4& matrix, const Vector4& vector)
 	{
 		return Vector4(Matrix4Vector4Dot(0, vector.x, vector.y, vector.z, vector.w),
-			Matrix4Vector4Dot(1, vector.x, vector.y, vector.z, vector.w),
-			Matrix4Vector4Dot(2, vector.x, vector.y, vector.z, vector.w),
-			Matrix4Vector4Dot(3, vector.x, vector.y, vector.z, vector.w));
+					   Matrix4Vector4Dot(1, vector.x, vector.y, vector.z, vector.w),
+					   Matrix4Vector4Dot(2, vector.x, vector.y, vector.z, vector.w),
+					   Matrix4Vector4Dot(3, vector.x, vector.y, vector.z, vector.w));
 	}
 
 	Vector3 transformVector(const Matrix4& matrix, const Vector3& vector)
 	{
 		return Vector3(Matrix4Vector4Dot(0, vector.x, vector.y, vector.z, 0.0f),
-			Matrix4Vector4Dot(1, vector.x, vector.y, vector.z, 0.0f),
-			Matrix4Vector4Dot(2, vector.x, vector.y, vector.z, 0.0f));
+					   Matrix4Vector4Dot(1, vector.x, vector.y, vector.z, 0.0f),
+					   Matrix4Vector4Dot(2, vector.x, vector.y, vector.z, 0.0f));
 	}
 
 	Vector3 transformPoint(const Matrix4& matrix, const Vector3& point)
@@ -157,23 +142,6 @@ namespace Math
 
 	float determinant(const Matrix4& matrix)
 	{
-		// Github Copilot
-		//return matrix.xx * (matrix.yy * matrix.zz - matrix.yz * matrix.zy) -
-		//	   matrix.xy * (matrix.yx * matrix.zz - matrix.zx * matrix.zy) +
-		//	   matrix.xz * (matrix.yx * matrix.zy - matrix.zx * matrix.yy) +
-		//	   matrix.xw * (matrix.yx * matrix.yz - matrix.zx * matrix.zy) -
-		//	   matrix.yx * (matrix.xx * matrix.zz - matrix.xz * matrix.zx) +
-		//	   matrix.yy * (matrix.xx * matrix.zy - matrix.xz * matrix.zx) -
-		//	   matrix.yz * (matrix.xx * matrix.zy - matrix.xz * matrix.zx) +
-		//	   matrix.yw * (matrix.xx * matrix.yz - matrix.xz * matrix.zx) -
-		//	   matrix.zx * (matrix.xy * matrix.yz - matrix.yy * matrix.yz) +
-		//	   matrix.zy * (matrix.xy * matrix.zx - matrix.yx * matrix.yz) -
-		//	   matrix.zz * (matrix.xy * matrix.zx - matrix.yx * matrix.yz) +
-		//	   matrix.zw * (matrix.xy * matrix.zx - matrix.yx * matrix.yz) -
-		//	   matrix.xw * (matrix.xy * matrix.yw - matrix.yy * matrix.yw) +
-		//	   matrix.yw * (matrix.xy * matrix.xw - matrix.yx * matrix.yw) -
-		//	   matrix.zw * (matrix.xy * matrix.xw - matrix.yx * matrix.yw) +
-		//	   matrix.tw * (matrix.xy * matrix.xw - matrix.yx * matrix.yw);
 		return matrix.elements[0]  * Matrix4Minor(matrix.elements, 1, 2, 3, 1, 2, 3)
 			 - matrix.elements[4]  * Matrix4Minor(matrix.elements, 0, 2, 3, 1, 2, 3)
 			 + matrix.elements[8]  * Matrix4Minor(matrix.elements, 0, 1, 3, 1, 2, 3)
@@ -182,14 +150,6 @@ namespace Math
 
 	Matrix4 adjugate(const Matrix4& matrix)
 	{
-		// Github Copilot
-		//return Matrix4(
-		//	 Matrix4Minor(matrix.elements, 1, 2, 3, 1, 2, 3), -Matrix4Minor(matrix.elements, 0, 2, 3, 1, 2, 3),  Matrix4Minor(matrix.elements, 0, 1, 3, 1, 2, 3), -Matrix4Minor(matrix.elements, 0, 1, 2, 1, 2, 3),
-		//	-Matrix4Minor(matrix.elements, 1, 2, 3, 0, 2, 3),  Matrix4Minor(matrix.elements, 0, 2, 3, 0, 2, 3), -Matrix4Minor(matrix.elements, 0, 1, 3, 0, 2, 3),  Matrix4Minor(matrix.elements, 0, 1, 2, 0, 2, 3),
-		//	 Matrix4Minor(matrix.elements, 1, 2, 3, 0, 1, 3), -Matrix4Minor(matrix.elements, 0, 2, 3, 0, 1, 3),  Matrix4Minor(matrix.elements, 0, 1, 3, 0, 1, 3), -Matrix4Minor(matrix.elements, 0, 1, 2, 0, 1, 3),
-		//	-Matrix4Minor(matrix.elements, 1, 2, 3, 0, 1, 2),  Matrix4Minor(matrix.elements, 0, 2, 3, 0, 1, 2), -Matrix4Minor(matrix.elements, 0, 1, 3, 0, 1, 2),  Matrix4Minor(matrix.elements, 0, 1, 2, 0, 1, 2)
-		//);
-		// cofactor (M[i, j]) = Minor(M[i, j]] * pow(-1, i + j)
 		Matrix4 cofactor;
 
 		cofactor.elements[0] =   Matrix4Minor(matrix.elements, 1, 2, 3, 1, 2, 3);

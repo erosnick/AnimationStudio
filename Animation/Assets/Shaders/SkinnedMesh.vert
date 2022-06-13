@@ -21,11 +21,11 @@ void main()
 {
     mat4 skin  = (animationPose[joints.x] * inverseBindPose[joints.x]) * weights.x;
          skin += (animationPose[joints.y] * inverseBindPose[joints.y]) * weights.y;
-         skin += (animationPose[joints.z] * inverseBindPose[joints.w]) * weights.z;
-         skin += (animationPose[joints.w] * inverseBindPose[joints.z]) * weights.w;
+         skin += (animationPose[joints.z] * inverseBindPose[joints.z]) * weights.z;
+         skin += (animationPose[joints.w] * inverseBindPose[joints.w]) * weights.w;
 
     gl_Position = projection * view * model * skin * vec4(aPosition, 1.0);
-
+    
     fragPos = vec3(model * skin * vec4(aPosition, 1.0));
     normal = vec3(model * skin * vec4(aNormal, 0.0f));
     uv = aUV;

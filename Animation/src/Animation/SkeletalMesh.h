@@ -43,8 +43,8 @@ namespace Animation
 		const std::vector<Vector4i>& getInfluenceJoints() const;
 		const std::vector<uint32_t>& getIndices() const;
 		
-		void cpuSkinUseTransform(const Skeleton& skeleton, const AnimationPose& animationPose);
-		void cpuSkinUseMatrixPalette(const Skeleton& skeleton, const AnimationPose& animationPose);
+		void CPUSkinUseTransform(const Skeleton& skeleton, const AnimationPose& animationPose);
+		void CPUSkinUseMatrixPalette(const Skeleton& skeleton, const AnimationPose& animationPose);
 		void updateOpenGLBuffers();
 		
 		void bind(int32_t position, int32_t normal, int32_t texcoord, int32_t weights, int32_t influences);

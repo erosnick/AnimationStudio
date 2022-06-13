@@ -15,7 +15,7 @@ namespace Renderer
 		~Uniform() = delete;
 
 		static void set(uint32_t slot, const T& value);
-		static void set(uint32_t slot, T* data, uint32_t length);
-		static void set(uint32_t slot, std::vector<T>& data);
+		static void set(uint32_t slot, const T* data, uint32_t length);
+		static void set(uint32_t slot, const std::vector<T>& data);
 	};
 }

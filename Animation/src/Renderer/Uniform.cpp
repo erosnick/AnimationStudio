@@ -12,7 +12,7 @@
 namespace Renderer
 {
 #define UNIFORM_IMPLEMENT(glFunction, structType, dataType) \
-	template <> void Uniform<structType>::set(uint32_t slot, structType* data, uint32_t length) \
+	template <> void Uniform<structType>::set(uint32_t slot, const structType* data, uint32_t length) \
 	{ \
 		glFunction(slot, (GLsizei)length, (dataType*)&data[0]); \
 	}
@@ -36,7 +36,7 @@ namespace Renderer
 	UNIFORM_IMPLEMENT(glUniform4fv, Math::Vector4, float)
 	UNIFORM_IMPLEMENT(glUniform4fv, Math::Quaternion, float)
 
-	template <> void Uniform<Math::Matrix4>::set(uint32_t slot, Math::Matrix4* data, uint32_t length)
+	template <> void Uniform<Math::Matrix4>::set(uint32_t slot, const Math::Matrix4* data, uint32_t length)
 	{
 		glUniformMatrix4fv(slot, (GLsizei)length, false, (float*)&data[0]);
 	}
@@ -48,7 +48,7 @@ namespace Renderer
 	}
 
 	template <typename T>
-	void Uniform<T>::set(uint32_t slot, std::vector<T>& data)
+	void Uniform<T>::set(uint32_t slot, const std::vector<T>& data)
 	{
 		set(slot, &data[0], (uint32_t)data.size());
 	}
