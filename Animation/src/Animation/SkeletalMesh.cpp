@@ -123,7 +123,7 @@ namespace Animation
 		return indices;
 	}
 
-	void SkeletalMesh::cpuSkinUseTransform(const Skeleton& skeleton, const AnimationPose& animationPose)
+	void SkeletalMesh::CPUSkinUseTransform(const Skeleton& skeleton, const AnimationPose& animationPose)
 	{
 		uint32_t numVertices = static_cast<uint32_t>(positions.size());
 		
@@ -166,7 +166,7 @@ namespace Animation
 		normalsAttribute->set(skinnedNormal);
 	}
 
-	void SkeletalMesh::cpuSkinUseMatrixPalette(const Skeleton& skeleton, const AnimationPose& animationPose)
+	void SkeletalMesh::CPUSkinUseMatrixPalette(const Skeleton& skeleton, const AnimationPose& animationPose)
 	{
 		uint32_t numVertices = static_cast<uint32_t>(positions.size());
 
@@ -187,9 +187,7 @@ namespace Animation
 			Vector4i& jointIds = influenceJoints[i];
 			Vector4& weight = weights[i];
 
-			Util::Timer timer;
 			Matrix4 matrix0 = (animationPosePalette[jointIds.x] * inversePosePalette[jointIds.x]) * weight.x;
-			timer.stop();
 			Matrix4 matrix1 = (animationPosePalette[jointIds.y] * inversePosePalette[jointIds.y]) * weight.y;
 			Matrix4 matrix2 = (animationPosePalette[jointIds.z] * inversePosePalette[jointIds.z]) * weight.z;
 			Matrix4 matrix3 = (animationPosePalette[jointIds.w] * inversePosePalette[jointIds.w]) * weight.w;

@@ -11,6 +11,11 @@
 #include "Loader/GLTFLoader.h"
 #include "Utils/Timer.h"
 
+#define IMGUI_IMPL_OPENGL_LOADER_GLAD
+
+#include <UI/imgui/imgui.h>
+#include <UI/imgui/imgui_impl_glfw.h>
+#include <UI/imgui/imgui_impl_opengl3.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -30,6 +35,7 @@ using namespace Animation;
 uint32_t VAO = 0;
 uint32_t animationVAO = 0;
 
+#pragma region OpenGL Debug
 void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum severity,
 	GLsizei length, const char* message, const void* userParam);
 
@@ -81,6 +87,7 @@ void APIENTRY glDebugOutput(GLenum source,
 	} 
 	spdlog::info("\n\n");
 }
+#pragma endregion OpenGL Debug
 
 void DemoApplication::startup()
 {
@@ -103,9 +110,9 @@ void DemoApplication::startup()
 	}
 
 	glfwMakeContextCurrent(window);
-	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
-	glfwSetScrollCallback(window, mouseScrollCallback);
-	glfwSetKeyCallback(window, keyCallback);
+	glfwSetFramebufferSizeCallback(window, onFramebufferSizeCallback);
+	glfwSetScrollCallback(window, onMouseScrollCallback);
+	glfwSetKeyCallback(window, onKeyCallback);
 	glfwSetWindowUserPointer(window, this);
 	
 	// glad: load all OpenGL function pointers
@@ -127,9 +134,12 @@ void DemoApplication::startup()
 		glDebugMessageControl(GL_DEBUG_SOURCE_API, GL_DEBUG_TYPE_ERROR, GL_DEBUG_SEVERITY_HIGH, 0, nullptr, GL_TRUE);
 	}
 
+	initImGui();
+
 	angle = 0.0f;
 	shader = std::make_shared<Shader>("Assets/Shaders/Static.vert.spv", "Assets/Shaders/Lit.frag.spv");
 	meshShader = std::make_shared<Shader>("Assets/Shaders/Mesh.vert.spv", "Assets/Shaders/Mesh.frag.spv");
+	skinnedMeshShader = std::make_shared<Shader>("Assets/Shaders/SkinnedMesh.vert.spv", "Assets/Shaders/SkinnedMesh.frag.spv");
 	//displayTexture = std::make_shared<Texture>("Assets/Textures/uv.png");
 	displayTexture = std::make_shared<Texture>("Assets/Models/Woman.png");
 
@@ -150,6 +160,43 @@ void DemoApplication::startup()
 				  vector * (rotation.w * rotation.w -
 				  glm::dot(qVector, qVector)) +
 				  glm::cross(qVector, vector) * 2.0f * rotation.w;
+}
+
+void DemoApplication::initImGui()
+{
+	// Setup Dear ImGui context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+	// Setup Dear ImGui style
+	ImGui::StyleColorsDark();
+	//ImGui::StyleColorsClassic();
+	ImGui::GetStyle().ScaleAllSizes(1.0f);
+	
+	// GL 3.0 + GLSL 130
+	const char* glslVersion = "#version 130";
+	
+	// Setup Platform/Renderer backends
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init(glslVersion);
+
+	// Load Fonts
+	// - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
+	// - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
+	// - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
+	// - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
+	// - Read 'docs/FONTS.md' for more instructions and details.
+	// - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
+	//io.Fonts->AddFontDefault();
+	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
+	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
+	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
+	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
+	//ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
+	//IM_ASSERT(font != NULL);
 }
 
 void DemoApplication::prepareCubeData()
@@ -386,34 +433,44 @@ void DemoApplication::prepareAnimationDebugData()
 	
 	cgltf_data* data = Loader::loadGLTFFile("Assets/Models/Woman.gltf");
 
-	restPose = Loader::loadRestPose(data);
 	animationClips = Loader::loadAnimationClips(data);
-	
-	restPoseDebugDraw = std::make_shared<DebugDraw>();
-	restPoseDebugDraw->FromAnimationPose(restPose);
-	restPoseDebugDraw->UpdateOpenGLBuffers();
-
-	currentClip = 7;
-	currentPose = restPose;
-	currentFrame = 0;
-	
-	animationClips[currentClip].sample(currentPose, 0.0f);
-	
-	currentPoseDebugDraw = std::make_shared<DebugDraw>();
-	currentPoseDebugDraw->FromAnimationPose(currentPose);
-	currentPoseDebugDraw->UpdateOpenGLBuffers();
 
 	skeleton = Loader::loadSkeleton(data);
 	
-	skeletalMeshs = Loader::loadMeshes(data);
+	CPUSkinnedMeshes = Loader::loadMeshes(data);
+	GPUSkinnedMeshes = CPUSkinnedMeshes;
+
+	AnimationPose restPose = skeleton.getRestPose();
+	AnimationPose bindPose = skeleton.getBindPose();
+
+	GPUAnimationInfo.animationPose = restPose;
+	GPUAnimationInfo.animationPosePalette.resize(restPose.getSize());
+	CPUAnimationInfo.animationPose = restPose;
+	CPUAnimationInfo.animationPosePalette.resize(restPose.getSize());
 	
-	skeletalMeshs[0].cpuSkinUseMatrixPalette(skeleton, skeleton.getRestPose());
+	CPUSkinnedMeshes[0].CPUSkinUseMatrixPalette(skeleton, bindPose);
+	
+	restPoseDebugDraw = std::make_shared<DebugDraw>();
+	restPoseDebugDraw->FromAnimationPose(CPUAnimationInfo.animationPose);
+	restPoseDebugDraw->UpdateOpenGLBuffers();
+
+	currentClip = 7;
+	currentFrame = 0;
+
+	currentPoseDebugDraw = std::make_shared<DebugDraw>();
+	currentPoseDebugDraw->FromAnimationPose(CPUAnimationInfo.animationPose);
+	currentPoseDebugDraw->UpdateOpenGLBuffers();
 	
 	Loader::freeGLTFFile(data);
 }
 
 void DemoApplication::shutdown()
 {
+	// Cleanup
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+	
 	// glfw: terminate, clearing all previously allocated GLFW resources.
 	// ------------------------------------------------------------------
 	glfwTerminate();
@@ -425,13 +482,19 @@ void DemoApplication::update(float deltaTime)
 	{
 		angle += deltaTime * 45.0f;
 	}
-	//animationClips[currentClip].sample(currentPose, fixTimestep * currentFrame);
-	playbackTime = animationClips[currentClip].sample(currentPose, playbackTime + deltaTime);
+	
+	CPUAnimationInfo.playbackTime = animationClips[currentClip].sample(CPUAnimationInfo.animationPose, CPUAnimationInfo.playbackTime + deltaTime);
+	GPUAnimationInfo.playbackTime = animationClips[currentClip].sample(GPUAnimationInfo.animationPose, GPUAnimationInfo.playbackTime + deltaTime);
+
+	for (auto i = 0; i < CPUSkinnedMeshes.size(); i++)
 	{
 		Util::Timer timer;
-		skeletalMeshs[0].cpuSkinUseMatrixPalette(skeleton, currentPose);
+		CPUSkinnedMeshes[i].CPUSkinUseMatrixPalette(skeleton, CPUAnimationInfo.animationPose);
 	}
-	currentPoseDebugDraw->FromAnimationPose(currentPose);
+	GPUAnimationInfo.animationPose.getMatrixPalette(GPUAnimationInfo.animationPosePalette);
+	currentPoseDebugDraw->FromAnimationPose(CPUAnimationInfo.animationPose);
+
+	updateImGui();
 
 	// input
 	// -----
@@ -470,6 +533,14 @@ void DemoApplication::run()
 
 void DemoApplication::render()
 {
+	// Poll and handle events (inputs, window resize, etc.)
+	// You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
+	// - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
+	// - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
+	// Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
+	glfwPollEvents();
+	
+	// 	
 	// render
 	// ------
 	//glClearColor(0.4f, 0.6f, 0.9f, 1.0f);
@@ -518,60 +589,90 @@ void DemoApplication::render()
 	glBindVertexArray(animationVAO);
 
 	meshShader->bind();
+
+	model.m03 += 2.5f;
 	
-	Uniform<Matrix4>::set(shader->getUniform("model"), model);
-	Uniform<Matrix4>::set(shader->getUniform("view"), view);
-	Uniform<Matrix4>::set(shader->getUniform("projection"), projection);
+	Uniform<Matrix4>::set(meshShader->getUniform("model"), model);
+	Uniform<Matrix4>::set(meshShader->getUniform("view"), view);
+	Uniform<Matrix4>::set(meshShader->getUniform("projection"), projection);
 
-	Uniform<Vector3>::set(shader->getUniform("lightDirection"), Vector3(1.0f, 1.0f, 1.0f));
+	Uniform<Vector3>::set(meshShader->getUniform("lightDirection"), Vector3(1.0f, 1.0f, 1.0f));
 
-	displayTexture->bind(shader->getUniform("baseTexture"), 0);
+	displayTexture->bind(meshShader->getUniform("baseTexture"), 0);
 
-	skeletalMeshs[0].bind(0, 1, 2, -1, -1);
-	//skeletalMeshs[0].draw();
-	skeletalMeshs[0].unbind(0, 1, 2, -1, -1);
+	CPUSkinnedMeshes[0].bind(0, 1, 2, -1, -1);
+	CPUSkinnedMeshes[0].draw();
+	CPUSkinnedMeshes[0].unbind(0, 1, 2, -1, -1);
 
 	displayTexture->unbind(0);
 
 	meshShader->unbind();
+	
+	skinnedMeshShader->bind();
+
+	model.m03 -= 5.5f;
+
+	Uniform<Matrix4>::set(skinnedMeshShader->getUniform("model"), model);
+	Uniform<Matrix4>::set(skinnedMeshShader->getUniform("view"), view);
+	Uniform<Matrix4>::set(skinnedMeshShader->getUniform("projection"), projection);
+
+	Uniform<Vector3>::set(skinnedMeshShader->getUniform("lightDirection"), Vector3(1.0f, 1.0f, 1.0f));
+
+	Uniform<Matrix4>::set(skinnedMeshShader->getUniform("animationPose"), GPUAnimationInfo.animationPosePalette);
+	Uniform<Matrix4>::set(skinnedMeshShader->getUniform("inverseBindPose"), skeleton.getInverseBindPose());
+
+	displayTexture->bind(skinnedMeshShader->getUniform("baseTexture"), 0);
 
 	//debugDraw->Draw(DebugDrawMode::Lines, Vector3(1.0f, 0.0f, 0.0f), mvp);
+
+	GPUSkinnedMeshes[0].bind(0, 1, 2, 3, 4);
+	GPUSkinnedMeshes[0].draw();
+	GPUSkinnedMeshes[0].unbind(0, 1, 2, 3, 4);
+
+	displayTexture->unbind(0);
+	
+	skinnedMeshShader->unbind();
 	
 	restPoseDebugDraw->Draw(DebugDrawMode::Lines, Vector3(1.0f, 0.0f, 0.0f), mvp);
 	
 	currentPoseDebugDraw->UpdateOpenGLBuffers();
 	currentPoseDebugDraw->Draw(DebugDrawMode::Lines, Vector3(0, 0, 1), mvp);
+
+	renderImGui();
 	
 	// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 	// -------------------------------------------------------------------------------
 	glfwSwapBuffers(window);
-	glfwPollEvents();
-}
+}  
 
-void DemoApplication::framebufferSizeCallback(GLFWwindow* window, int32_t width, int32_t height)
+void DemoApplication::onFramebufferSizeCallback(GLFWwindow* window, int32_t width, int32_t height)
 {
 	// make sure the viewport matches the new window dimensions; note that width and 
 	// height will be significantly larger than specified on retina displays.
 	glViewport(0, 0, width, height);
 }
 
-void DemoApplication::mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+void DemoApplication::onMouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset)
 {
-	spdlog::info("{0}, {1}", xoffset, yoffset);
+	if (ImGui::GetIO().WantCaptureMouse) {
+		return;
+	}
+	
+	spdlog::info("{0}, {1}", xOffset, yOffset);
 
 	auto* app = static_cast<DemoApplication*>(glfwGetWindowUserPointer(window));
 
-	if (yoffset > 0.0f)
+	if (yOffset > 0.0f)
 	{
 		app->eye.z -= 0.1f;
 	}
-	else if (yoffset < 0.0f)
+	else if (yOffset < 0.0f)
 	{
 		app->eye.z += 0.1f;
 	}
 }
 
-void DemoApplication::keyCallback(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods)
+void DemoApplication::onKeyCallback(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods)
 {
 	auto* app = static_cast<DemoApplication*>(glfwGetWindowUserPointer(window));
 	
@@ -593,6 +694,11 @@ void DemoApplication::keyCallback(GLFWwindow* window, int32_t key, int32_t scanc
 
 void DemoApplication::processInput()
 {
+	if (ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard)
+	{
+		return;
+	}
+	
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, true);
@@ -602,4 +708,56 @@ void DemoApplication::processInput()
 void DemoApplication::toggleUpdateRotation()
 {
 	bUpdateRotation = !bUpdateRotation;
+}
+
+void DemoApplication::updateImGui()
+{
+	// Start the Dear ImGui frame
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
+	// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+	if (show_demo_window)
+		ImGui::ShowDemoWindow(&show_demo_window);
+
+	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+	{
+		static float f = 0.0f;
+		static int counter = 0;
+
+		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+
+		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+		ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+		ImGui::Checkbox("Another Window", &show_another_window);
+
+		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::ColorEdit3("clear color", (float*)&clearColor); // Edit 3 floats representing a color
+
+		if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+			counter++;
+		ImGui::SameLine();
+		ImGui::Text("counter = %d", counter);
+
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::End();
+	}
+
+	// 3. Show another simple window.
+	if (show_another_window)
+	{
+		ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+		ImGui::Text("Hello from another window!");
+		if (ImGui::Button("Close Me"))
+			show_another_window = false;
+		ImGui::End();
+	}
+}
+
+void DemoApplication::renderImGui()
+{
+	// Rendering
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

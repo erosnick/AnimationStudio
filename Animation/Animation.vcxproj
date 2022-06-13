@@ -47,6 +47,13 @@
     <ClCompile Include="src\Renderer\Shader.cpp" />
     <ClCompile Include="Src\Renderer\Texture.cpp" />
     <ClCompile Include="src\Renderer\Uniform.cpp" />
+    <ClCompile Include="src\UI\imgui\imgui.cpp" />
+    <ClCompile Include="src\UI\imgui\imgui_demo.cpp" />
+    <ClCompile Include="src\UI\imgui\imgui_draw.cpp" />
+    <ClCompile Include="src\UI\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\UI\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\UI\imgui\imgui_tables.cpp" />
+    <ClCompile Include="src\UI\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Animation\AnimationClip.h" />
@@ -79,6 +86,15 @@
     <ClInclude Include="src\Renderer\Shader.h" />
     <ClInclude Include="src\Renderer\Uniform.h" />
     <ClInclude Include="src\stb_image.h" />
+    <ClInclude Include="src\UI\imgui\imconfig.h" />
+    <ClInclude Include="src\UI\imgui\imgui.h" />
+    <ClInclude Include="src\UI\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="src\UI\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\UI\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="src\UI\imgui\imgui_internal.h" />
+    <ClInclude Include="src\UI\imgui\imstb_rectpack.h" />
+    <ClInclude Include="src\UI\imgui\imstb_textedit.h" />
+    <ClInclude Include="src\UI\imgui\imstb_truetype.h" />
     <ClInclude Include="src\Utils\Timer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -120,10 +136,17 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Assets\Shaders\Skinned.vert">
+    <CustomBuild Include="Assets\Shaders\SkinnedMesh.vert">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).vert.spv</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Assets\Shaders\SkinnedMesh.frag">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).frag.spv</Outputs>
     </CustomBuild>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -211,7 +234,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>./src;../Thirdparty/;../Thirdparty/spdlog-1.10.0/include</AdditionalIncludeDirectories>
     </ClCompile>

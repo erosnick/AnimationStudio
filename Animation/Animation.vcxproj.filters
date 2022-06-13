@@ -43,6 +43,18 @@
     <Filter Include="Sources\Animation">
       <UniqueIdentifier>{8ada8f15-40ad-476d-8df7-4496326796c1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Includes\UI">
+      <UniqueIdentifier>{ad977ded-ad55-499d-9412-123f51a3e13b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\UI\imgui">
+      <UniqueIdentifier>{192208d8-ca04-45a9-84f5-cc748544f548}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\UI">
+      <UniqueIdentifier>{155b75f3-697a-4099-aa7d-01e986825dd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\UI\imgui">
+      <UniqueIdentifier>{418ff1ea-19b4-4c55-bc49-bef9786c54ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -128,6 +140,27 @@
     </ClCompile>
     <ClCompile Include="src\Animation\SkeletalMesh.cpp">
       <Filter>Sources\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\imgui\imgui.cpp">
+      <Filter>Sources\UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\imgui\imgui_demo.cpp">
+      <Filter>Sources\UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\imgui\imgui_draw.cpp">
+      <Filter>Sources\UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\imgui\imgui_impl_glfw.cpp">
+      <Filter>Sources\UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\imgui\imgui_tables.cpp">
+      <Filter>Sources\UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\imgui\imgui_widgets.cpp">
+      <Filter>Sources\UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\imgui\imgui_impl_opengl3.cpp">
+      <Filter>Sources\UI\imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -224,6 +257,33 @@
     <ClInclude Include="src\Animation\SkeletalMesh.h">
       <Filter>Includes\Animation</Filter>
     </ClInclude>
+    <ClInclude Include="src\UI\imgui\imconfig.h">
+      <Filter>Includes\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\imgui\imgui.h">
+      <Filter>Includes\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\imgui\imgui_impl_glfw.h">
+      <Filter>Includes\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\imgui\imgui_internal.h">
+      <Filter>Includes\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\imgui\imstb_rectpack.h">
+      <Filter>Includes\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\imgui\imstb_textedit.h">
+      <Filter>Includes\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\imgui\imstb_truetype.h">
+      <Filter>Includes\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\imgui\imgui_impl_opengl3.h">
+      <Filter>Includes\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\imgui\imgui_impl_opengl3_loader.h">
+      <Filter>Includes\UI\imgui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Assets\Shaders\Lit.frag">
@@ -244,7 +304,10 @@
     <CustomBuild Include="Assets\Shaders\Mesh.frag">
       <Filter>Assets\Shaders</Filter>
     </CustomBuild>
-    <CustomBuild Include="Assets\Shaders\Skinned.vert">
+    <CustomBuild Include="Assets\Shaders\SkinnedMesh.vert">
+      <Filter>Assets\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\SkinnedMesh.frag">
       <Filter>Assets\Shaders</Filter>
     </CustomBuild>
   </ItemGroup>
