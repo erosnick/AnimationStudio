@@ -437,7 +437,7 @@ namespace Loader
 		{
 			cgltf_node* node = &(nodes[i]);
 
-			if (node->mesh == nullptr || node->skin == nullptr)
+			if (node->mesh == nullptr && node->skin == nullptr)
 			{
 				continue;
 			}

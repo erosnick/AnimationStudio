@@ -32,6 +32,8 @@ constexpr float fixTimestep = 0.016f;
 
 using namespace Animation;
 
+bool bPrecomputeSkin = true;
+
 uint32_t VAO = 0;
 uint32_t animationVAO = 0;
 
@@ -89,6 +91,13 @@ void APIENTRY glDebugOutput(GLenum source,
 }
 #pragma endregion OpenGL Debug
 
+char* convert(const std::string& s)
+{
+	char* pc = new char[s.size() + 1];
+	std::strcpy(pc, s.c_str());
+	return pc;
+}
+
 void DemoApplication::startup()
 {
 	// glfw: initialize and configure
@@ -139,7 +148,16 @@ void DemoApplication::startup()
 	angle = 0.0f;
 	shader = std::make_shared<Shader>("Assets/Shaders/Static.vert.spv", "Assets/Shaders/Lit.frag.spv");
 	meshShader = std::make_shared<Shader>("Assets/Shaders/Mesh.vert.spv", "Assets/Shaders/Mesh.frag.spv");
-	skinnedMeshShader = std::make_shared<Shader>("Assets/Shaders/SkinnedMesh.vert.spv", "Assets/Shaders/SkinnedMesh.frag.spv");
+
+	if (bPrecomputeSkin)
+	{
+		skinnedMeshShader = std::make_shared<Shader>("Assets/Shaders/PrecomputeSkinnedMesh.vert.spv", "Assets/Shaders/PrecomputeSkinnedMesh.frag.spv");
+	}
+	else
+	{
+		skinnedMeshShader = std::make_shared<Shader>("Assets/Shaders/SkinnedMesh.vert.spv", "Assets/Shaders/SkinnedMesh.frag.spv");
+	}
+	
 	//displayTexture = std::make_shared<Texture>("Assets/Textures/uv.png");
 	displayTexture = std::make_shared<Texture>("Assets/Models/Woman.png");
 
@@ -435,6 +453,13 @@ void DemoApplication::prepareAnimationDebugData()
 
 	animationClips = Loader::loadAnimationClips(data);
 
+	for (const auto& clip : animationClips)
+	{
+		animationNames.emplace_back(clip.getName());
+	}
+
+	std::transform(animationNames.begin(), animationNames.end(), std::back_inserter(animationNamesArray), convert);
+
 	skeleton = Loader::loadSkeleton(data);
 	
 	CPUSkinnedMeshes = Loader::loadMeshes(data);
@@ -454,7 +479,7 @@ void DemoApplication::prepareAnimationDebugData()
 	restPoseDebugDraw->FromAnimationPose(CPUAnimationInfo.animationPose);
 	restPoseDebugDraw->UpdateOpenGLBuffers();
 
-	currentClip = 7;
+	currentClip = 0;
 	currentFrame = 0;
 
 	currentPoseDebugDraw = std::make_shared<DebugDraw>();
@@ -483,15 +508,19 @@ void DemoApplication::update(float deltaTime)
 		angle += deltaTime * 45.0f;
 	}
 	
-	CPUAnimationInfo.playbackTime = animationClips[currentClip].sample(CPUAnimationInfo.animationPose, CPUAnimationInfo.playbackTime + deltaTime);
-	GPUAnimationInfo.playbackTime = animationClips[currentClip].sample(GPUAnimationInfo.animationPose, GPUAnimationInfo.playbackTime + deltaTime);
+	updateAnimationPose(deltaTime);
 
-	for (auto i = 0; i < CPUSkinnedMeshes.size(); i++)
+	if (bPrecomputeSkin)
 	{
-		Util::Timer timer;
-		CPUSkinnedMeshes[i].CPUSkinUseMatrixPalette(skeleton, CPUAnimationInfo.animationPose);
+		updatePrecomputedCPUSkin();
+		updatePrecomputedGPUSkin();
 	}
-	GPUAnimationInfo.animationPose.getMatrixPalette(GPUAnimationInfo.animationPosePalette);
+	else
+	{
+		updateCPUSkin();
+		updateGPUSkin();
+	}
+	
 	currentPoseDebugDraw->FromAnimationPose(CPUAnimationInfo.animationPose);
 
 	updateImGui();
@@ -499,6 +528,12 @@ void DemoApplication::update(float deltaTime)
 	// input
 	// -----
 	processInput();
+}
+
+void DemoApplication::updateAnimationPose(float deltaTime)
+{
+	CPUAnimationInfo.playbackTime = animationClips[currentClip].sample(CPUAnimationInfo.animationPose, CPUAnimationInfo.playbackTime + deltaTime);
+	GPUAnimationInfo.playbackTime = animationClips[currentClip].sample(GPUAnimationInfo.animationPose, GPUAnimationInfo.playbackTime + deltaTime);
 }
 
 void DemoApplication::run()
@@ -619,7 +654,11 @@ void DemoApplication::render()
 	Uniform<Vector3>::set(skinnedMeshShader->getUniform("lightDirection"), Vector3(1.0f, 1.0f, 1.0f));
 
 	Uniform<Matrix4>::set(skinnedMeshShader->getUniform("animationPose"), GPUAnimationInfo.animationPosePalette);
-	Uniform<Matrix4>::set(skinnedMeshShader->getUniform("inverseBindPose"), skeleton.getInverseBindPose());
+
+	if (!bPrecomputeSkin)
+	{
+		Uniform<Matrix4>::set(skinnedMeshShader->getUniform("inverseBindPose"), skeleton.getInverseBindPose());
+	}
 
 	displayTexture->bind(skinnedMeshShader->getUniform("baseTexture"), 0);
 
@@ -710,6 +749,49 @@ void DemoApplication::toggleUpdateRotation()
 	bUpdateRotation = !bUpdateRotation;
 }
 
+void DemoApplication::updateCPUSkin()
+{
+	for (auto i = 0; i < CPUSkinnedMeshes.size(); i++)
+	{
+		//Util::Timer timer;
+		CPUSkinnedMeshes[i].CPUSkinUseMatrixPalette(skeleton, CPUAnimationInfo.animationPose);
+	}
+}
+
+void DemoApplication::updatePrecomputedCPUSkin()
+{
+	CPUAnimationInfo.animationPose.getMatrixPalette(CPUAnimationInfo.animationPosePalette);
+
+	std::vector<Matrix4> inverseBindPose = skeleton.getInverseBindPose();
+
+	for (int32_t i = 0; i < CPUAnimationInfo.animationPosePalette.size(); i++)
+	{
+		CPUAnimationInfo.animationPosePalette[i] = CPUAnimationInfo.animationPosePalette[i] * inverseBindPose[i];
+	}
+
+	for (auto i = 0; i < CPUSkinnedMeshes.size(); i++)
+	{
+		//Util::Timer timer;
+		CPUSkinnedMeshes[i].CPUSkinUseMatrixPalette(CPUAnimationInfo.animationPosePalette);
+	}
+}
+
+void DemoApplication::updateGPUSkin()
+{
+	GPUAnimationInfo.animationPose.getMatrixPalette(GPUAnimationInfo.animationPosePalette);
+}
+
+void DemoApplication::updatePrecomputedGPUSkin()
+{
+	GPUAnimationInfo.animationPose.getMatrixPalette(GPUAnimationInfo.animationPosePalette);
+	std::vector<Matrix4> inverseBindPose = skeleton.getInverseBindPose();
+
+	for (int32_t i = 0; i < GPUAnimationInfo.animationPosePalette.size(); i++)
+	{
+		GPUAnimationInfo.animationPosePalette[i] = GPUAnimationInfo.animationPosePalette[i] * inverseBindPose[i];
+	}
+}
+
 void DemoApplication::updateImGui()
 {
 	// Start the Dear ImGui frame
@@ -741,6 +823,20 @@ void DemoApplication::updateImGui()
 		ImGui::Text("counter = %d", counter);
 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		
+		ImGui::SetNextItemWidth(100);
+
+		ImGui::NewLine();
+
+		ImGui::Text("%s%s", "Animations", "(cm)");
+		ImGui::SameLine();
+
+		ImGui::SetNextItemWidth(100);
+		ImGui::Combo("  ", &currentClip, &animationNamesArray[0], static_cast<int32_t>(animationNames.size()));
+		ImGui::PushItemWidth(100);
+
+		ImGui::Text("Playing:%s", animationNames[currentClip].c_str());
+		
 		ImGui::End();
 	}
 

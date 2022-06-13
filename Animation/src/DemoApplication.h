@@ -47,6 +47,9 @@ public:
 
 	void shutdown() override;
 	void update(float deltaTime) override;
+
+	void updateAnimationPose(float deltaTime);
+
 	void run() override;
 	void render() override;
 	
@@ -60,6 +63,11 @@ public:
 	void processInput();
 
 	void toggleUpdateRotation();
+
+	void updateCPUSkin();			// CPU蒙皮更新(变换顶点时计算AnimationPosePalette * inverseBindPose)
+	void updatePrecomputedCPUSkin();	// 预计算CPU蒙皮更新(变换顶点前预计算AnimationPosePalette * inverseBindPose)
+	void updateGPUSkin();			// GPU蒙皮矩阵调色板更新(顶点着色器计算AnimationPosePalette * inverseBindPose)
+	void updatePrecomputedGPUSkin();	// 预计算GPU蒙皮矩阵调色板更新(传入顶点着色器前预计算AnimationPosePalette * inverseBindPose)
 
 private:
 	void updateImGui();
@@ -89,8 +97,10 @@ protected:
 	std::vector<SkeletalMesh> CPUSkinnedMeshes;
 	std::vector<SkeletalMesh> GPUSkinnedMeshes;
 	Skeleton skeleton;
-	uint32_t currentClip;
+	int32_t currentClip;
 	std::vector<AnimationClip> animationClips;
+	std::vector<std::string> animationNames;
+	std::vector<char*> animationNamesArray;
 
 	float playbackTime;
 	int32_t currentFrame = 0;

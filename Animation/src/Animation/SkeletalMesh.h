@@ -45,6 +45,8 @@ namespace Animation
 		
 		void CPUSkinUseTransform(const Skeleton& skeleton, const AnimationPose& animationPose);
 		void CPUSkinUseMatrixPalette(const Skeleton& skeleton, const AnimationPose& animationPose);
+		void CPUSkinUseMatrixPalette(const std::vector<Matrix4>& animationtPose);
+		
 		void updateOpenGLBuffers();
 		
 		void bind(int32_t position, int32_t normal, int32_t texcoord, int32_t weights, int32_t influences);

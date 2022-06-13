@@ -202,6 +202,42 @@ namespace Animation
 		normalsAttribute->set(skinnedNormal);
 	}
 
+	void SkeletalMesh::CPUSkinUseMatrixPalette(const std::vector<Matrix4>& animationtPose)
+	{
+		uint32_t numVertices = static_cast<uint32_t>(positions.size());
+
+		if (numVertices == 0)
+		{
+			return;
+		}
+
+		skinnedPosition.resize(numVertices);
+		skinnedNormal.resize(numVertices);
+
+		for (uint32_t i = 0; i < numVertices; i++)
+		{
+			Vector4i& jointIds = influenceJoints[i];
+			Vector4& weight = weights[i];
+
+			Vector3 position0 = transformPoint(animationtPose[jointIds.x] * weight.x, positions[i]);
+			Vector3 position1 = transformPoint(animationtPose[jointIds.y] * weight.y, positions[i]);
+			Vector3 position2 = transformPoint(animationtPose[jointIds.z] * weight.z, positions[i]);
+			Vector3 position3 = transformPoint(animationtPose[jointIds.w] * weight.w, positions[i]);
+
+			skinnedPosition[i] = position0 + position1 + position2 + position3;
+
+			Vector3 normal0 = transformVector(animationtPose[jointIds.x] * weight.x, normals[i]);
+			Vector3 normal1 = transformVector(animationtPose[jointIds.y] * weight.y, normals[i]);
+			Vector3 normal2 = transformVector(animationtPose[jointIds.z] * weight.z, normals[i]);
+			Vector3 normal3 = transformVector(animationtPose[jointIds.w] * weight.w, normals[i]);
+
+			skinnedNormal[i] = normal0 + normal1 + normal2 + normal3;
+		}
+
+		positionsAttribute->set(skinnedPosition);
+		normalsAttribute->set(skinnedNormal);
+	}
+
 	void SkeletalMesh::updateOpenGLBuffers()
 	{
 		if (positions.size() > 0)
