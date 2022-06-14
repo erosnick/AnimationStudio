@@ -11,6 +11,8 @@
 #include "Loader/GLTFLoader.h"
 #include "Utils/Timer.h"
 
+#include "Animation/RearrangeBones.h"
+
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
 
 #include <UI/imgui/imgui.h>
@@ -32,7 +34,7 @@ constexpr float fixTimestep = 0.016f;
 
 using namespace Animation;
 
-bool bPrecomputeSkin = true;
+bool bPrecomputeSkin = false;
 
 uint32_t VAO = 0;
 uint32_t animationVAO = 0;
@@ -100,14 +102,27 @@ char* convert(const std::string& s)
 
 void DemoApplication::startup()
 {
+	initGLFW();
+	initImGui();
+
+	angle = 0.0f;
+	
+	prepareRenderResources();
+	prepareCubeData();
+	prepareAnimationDebugData();
+	prepareDebugData();
+}
+
+void DemoApplication::initGLFW()
+{
 	// glfw: initialize and configure
-	// ------------------------------
+// ------------------------------
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-	
+
 	// glfw window creation
 	// --------------------
 	window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Animation", nullptr, nullptr);
@@ -123,7 +138,7 @@ void DemoApplication::startup()
 	glfwSetScrollCallback(window, onMouseScrollCallback);
 	glfwSetKeyCallback(window, onKeyCallback);
 	glfwSetWindowUserPointer(window, this);
-	
+
 	// glad: load all OpenGL function pointers
 	// ---------------------------------------
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -142,42 +157,6 @@ void DemoApplication::startup()
 		glDebugMessageCallback(glDebugOutput, nullptr);
 		glDebugMessageControl(GL_DEBUG_SOURCE_API, GL_DEBUG_TYPE_ERROR, GL_DEBUG_SEVERITY_HIGH, 0, nullptr, GL_TRUE);
 	}
-
-	initImGui();
-
-	angle = 0.0f;
-	shader = std::make_shared<Shader>("Assets/Shaders/Static.vert.spv", "Assets/Shaders/Lit.frag.spv");
-	meshShader = std::make_shared<Shader>("Assets/Shaders/Mesh.vert.spv", "Assets/Shaders/Mesh.frag.spv");
-
-	if (bPrecomputeSkin)
-	{
-		skinnedMeshShader = std::make_shared<Shader>("Assets/Shaders/PrecomputeSkinnedMesh.vert.spv", "Assets/Shaders/PrecomputeSkinnedMesh.frag.spv");
-	}
-	else
-	{
-		skinnedMeshShader = std::make_shared<Shader>("Assets/Shaders/SkinnedMesh.vert.spv", "Assets/Shaders/SkinnedMesh.frag.spv");
-	}
-	
-	//displayTexture = std::make_shared<Texture>("Assets/Textures/uv.png");
-	displayTexture = std::make_shared<Texture>("Assets/Models/Woman.png");
-
-	prepareCubeData();
-	prepareAnimationDebugData();
-	prepareDebugData();
-	
-	auto rotation = glm::angleAxis(45.0f * Math::DegreeToRadian, glm::vec3(0.0f, 0.0f, 1.0f));
-
-	auto rotatedVector = rotation * glm::vec3(1.0f, 0.0f, 0.0f);
-
-	auto matrix = glm::toMat4(rotation);
-
-	auto vector = glm::vec3(1.0f, 0.0f, 0.0f);
-	auto qVector = glm::vec3(rotation.x, rotation.y, rotation.z);
-
-	auto result = qVector * 2.0f * glm::dot(qVector, vector) +
-				  vector * (rotation.w * rotation.w -
-				  glm::dot(qVector, qVector)) +
-				  glm::cross(qVector, vector) * 2.0f * rotation.w;
 }
 
 void DemoApplication::initImGui()
@@ -215,6 +194,24 @@ void DemoApplication::initImGui()
 	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
 	//ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
 	//IM_ASSERT(font != NULL);
+}
+
+void DemoApplication::prepareRenderResources()
+{
+	shader = std::make_shared<Shader>("Assets/Shaders/Static.vert.spv", "Assets/Shaders/Lit.frag.spv");
+	meshShader = std::make_shared<Shader>("Assets/Shaders/Mesh.vert.spv", "Assets/Shaders/Mesh.frag.spv");
+
+	if (bPrecomputeSkin)
+	{
+		skinnedMeshShader = std::make_shared<Shader>("Assets/Shaders/PrecomputeSkinnedMesh.vert.spv", "Assets/Shaders/PrecomputeSkinnedMesh.frag.spv");
+	}
+	else
+	{
+		skinnedMeshShader = std::make_shared<Shader>("Assets/Shaders/SkinnedMesh.vert.spv", "Assets/Shaders/SkinnedMesh.frag.spv");
+	}
+
+	//displayTexture = std::make_shared<Texture>("Assets/Textures/uv.png");
+	displayTexture = std::make_shared<Texture>("Assets/Models/Woman.png");
 }
 
 void DemoApplication::prepareCubeData()
@@ -450,21 +447,33 @@ void DemoApplication::prepareAnimationDebugData()
 	glGenVertexArrays(1, &animationVAO);
 	
 	cgltf_data* data = Loader::loadGLTFFile("Assets/Models/Woman.gltf");
+	//cgltf_data* data = Loader::loadGLTFFile("Assets/Models/suzanne.gltf");
 
-	animationClips = Loader::loadAnimationClips(data);
+	skeleton = Loader::loadSkeleton(data);
 
-	for (const auto& clip : animationClips)
+	BoneMap boneMap = rearrangeSkeleton(skeleton);
+
+	std::vector<AnimationClip> animationClips = Loader::loadAnimationClips(data);
+	fastAnimationClips.resize(animationClips.size());
+
+	for (auto i = 0; i < animationClips.size(); i++)
 	{
-		animationNames.emplace_back(clip.getName());
+		rearrangeAnimationClip(animationClips[i], boneMap);
+		fastAnimationClips[i] = optimizeAnimationClip(animationClips[i]);
+		animationNames.emplace_back(animationClips[i].getName());
 	}
 
 	std::transform(animationNames.begin(), animationNames.end(), std::back_inserter(animationNamesArray), convert);
-
-	skeleton = Loader::loadSkeleton(data);
 	
 	CPUSkinnedMeshes = Loader::loadMeshes(data);
-	GPUSkinnedMeshes = CPUSkinnedMeshes;
 
+	for (auto& mesh : CPUSkinnedMeshes)
+	{
+		rearrangeSkeletalMesh(mesh, boneMap);
+	}
+
+	GPUSkinnedMeshes = CPUSkinnedMeshes;
+	
 	AnimationPose restPose = skeleton.getRestPose();
 	AnimationPose bindPose = skeleton.getBindPose();
 
@@ -473,18 +482,24 @@ void DemoApplication::prepareAnimationDebugData()
 	CPUAnimationInfo.animationPose = restPose;
 	CPUAnimationInfo.animationPosePalette.resize(restPose.getSize());
 	
-	CPUSkinnedMeshes[0].CPUSkinUseMatrixPalette(skeleton, bindPose);
+	//CPUSkinnedMeshes[0].hasAnimation() = false;
+	//GPUSkinnedMeshes[0].hasAnimation() = false;
 	
-	restPoseDebugDraw = std::make_shared<DebugDraw>();
-	restPoseDebugDraw->FromAnimationPose(CPUAnimationInfo.animationPose);
-	restPoseDebugDraw->UpdateOpenGLBuffers();
+	if (CPUSkinnedMeshes[0].hasAnimation())
+	{
+		CPUSkinnedMeshes[0].CPUSkinUseMatrixPalette(skeleton, bindPose);
+
+		restPoseDebugDraw = std::make_shared<DebugDraw>();
+		restPoseDebugDraw->FromAnimationPose(CPUAnimationInfo.animationPose);
+		restPoseDebugDraw->UpdateOpenGLBuffers();
+
+		currentPoseDebugDraw = std::make_shared<DebugDraw>();
+		currentPoseDebugDraw->FromAnimationPose(CPUAnimationInfo.animationPose);
+		currentPoseDebugDraw->UpdateOpenGLBuffers();
+	}
 
 	currentClip = 0;
 	currentFrame = 0;
-
-	currentPoseDebugDraw = std::make_shared<DebugDraw>();
-	currentPoseDebugDraw->FromAnimationPose(CPUAnimationInfo.animationPose);
-	currentPoseDebugDraw->UpdateOpenGLBuffers();
 	
 	Loader::freeGLTFFile(data);
 }
@@ -510,18 +525,21 @@ void DemoApplication::update(float deltaTime)
 	
 	updateAnimationPose(deltaTime);
 
-	if (bPrecomputeSkin)
+	if (CPUSkinnedMeshes[0].hasAnimation())
 	{
-		updatePrecomputedCPUSkin();
-		updatePrecomputedGPUSkin();
+		if (bPrecomputeSkin)
+		{
+			updatePrecomputedCPUSkin();
+			updatePrecomputedGPUSkin();
+		}
+		else
+		{
+			updateCPUSkin();
+			updateGPUSkin();
+		}
+
+		currentPoseDebugDraw->FromAnimationPose(CPUAnimationInfo.animationPose);
 	}
-	else
-	{
-		updateCPUSkin();
-		updateGPUSkin();
-	}
-	
-	currentPoseDebugDraw->FromAnimationPose(CPUAnimationInfo.animationPose);
 
 	updateImGui();
 
@@ -532,8 +550,11 @@ void DemoApplication::update(float deltaTime)
 
 void DemoApplication::updateAnimationPose(float deltaTime)
 {
-	CPUAnimationInfo.playbackTime = animationClips[currentClip].sample(CPUAnimationInfo.animationPose, CPUAnimationInfo.playbackTime + deltaTime);
-	GPUAnimationInfo.playbackTime = animationClips[currentClip].sample(GPUAnimationInfo.animationPose, GPUAnimationInfo.playbackTime + deltaTime);
+	if (CPUSkinnedMeshes[0].hasAnimation())
+	{
+		CPUAnimationInfo.playbackTime = fastAnimationClips[currentClip].sample(CPUAnimationInfo.animationPose, CPUAnimationInfo.playbackTime + deltaTime);
+		GPUAnimationInfo.playbackTime = fastAnimationClips[currentClip].sample(GPUAnimationInfo.animationPose, GPUAnimationInfo.playbackTime + deltaTime);
+	}
 }
 
 void DemoApplication::run()
@@ -643,39 +664,42 @@ void DemoApplication::render()
 
 	meshShader->unbind();
 	
-	skinnedMeshShader->bind();
-
-	model.m03 -= 5.5f;
-
-	Uniform<Matrix4>::set(skinnedMeshShader->getUniform("model"), model);
-	Uniform<Matrix4>::set(skinnedMeshShader->getUniform("view"), view);
-	Uniform<Matrix4>::set(skinnedMeshShader->getUniform("projection"), projection);
-
-	Uniform<Vector3>::set(skinnedMeshShader->getUniform("lightDirection"), Vector3(1.0f, 1.0f, 1.0f));
-
-	Uniform<Matrix4>::set(skinnedMeshShader->getUniform("animationPose"), GPUAnimationInfo.animationPosePalette);
-
-	if (!bPrecomputeSkin)
+	if (GPUSkinnedMeshes[0].hasAnimation())
 	{
-		Uniform<Matrix4>::set(skinnedMeshShader->getUniform("inverseBindPose"), skeleton.getInverseBindPose());
+		skinnedMeshShader->bind();
+
+		model.m03 -= 5.5f;
+
+		Uniform<Matrix4>::set(skinnedMeshShader->getUniform("model"), model);
+		Uniform<Matrix4>::set(skinnedMeshShader->getUniform("view"), view);
+		Uniform<Matrix4>::set(skinnedMeshShader->getUniform("projection"), projection);
+
+		Uniform<Vector3>::set(skinnedMeshShader->getUniform("lightDirection"), Vector3(1.0f, 1.0f, 1.0f));
+
+		Uniform<Matrix4>::set(skinnedMeshShader->getUniform("animationPose"), GPUAnimationInfo.animationPosePalette);
+
+		if (!bPrecomputeSkin)
+		{
+			Uniform<Matrix4>::set(skinnedMeshShader->getUniform("inverseBindPose"), skeleton.getInverseBindPose());
+		}
+
+		displayTexture->bind(skinnedMeshShader->getUniform("baseTexture"), 0);
+
+		//debugDraw->Draw(DebugDrawMode::Lines, Vector3(1.0f, 0.0f, 0.0f), mvp);
+
+		GPUSkinnedMeshes[0].bind(0, 1, 2, 3, 4);
+		GPUSkinnedMeshes[0].draw();
+		GPUSkinnedMeshes[0].unbind(0, 1, 2, 3, 4);
+
+		displayTexture->unbind(0);
+
+		skinnedMeshShader->unbind();
+
+		restPoseDebugDraw->Draw(DebugDrawMode::Lines, Vector3(1.0f, 0.0f, 0.0f), mvp);
+
+		currentPoseDebugDraw->UpdateOpenGLBuffers();
+		currentPoseDebugDraw->Draw(DebugDrawMode::Lines, Vector3(0, 0, 1), mvp);		
 	}
-
-	displayTexture->bind(skinnedMeshShader->getUniform("baseTexture"), 0);
-
-	//debugDraw->Draw(DebugDrawMode::Lines, Vector3(1.0f, 0.0f, 0.0f), mvp);
-
-	GPUSkinnedMeshes[0].bind(0, 1, 2, 3, 4);
-	GPUSkinnedMeshes[0].draw();
-	GPUSkinnedMeshes[0].unbind(0, 1, 2, 3, 4);
-
-	displayTexture->unbind(0);
-	
-	skinnedMeshShader->unbind();
-	
-	restPoseDebugDraw->Draw(DebugDrawMode::Lines, Vector3(1.0f, 0.0f, 0.0f), mvp);
-	
-	currentPoseDebugDraw->UpdateOpenGLBuffers();
-	currentPoseDebugDraw->Draw(DebugDrawMode::Lines, Vector3(0, 0, 1), mvp);
 
 	renderImGui();
 	
@@ -722,12 +746,12 @@ void DemoApplication::onKeyCallback(GLFWwindow* window, int32_t key, int32_t sca
 
 	if (key == GLFW_KEY_UP && action == GLFW_PRESS)
 	{
-		app->currentFrame = (app->currentFrame + 1) % app->animationClips[app->currentClip].getSize();
+		app->currentFrame = (app->currentFrame + 1) % app->fastAnimationClips[app->currentClip].getSize();
 	}
 
 	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
 	{
-		app->currentFrame = (app->currentFrame - 1) % app->animationClips[app->currentClip].getSize();
+		app->currentFrame = (app->currentFrame - 1) % app->fastAnimationClips[app->currentClip].getSize();
 	}
 }
 
@@ -832,10 +856,16 @@ void DemoApplication::updateImGui()
 		ImGui::SameLine();
 
 		ImGui::SetNextItemWidth(100);
-		ImGui::Combo("  ", &currentClip, &animationNamesArray[0], static_cast<int32_t>(animationNames.size()));
+		if (!animationNames.empty())
+		{
+			ImGui::Combo("  ", &currentClip, &animationNamesArray[0], static_cast<int32_t>(animationNames.size()));
+		}
 		ImGui::PushItemWidth(100);
 
-		ImGui::Text("Playing:%s", animationNames[currentClip].c_str());
+		if (!animationNames.empty())
+		{
+			ImGui::Text("Playing:%s", animationNames[currentClip].c_str());
+		}
 		
 		ImGui::End();
 	}

@@ -15,9 +15,9 @@ namespace Animation
 	public:
 		TAnimationClip();
 		
-		uint32_t getJointIdAtIndex(uint32_t index);
+		uint32_t getJointIdAtIndex(uint32_t index) const;
 		void setJointIdAtIndex(uint32_t index, uint32_t jointId);
-		uint32_t getSize();
+		uint32_t getSize() const;
 
 		float sample(AnimationPose& outAnimationPose, float inTime);
 		TAnimationTransformTrack& operator[](uint32_t jointId);

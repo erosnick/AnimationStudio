@@ -54,6 +54,8 @@ namespace Animation
 		
 		void draw();
 		void drawInstanced(uint32_t numInstances);
+		
+		inline bool& hasAnimation() { return bHasAnimation; }
 
 	protected:
 		std::vector<Vector3> positions;
@@ -76,5 +78,7 @@ namespace Animation
 		std::vector<Vector3> skinnedPosition;
 		std::vector<Vector3> skinnedNormal;
 		std::vector<Matrix4> animationPosePalette;
+
+		bool bHasAnimation;
 	};
 }

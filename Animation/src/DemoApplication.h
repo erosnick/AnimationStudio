@@ -39,7 +39,10 @@ class DemoApplication : public Application
 public:
 	void startup() override;
 
+	void initGLFW();
 	void initImGui();
+
+	void prepareRenderResources();
 
 	void prepareCubeData();
 	void prepareDebugData();
@@ -98,7 +101,7 @@ protected:
 	std::vector<SkeletalMesh> GPUSkinnedMeshes;
 	Skeleton skeleton;
 	int32_t currentClip;
-	std::vector<AnimationClip> animationClips;
+	std::vector<FastAnimationClip> fastAnimationClips;
 	std::vector<std::string> animationNames;
 	std::vector<char*> animationNamesArray;
 

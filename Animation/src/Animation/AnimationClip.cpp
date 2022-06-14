@@ -22,7 +22,7 @@ namespace Animation
 	}
 
 	template <typename TAnimationTransformTrack>
-	uint32_t TAnimationClip<TAnimationTransformTrack>::getJointIdAtIndex(uint32_t index)
+	uint32_t TAnimationClip<TAnimationTransformTrack>::getJointIdAtIndex(uint32_t index) const
 	{
 		return transformTracks[index].getJointId();
 	}
@@ -34,7 +34,7 @@ namespace Animation
 	}
 
 	template <typename TAnimationTransformTrack>
-	uint32_t TAnimationClip<TAnimationTransformTrack>::getSize()
+	uint32_t TAnimationClip<TAnimationTransformTrack>::getSize() const
 	{
 		return static_cast<uint32_t>(transformTracks.size());
 	}

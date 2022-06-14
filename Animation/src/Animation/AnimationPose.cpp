@@ -107,11 +107,45 @@ namespace Animation
 			out.resize(size);
 		}
 
+		// Slow path
+#if 0
 		for (uint32_t i = 0; i < size; i++)
 		{
 			Transform transform = getGlobalTransform(i);
 			out[i] = transformToMatrix4(transform);
 		}
+		// Fast path
+#else
+
+		uint32_t i = 0;
+		
+		for (i = 0; i < size; i++)
+		{
+			int32_t parent = parents[i];
+
+			if (parent > static_cast<int32_t>(i))
+			{
+				break;
+			}
+
+			Matrix4 global = transformToMatrix4(joints[i]);
+			
+			if (parent >= 0)
+			{
+				global = out[parent] * global;
+			}
+
+			out[i] = global;
+		}
+
+		uint32_t j = i;
+
+		for (j = 0; j < size; j++)
+		{
+			Transform globalTransform = getGlobalTransform(j);
+			out[j] = transformToMatrix4(globalTransform);
+		}
+#endif
 	}
 
 	bool AnimationPose::operator!=(const AnimationPose& other)

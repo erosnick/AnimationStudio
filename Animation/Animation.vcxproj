@@ -26,6 +26,7 @@
     <ClCompile Include="src\Animation\AnimationTrackHelpers.cpp" />
     <ClCompile Include="src\Animation\AnimationTransformTrack.cpp" />
     <ClCompile Include="src\Animation\FastAnimationTrack.cpp" />
+    <ClCompile Include="src\Animation\RearrangeBones.cpp" />
     <ClCompile Include="src\Animation\SkeletalMesh.cpp" />
     <ClCompile Include="src\Animation\Skeleton.cpp" />
     <ClCompile Include="src\Application.cpp" />
@@ -64,6 +65,7 @@
     <ClInclude Include="src\Animation\AnimationTrackHelpers.h" />
     <ClInclude Include="src\Animation\AnimationTransformTrack.h" />
     <ClInclude Include="src\Animation\FastAnimationTrack.h" />
+    <ClInclude Include="src\Animation\RearrangeBones.h" />
     <ClInclude Include="src\Animation\SkeletalMesh.h" />
     <ClInclude Include="src\Animation\Skeleton.h" />
     <ClInclude Include="src\Application.h" />

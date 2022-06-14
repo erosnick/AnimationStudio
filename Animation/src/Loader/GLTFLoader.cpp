@@ -437,9 +437,16 @@ namespace Loader
 		{
 			cgltf_node* node = &(nodes[i]);
 
-			if (node->mesh == nullptr && node->skin == nullptr)
+			if (node->mesh == nullptr)
 			{
 				continue;
+			}
+
+			bool bHasAnimation = true;
+			
+			if (node->skin == nullptr)
+			{
+				bHasAnimation = false;
 			}
 
 			int32_t numPrimitives = static_cast<int32_t>(node->mesh->primitives_count);
@@ -447,6 +454,8 @@ namespace Loader
 			for (int32_t j = 0; j < numPrimitives; j++)
 			{
 				SkeletalMesh mesh;
+
+				mesh.hasAnimation() = bHasAnimation;
 
 				cgltf_primitive* primitive = &(node->mesh->primitives[j]);
 
