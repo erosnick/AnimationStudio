@@ -197,5 +197,51 @@ namespace Animation
 
 		return true;
 	}
+
+	bool isInHierarchy(const AnimationPose& animationPose, uint32_t parent, uint32_t search)
+	{
+		// To check whether one joint is the descendant of another, follow the descendant joint
+		// all the way up the hierarchy until the root node.If any of the nodes encountered in
+		// this hierarchy are the node that you are checking against, return true
+		if (search == parent)
+		{
+			return true;
+		}
+
+		int32_t currentParent = animationPose.getParent(search);
+
+		while (currentParent >= 0)
+		{
+			if (currentParent == parent)
+			{
+				return true;
+			}
+
+			currentParent = animationPose.getParent(currentParent);
+		}
+
+		return false;
+	}
+
+	void blend(AnimationPose& result, const AnimationPose& a, const AnimationPose& b, float t, int32_t root)
+	{
+		// If two animations are blended using the whole hierarchy, the root argument to Blend
+		// will be negative.With a negative joint for the blend root, the Blend function skips the
+		// isInHierarchy check
+		uint32_t numJoints = result.getSize();
+
+		for (uint32_t i = 0; i < numJoints; i++)
+		{
+			if (root >= 0)
+			{
+				if (!isInHierarchy(result, root, i))
+				{
+					continue;
+				}
+			}
+
+			result.setLocalTransform(i, lerp(a.getLocalTransform(i), b.getLocalTransform(i), t));
+		}
+	}
 }
 

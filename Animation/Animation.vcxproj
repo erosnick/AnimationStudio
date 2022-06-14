@@ -25,6 +25,8 @@
     <ClCompile Include="src\Animation\AnimationTrack.cpp" />
     <ClCompile Include="src\Animation\AnimationTrackHelpers.cpp" />
     <ClCompile Include="src\Animation\AnimationTransformTrack.cpp" />
+    <ClCompile Include="src\Animation\Blending.cpp" />
+    <ClCompile Include="src\Animation\CrossFadeController.cpp" />
     <ClCompile Include="src\Animation\FastAnimationTrack.cpp" />
     <ClCompile Include="src\Animation\RearrangeBones.cpp" />
     <ClCompile Include="src\Animation\SkeletalMesh.cpp" />
@@ -64,6 +66,9 @@
     <ClInclude Include="src\Animation\AnimationTrack.h" />
     <ClInclude Include="src\Animation\AnimationTrackHelpers.h" />
     <ClInclude Include="src\Animation\AnimationTransformTrack.h" />
+    <ClInclude Include="src\Animation\Blending.h" />
+    <ClInclude Include="src\Animation\CrossFadeController.h" />
+    <ClInclude Include="src\Animation\CrossFadeTarget.h" />
     <ClInclude Include="src\Animation\FastAnimationTrack.h" />
     <ClInclude Include="src\Animation\RearrangeBones.h" />
     <ClInclude Include="src\Animation\SkeletalMesh.h" />

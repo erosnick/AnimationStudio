@@ -168,6 +168,12 @@
     <ClCompile Include="src\Animation\RearrangeBones.cpp">
       <Filter>Sources\Animation</Filter>
     </ClCompile>
+    <ClCompile Include="src\Animation\CrossFadeController.cpp">
+      <Filter>Sources\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\Blending.cpp">
+      <Filter>Sources\Animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -294,6 +300,15 @@
       <Filter>Includes\Animation</Filter>
     </ClInclude>
     <ClInclude Include="src\Animation\RearrangeBones.h">
+      <Filter>Includes\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\CrossFadeTarget.h">
+      <Filter>Includes\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\CrossFadeController.h">
+      <Filter>Includes\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\Blending.h">
       <Filter>Includes\Animation</Filter>
     </ClInclude>
   </ItemGroup>

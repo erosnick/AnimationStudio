@@ -40,4 +40,8 @@ namespace Animation
 		std::vector<Transform> joints;
 		std::vector<int32_t> parents;
 	};
+
+	bool isInHierarchy(const AnimationPose& animationPose, uint32_t parent, uint32_t search);
+
+	void blend(AnimationPose& result, const AnimationPose& a, const AnimationPose& b, float t, int32_t root);
 }
