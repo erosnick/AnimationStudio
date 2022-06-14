@@ -37,8 +37,8 @@ namespace Animation
 		T sampleCubic(float time, bool bLooping);
 		T hermite(float time, const T& p1, const T& s1, const T& p2, const T& s2);
 		
-		int32_t frameIndex(float time, bool bLooping) const;
-		float adjustTimeToFitTrack(float time, bool bLooping) const;
+		virtual int32_t frameIndex(float time, bool bLooping);
+		float adjustTimeToFitTrack(float time, bool bLooping);
 
 		T cast(float* value);	// Will be specialized
 	protected:

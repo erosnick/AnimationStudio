@@ -14,6 +14,8 @@ namespace Animation
 		influencesAttribute = std::make_shared<Attribute<Vector4i>>();
 
 		indexBuffer = std::make_shared<IndexBuffer>();
+		
+		bHasAnimation = false;
 	}
 
 	SkeletalMesh::SkeletalMesh(const SkeletalMesh& mesh)
@@ -42,6 +44,7 @@ namespace Animation
 		weights = mesh.weights;
 		influenceJoints = mesh.influenceJoints;
 		indices = mesh.indices;
+		bHasAnimation = mesh.bHasAnimation;
 
 		updateOpenGLBuffers();
 

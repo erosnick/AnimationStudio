@@ -5,8 +5,8 @@
 namespace Animation
 {
 	template AnimationTrack<float, 1>;
-	template AnimationTrack<Math::Vector3, 3>;
-	template AnimationTrack<Math::Quaternion, 4>;
+	template AnimationTrack<Vector3, 3>;
+	template AnimationTrack<Quaternion, 4>;
 
 	template <typename T, int32_t N>
 	AnimationTrack<T, N>::AnimationTrack()
@@ -169,7 +169,7 @@ namespace Animation
 	}
 
 	template <typename T, int32_t N>
-	int32_t AnimationTrack<T, N>::frameIndex(float time, bool bLooping) const
+	int32_t AnimationTrack<T, N>::frameIndex(float time, bool bLooping)
 	{
 		uint32_t size = static_cast<uint32_t>(keyframes.size());
 
@@ -206,7 +206,15 @@ namespace Animation
 			}
 		}
 
-		for (uint32_t i = size - 1; i >= 0 ; i--)
+		// The presented loop goes through every frame in the track. If an animation has a lot of 
+		// frames, the performance starts to get worse. Remember, this bit of code is executed for 
+		// each animated component of each animated bone in an animation clip.
+
+		// This function currently does a linear search, but it can be optimized with a more
+		// efficient search.Since time only ever increases, performing a binary search is a natural
+		// optimization to use here.However, binary search isn't the best optimization. It's possible
+		// to turn this loop into a constant lookup.
+		for (int32_t i = size - 1; i >= 0 ; i--)
 		{
 			if (time >= keyframes[i].time)
 			{
@@ -219,7 +227,7 @@ namespace Animation
 	}
 
 	template <typename T, int32_t N>
-	float AnimationTrack<T, N>::adjustTimeToFitTrack(float time, bool bLooping) const
+	float AnimationTrack<T, N>::adjustTimeToFitTrack(float time, bool bLooping)
 	{
 		uint32_t size = static_cast<uint32_t>(keyframes.size());
 

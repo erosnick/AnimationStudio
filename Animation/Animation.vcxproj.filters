@@ -162,6 +162,9 @@
     <ClCompile Include="src\UI\imgui\imgui_impl_opengl3.cpp">
       <Filter>Sources\UI\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="src\Animation\FastAnimationTrack.cpp">
+      <Filter>Sources\Animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -283,6 +286,9 @@
     </ClInclude>
     <ClInclude Include="src\UI\imgui\imgui_impl_opengl3_loader.h">
       <Filter>Includes\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\FastAnimationTrack.h">
+      <Filter>Includes\Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

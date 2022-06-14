@@ -9,8 +9,11 @@ using namespace Math;
 
 namespace Animation
 {
-	
-	AnimationClip::AnimationClip()
+	template TAnimationClip<AnimationTransformTrack>;
+	template TAnimationClip<FastAnimationTransformTrack>;
+
+	template <typename TAnimationTransformTrack>
+	TAnimationClip<TAnimationTransformTrack>::TAnimationClip()
 	{
 		name = "";
 		startTime = 0.0f;
@@ -18,22 +21,26 @@ namespace Animation
 		bLooping = true;
 	}
 
-	uint32_t AnimationClip::getJointIdAtIndex(uint32_t index)
+	template <typename TAnimationTransformTrack>
+	uint32_t TAnimationClip<TAnimationTransformTrack>::getJointIdAtIndex(uint32_t index)
 	{
 		return transformTracks[index].getJointId();
 	}
 
-	void AnimationClip::setJointIdAtIndex(uint32_t index, uint32_t jointId)
+	template <typename TAnimationTransformTrack>
+	void TAnimationClip<TAnimationTransformTrack>::setJointIdAtIndex(uint32_t index, uint32_t jointId)
 	{
 		return transformTracks[index].setJointId(jointId);
 	}
 
-	uint32_t AnimationClip::getSize()
+	template <typename TAnimationTransformTrack>
+	uint32_t TAnimationClip<TAnimationTransformTrack>::getSize()
 	{
 		return static_cast<uint32_t>(transformTracks.size());
 	}
 
-	float AnimationClip::sample(AnimationPose& outAnimationPose, float inTime)
+	template <typename TAnimationTransformTrack>
+	float TAnimationClip<TAnimationTransformTrack>::sample(AnimationPose& outAnimationPose, float inTime)
 	{
 		if (getDuration() == 0.0f)
 		{
@@ -55,7 +62,8 @@ namespace Animation
 		return time;
 	}
 
-	AnimationTransformTrack& AnimationClip::operator[](uint32_t jointId)
+	template <typename TAnimationTransformTrack>
+	TAnimationTransformTrack& TAnimationClip<TAnimationTransformTrack>::operator[](uint32_t jointId)
 	{
 		uint32_t trackSize = static_cast<uint32_t>(transformTracks.size());
 		
@@ -67,14 +75,15 @@ namespace Animation
 			}
 		}
 
-		transformTracks.emplace_back(AnimationTransformTrack());
-		AnimationTransformTrack& transformTrack = transformTracks[transformTracks.size() - 1];
+		transformTracks.emplace_back(TAnimationTransformTrack());
+		TAnimationTransformTrack& transformTrack = transformTracks[transformTracks.size() - 1];
 		transformTrack.setJointId(jointId);
 		
 		return transformTrack;
 	}
 
-	void AnimationClip::recalculateDuration()
+	template <typename TAnimationTransformTrack>
+	void TAnimationClip<TAnimationTransformTrack>::recalculateDuration()
 	{
 		startTime = 0.0f;
 		endTime = 0.0f;
@@ -103,42 +112,50 @@ namespace Animation
 		}
 	}
 
-	std::string AnimationClip::getName() const
+	template <typename TAnimationTransformTrack>
+	std::string TAnimationClip<TAnimationTransformTrack>::getName() const
 	{
 		return name;
 	}
 
-	void AnimationClip::setName(const std::string& newName)
+	template <typename TAnimationTransformTrack>
+	void TAnimationClip<TAnimationTransformTrack>::setName(const std::string& newName)
 	{
 		name = newName;
 	}
 
-	float AnimationClip::getDuration() const
+	template <typename TAnimationTransformTrack>
+	float TAnimationClip<TAnimationTransformTrack>::getDuration() const
 	{
 		return endTime - startTime;
 	}
 
-	float AnimationClip::getStartTime() const
+	template <typename TAnimationTransformTrack>
+	float TAnimationClip<TAnimationTransformTrack>::getStartTime() const
 	{
 		return startTime;
 	}
 
-	float AnimationClip::getEndTime() const
+	template <typename TAnimationTransformTrack>
+	float TAnimationClip<TAnimationTransformTrack>::getEndTime() const
 	{
 		return endTime;
 	}
 
-	bool AnimationClip::isLooping() const
+	template <typename TAnimationTransformTrack>
+	bool TAnimationClip<TAnimationTransformTrack>::isLooping() const
 	{
 		return bLooping;
 	}
 
-	void AnimationClip::setLooping(bool bInLooping)
+	template <typename TAnimationTransformTrack>
+	void TAnimationClip<TAnimationTransformTrack>::setLooping(bool bInLooping)
 	{
 		bLooping = bInLooping;
 	}
 
-	float AnimationClip::adjustTimeToFitRange(float inTime)
+	template <typename TAnimationTransformTrack>
+	float TAnimationClip<TAnimationTransformTrack>::adjustTimeToFitRange(float inTime)
 	{
 		float time = inTime;
 		
@@ -174,5 +191,22 @@ namespace Animation
 		}
 
 		return time;
+	}
+
+	FastAnimationClip optimizeAnimationClip(AnimationClip& input)
+	{
+		FastAnimationClip result;
+		result.setName(input.getName());
+		result.setLooping(input.isLooping());
+
+		uint32_t size = input.getSize();
+		for (uint32_t i = 0; i < size; i++)
+		{
+			uint32_t jointId = input.getJointIdAtIndex(i);
+			result[jointId] = optimizeAnimationTransformTrack(input[jointId]);
+		}
+
+		result.recalculateDuration();
+		return result;
 	}
 }
