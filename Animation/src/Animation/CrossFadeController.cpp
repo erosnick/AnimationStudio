@@ -1,30 +1,37 @@
 #include "CrossFadeController.h"
+#include "Blending.h"
 
 namespace Animation
 {
+	template CrossFadeController<AnimationClip>;
+	template CrossFadeController<FastAnimationClip>;
 
-	CrossFadeController::CrossFadeController()
+	template <typename TAnimationClip>
+	CrossFadeController<TAnimationClip>::CrossFadeController()
 	{
 		animationClip = nullptr;
 		time = 0.0f;
 		bWasSkeletonSet = false;
 	}
 	
-	CrossFadeController::CrossFadeController(const Skeleton& inSkeleton)
+	template <typename TAnimationClip>
+	CrossFadeController<TAnimationClip>::CrossFadeController(const Skeleton& inSkeleton)
 	{
 		animationClip = nullptr;
 		time = 0.0f;
 		setSkeleton(skeleton);
 	}
 
-	void CrossFadeController::setSkeleton(const Skeleton& inSkeleton)
+	template <typename TAnimationClip>
+	void CrossFadeController<TAnimationClip>::setSkeleton(const Skeleton& inSkeleton)
 	{
 		skeleton = inSkeleton;
 		animationPose = skeleton.getRestPose();
 		bWasSkeletonSet = true;
 	}
 
-	void CrossFadeController::play(const std::shared_ptr<AnimationClip>& target)
+	template <typename TAnimationClip>
+	void CrossFadeController<TAnimationClip>::play(TAnimationClip* target)
 	{
 		targets.clear();
 		animationClip = target;
@@ -32,7 +39,8 @@ namespace Animation
 		time = target->getStartTime();
 	}
 
-	void CrossFadeController::fadeTo(const std::shared_ptr<AnimationClip>& target, float fadeTime)
+	template <typename TAnimationClip>
+	void CrossFadeController<TAnimationClip>::fadeTo(TAnimationClip* target, float fadeTime)
 	{
 		// A fade target is only valid if it is not the first or last item in the fade
 		// list.Assuming these conditions are met, the FadeTo function adds the provided
@@ -59,10 +67,11 @@ namespace Animation
 			}
 		}
 
-		targets.emplace_back(CrossFadeTarget(target, skeleton.getRestPose(), fadeTime));
+		targets.emplace_back(CrossFadeTarget<TAnimationClip>(target, skeleton.getRestPose(), fadeTime));
 	}
 
-	void CrossFadeController::update(float deltaTime)
+	template <typename TAnimationClip>
+	void CrossFadeController<TAnimationClip>::update(float deltaTime)
 	{
 		if (animationClip == nullptr || !bWasSkeletonSet)
 		{
@@ -94,7 +103,7 @@ namespace Animation
 
 		for (uint32_t i = 0; i < numTargets; i++)
 		{
-			CrossFadeTarget& target = targets[i];
+			CrossFadeTarget<TAnimationClip>& target = targets[i];
 			target.time = target.animationClip->sample(target.animationPose, target.time + deltaTime);
 
 			target.elapsed += deltaTime;
@@ -110,22 +119,20 @@ namespace Animation
 		}
 	}
 
-	AnimationPose& Animation::CrossFadeController::getCurrentAnimationPose()
+	template <typename TAnimationClip>
+	AnimationPose& CrossFadeController<TAnimationClip>::getCurrentAnimationPose()
 	{
 		return animationPose;
 	}
 
-	const AnimationPose& Animation::CrossFadeController::getCurrentAnimationPose() const
+	template <typename TAnimationClip>
+	const AnimationPose& CrossFadeController<TAnimationClip>::getCurrentAnimationPose() const
 	{
 		return animationPose;
 	}
 
-	std::shared_ptr<AnimationClip>& Animation::CrossFadeController::getCurrentAnimationClip()
-	{
-		return animationClip;
-	}
-
-	const std::shared_ptr<AnimationClip>& Animation::CrossFadeController::getCurrentAnimationClip() const
+	template <typename TAnimationClip>
+	TAnimationClip* CrossFadeController<TAnimationClip>::getCurrentAnimationClip()
 	{
 		return animationClip;
 	}

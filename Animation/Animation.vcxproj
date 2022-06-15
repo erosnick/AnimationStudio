@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AdditiveBlendingApplication.cpp" />
     <ClCompile Include="src\Animation\AnimationClip.cpp" />
     <ClCompile Include="src\Animation\AnimationKeyFrame.cpp" />
     <ClCompile Include="src\Animation\AnimationPose.cpp" />
@@ -32,7 +33,15 @@
     <ClCompile Include="src\Animation\SkeletalMesh.cpp" />
     <ClCompile Include="src\Animation\Skeleton.cpp" />
     <ClCompile Include="src\Application.cpp" />
-    <ClCompile Include="src\DemoApplication.cpp" />
+    <ClCompile Include="src\BlendingApplication.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\CrossFadingApplication.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\DemoApplication.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\Loader\cgltf.cpp" />
     <ClCompile Include="src\Loader\glad.c" />
     <ClCompile Include="src\Loader\GLTFLoader.cpp" />
@@ -60,6 +69,7 @@
     <ClCompile Include="src\UI\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AdditiveBlendingApplication.h" />
     <ClInclude Include="src\Animation\AnimationClip.h" />
     <ClInclude Include="src\Animation\AnimationKeyFrame.h" />
     <ClInclude Include="src\Animation\AnimationPose.h" />
@@ -74,7 +84,15 @@
     <ClInclude Include="src\Animation\SkeletalMesh.h" />
     <ClInclude Include="src\Animation\Skeleton.h" />
     <ClInclude Include="src\Application.h" />
-    <ClInclude Include="src\DemoApplication.h" />
+    <ClInclude Include="src\BlendingApplication.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="src\CrossFadingApplication.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="src\DemoApplication.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="src\Loader\cgltf.h" />
     <ClInclude Include="src\Loader\cgltf_write.h" />
     <ClInclude Include="src\Loader\GLTFLoader.h" />

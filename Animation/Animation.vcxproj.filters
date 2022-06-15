@@ -174,12 +174,18 @@
     <ClCompile Include="src\Animation\Blending.cpp">
       <Filter>Sources\Animation</Filter>
     </ClCompile>
+    <ClCompile Include="src\BlendingApplication.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CrossFadingApplication.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AdditiveBlendingApplication.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
-      <Filter>Includes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DemoApplication.h">
       <Filter>Includes</Filter>
     </ClInclude>
     <ClInclude Include="src\stb_image.h">
@@ -310,6 +316,18 @@
     </ClInclude>
     <ClInclude Include="src\Animation\Blending.h">
       <Filter>Includes\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DemoApplication.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlendingApplication.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CrossFadingApplication.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AdditiveBlendingApplication.h">
+      <Filter>Includes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

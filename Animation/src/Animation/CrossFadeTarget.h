@@ -7,6 +7,7 @@
 
 namespace Animation
 {
+	template <typename TAnimationClip>
 	struct CrossFadeTarget
 	{
 		inline CrossFadeTarget() :
@@ -16,7 +17,7 @@ namespace Animation
 			elapsed(0.0f)
 		{}
 		
-		inline CrossFadeTarget(const std::shared_ptr<AnimationClip>& target, const AnimationPose& inAnimationPose, float inDuration)
+		inline CrossFadeTarget(TAnimationClip* target, const AnimationPose& inAnimationPose, float inDuration)
 		: animationClip(target),
 		  time(target->getStartTime()),
 		  animationPose(inAnimationPose),
@@ -25,7 +26,7 @@ namespace Animation
 		{}
 		
 		AnimationPose animationPose;
-		std::shared_ptr<AnimationClip> animationClip;
+		TAnimationClip* animationClip;
 		float time;
 		float duration;
 		float elapsed;

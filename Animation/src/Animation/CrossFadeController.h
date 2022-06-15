@@ -9,22 +9,22 @@
 
 namespace Animation
 {
+	template <typename TAnimationClip>
 	class CrossFadeController
 	{
 	public:
 		CrossFadeController();
 		CrossFadeController(const Skeleton& inSkeleton);
 		void setSkeleton(const Skeleton& inSkeleton);
-		void play(const std::shared_ptr<AnimationClip>& target);
-		void fadeTo(const std::shared_ptr<AnimationClip>& target, float fadeTime);
+		void play(TAnimationClip* target);
+		void fadeTo(TAnimationClip* target, float fadeTime);
 		void update(float deltaTime);
 		AnimationPose& getCurrentAnimationPose();
 		const AnimationPose& getCurrentAnimationPose() const;
-		std::shared_ptr<AnimationClip>& getCurrentAnimationClip();
-		const std::shared_ptr<AnimationClip>& getCurrentAnimationClip() const;
+		TAnimationClip* getCurrentAnimationClip();
 	protected:
-		std::vector<CrossFadeTarget> targets;
-		std::shared_ptr<AnimationClip> animationClip;
+		std::vector<CrossFadeTarget<TAnimationClip>> targets;
+		TAnimationClip* animationClip;
 		float time;
 		AnimationPose animationPose;
 		Skeleton skeleton;

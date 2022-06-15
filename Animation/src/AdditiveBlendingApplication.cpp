@@ -1,6 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include "DemoApplication.h"
+#include "AdditiveBlendingApplication.h"
 
 #include "Math/Matrix4.h"
 #include "Math/Quaternion.h"
@@ -11,7 +11,8 @@
 #include "Loader/GLTFLoader.h"
 #include "Utils/Timer.h"
 
-#include "Animation/RearrangeBones.h"
+#include <Animation/RearrangeBones.h>
+#include <Animation/Blending.h>
 
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
 
@@ -36,7 +37,6 @@ using namespace Animation;
 
 bool bPrecomputeSkin = false;
 
-uint32_t VAO = 0;
 uint32_t animationVAO = 0;
 
 #pragma region OpenGL Debug
@@ -100,7 +100,7 @@ char* convert(const std::string& s)
 	return pc;
 }
 
-void DemoApplication::startup()
+void AdditiveBlendingApplication::startup()
 {
 	initGLFW();
 	initImGui();
@@ -108,12 +108,10 @@ void DemoApplication::startup()
 	angle = 0.0f;
 	
 	prepareRenderResources();
-	prepareCubeData();
 	prepareAnimationDebugData();
-	prepareDebugData();
 }
 
-void DemoApplication::initGLFW()
+void AdditiveBlendingApplication::initGLFW()
 {
 	// glfw: initialize and configure
 // ------------------------------
@@ -159,7 +157,7 @@ void DemoApplication::initGLFW()
 	}
 }
 
-void DemoApplication::initImGui()
+void AdditiveBlendingApplication::initImGui()
 {
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
@@ -196,11 +194,8 @@ void DemoApplication::initImGui()
 	//IM_ASSERT(font != NULL);
 }
 
-void DemoApplication::prepareRenderResources()
+void AdditiveBlendingApplication::prepareRenderResources()
 {
-	shader = std::make_shared<Shader>("Assets/Shaders/Static.vert.spv", "Assets/Shaders/Lit.frag.spv");
-	meshShader = std::make_shared<Shader>("Assets/Shaders/Mesh.vert.spv", "Assets/Shaders/Mesh.frag.spv");
-
 	if (bPrecomputeSkin)
 	{
 		skinnedMeshShader = std::make_shared<Shader>("Assets/Shaders/PrecomputeSkinnedMesh.vert.spv", "Assets/Shaders/PrecomputeSkinnedMesh.frag.spv");
@@ -214,235 +209,7 @@ void DemoApplication::prepareRenderResources()
 	displayTexture = std::make_shared<Texture>("Assets/Models/Woman.png");
 }
 
-void DemoApplication::prepareCubeData()
-{
-	glGenVertexArrays(1, &VAO);
-
-	vertexPositions = std::make_shared<Attribute<Vector3>>();
-	vertexNormals = std::make_shared<Attribute<Vector3>>();
-	vertexTexCoords = std::make_shared<Attribute<Vector2>>();
-	indexBuffer = std::make_shared<IndexBuffer>();
-
-	float vertices[] = {
-		// positions          // normals           // texture coords
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
-
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
-
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
-	};
-
-	std::vector<Vector3> positions = {
-		// positions       
-		{ -0.5f, -0.5f, -0.5f },
-		{  0.5f, -0.5f, -0.5f },
-		{  0.5f,  0.5f, -0.5f },
-		{  0.5f,  0.5f, -0.5f },
-		{ -0.5f,  0.5f, -0.5f },
-		{ -0.5f, -0.5f, -0.5f },
-
-		{ -0.5f, -0.5f,  0.5f },
-		{  0.5f, -0.5f,  0.5f },
-		{  0.5f,  0.5f,  0.5f },
-		{  0.5f,  0.5f,  0.5f },
-		{ -0.5f,  0.5f,  0.5f },
-		{ -0.5f, -0.5f,  0.5f },
-
-		{ -0.5f,  0.5f,  0.5f },
-		{ -0.5f,  0.5f, -0.5f },
-		{ -0.5f, -0.5f, -0.5f },
-		{ -0.5f, -0.5f, -0.5f },
-		{ -0.5f, -0.5f,  0.5f },
-		{ -0.5f,  0.5f,  0.5f },
-
-		{  0.5f,  0.5f,  0.5f },
-		{  0.5f,  0.5f, -0.5f },
-		{  0.5f, -0.5f, -0.5f },
-		{  0.5f, -0.5f, -0.5f },
-		{  0.5f, -0.5f,  0.5f },
-		{  0.5f,  0.5f,  0.5f },
-
-		{ -0.5f, -0.5f, -0.5f },
-		{  0.5f, -0.5f, -0.5f },
-		{  0.5f, -0.5f,  0.5f },
-		{  0.5f, -0.5f,  0.5f },
-		{ -0.5f, -0.5f,  0.5f },
-		{ -0.5f, -0.5f, -0.5f },
-
-		{ -0.5f,  0.5f, -0.5f },
-		{  0.5f,  0.5f, -0.5f },
-		{  0.5f,  0.5f,  0.5f },
-		{  0.5f,  0.5f,  0.5f },
-		{ -0.5f,  0.5f,  0.5f },
-		{ -0.5f,  0.5f, -0.5f }
-	};
-
-	vertexPositions->set(positions);
-
-	std::vector<Vector3> normals = {
-		// normals       
-		{  0.0f,  0.0f, -1.0f },
-		{  0.0f,  0.0f, -1.0f },
-		{  0.0f,  0.0f, -1.0f },
-		{  0.0f,  0.0f, -1.0f },
-		{  0.0f,  0.0f, -1.0f },
-		{  0.0f,  0.0f, -1.0f },
-
-		{  0.0f,  0.0f,  1.0f },
-		{  0.0f,  0.0f,  1.0f },
-		{  0.0f,  0.0f,  1.0f },
-		{  0.0f,  0.0f,  1.0f },
-		{  0.0f,  0.0f,  1.0f },
-		{  0.0f,  0.0f,  1.0f },
-
-		{ -1.0f,  0.0f,  0.0f },
-		{ -1.0f,  0.0f,  0.0f },
-		{ -1.0f,  0.0f,  0.0f },
-		{ -1.0f,  0.0f,  0.0f },
-		{ -1.0f,  0.0f,  0.0f },
-		{ -1.0f,  0.0f,  0.0f },
-
-		{  1.0f,  0.0f,  0.0f },
-		{  1.0f,  0.0f,  0.0f },
-		{  1.0f,  0.0f,  0.0f },
-		{  1.0f,  0.0f,  0.0f },
-		{  1.0f,  0.0f,  0.0f },
-		{  1.0f,  0.0f,  0.0f },
-
-		{ 0.0f, -1.0f,  0.0f },
-		{ 0.0f, -1.0f,  0.0f },
-		{ 0.0f, -1.0f,  0.0f },
-		{ 0.0f, -1.0f,  0.0f },
-		{ 0.0f, -1.0f,  0.0f },
-		{ 0.0f, -1.0f,  0.0f },
-
-		{ 0.0f,  1.0f,  0.0f },
-		{ 0.0f,  1.0f,  0.0f },
-		{ 0.0f,  1.0f,  0.0f },
-		{ 0.0f,  1.0f,  0.0f },
-		{ 0.0f,  1.0f,  0.0f },
-		{ 0.0f,  1.0f,  0.0f }
-	};
-
-	vertexNormals->set(normals);
-
-	std::vector<Vector2> uvs = {
-		// texture
-		{ 0.0f,  0.0f },
-		{ 1.0f,  0.0f },
-		{ 1.0f,  1.0f },
-		{ 1.0f,  1.0f },
-		{ 0.0f,  1.0f },
-		{ 0.0f,  0.0f },
-
-		{ 0.0f,  0.0f },
-		{ 1.0f,  0.0f },
-		{ 1.0f,  1.0f },
-		{ 1.0f,  1.0f },
-		{ 0.0f,  1.0f },
-		{ 0.0f,  0.0f },
-
-		{ 1.0f,  0.0f },
-		{ 1.0f,  1.0f },
-		{ 0.0f,  1.0f },
-		{ 0.0f,  1.0f },
-		{ 0.0f,  0.0f },
-		{ 1.0f,  0.0f },
-
-		{ 1.0f,  0.0f },
-		{ 1.0f,  1.0f },
-		{ 0.0f,  1.0f },
-		{ 0.0f,  1.0f },
-		{ 0.0f,  0.0f },
-		{ 1.0f,  0.0f },
-
-		{ 0.0f,  1.0f },
-		{ 1.0f,  1.0f },
-		{ 1.0f,  0.0f },
-		{ 1.0f,  0.0f },
-		{ 0.0f,  0.0f },
-		{ 0.0f,  1.0f },
-
-		{ 0.0f,  1.0f },
-		{ 1.0f,  1.0f },
-		{ 1.0f,  0.0f },
-		{ 1.0f,  0.0f },
-		{ 0.0f,  0.0f },
-		{ 0.0f,  1.0f }
-	};
-
-	vertexTexCoords->set(uvs);
-
-	std::vector<uint32_t> indices = {
-		// indices
-		0, 1, 2,
-		3, 4, 5,
-
-		6, 7, 8,
-		9, 10, 11,
-
-		12, 13, 14,
-		15, 16, 17,
-
-		18, 19, 20,
-		21, 22, 23,
-
-		24, 25, 26,
-		27, 28, 29,
-
-		30, 31, 32,
-		33, 34, 35
-	};
-
-	indexBuffer->set(indices);
-}
-
-void DemoApplication::prepareDebugData()
-{
-	debugDraw = std::make_shared<DebugDraw>();
-
-	debugDraw->Push(Vector3(-0.3f, -0.3f, 0.5f));
-	debugDraw->Push(Vector3(0.3f, 0.3f, 0.5f));
-	debugDraw->UpdateOpenGLBuffers();
-}
-
-void DemoApplication::prepareAnimationDebugData()
+void AdditiveBlendingApplication::prepareAnimationDebugData()
 {
 	glGenVertexArrays(1, &animationVAO);
 	
@@ -453,7 +220,7 @@ void DemoApplication::prepareAnimationDebugData()
 
 	BoneMap boneMap = rearrangeSkeleton(skeleton);
 
-	std::vector<AnimationClip> animationClips = Loader::loadAnimationClips(data);
+	animationClips = Loader::loadAnimationClips(data);
 	fastAnimationClips.resize(animationClips.size());
 
 	for (auto i = 0; i < animationClips.size(); i++)
@@ -465,46 +232,48 @@ void DemoApplication::prepareAnimationDebugData()
 
 	std::transform(animationNames.begin(), animationNames.end(), std::back_inserter(animationNamesArray), convert);
 	
-	CPUSkinnedMeshes = Loader::loadMeshes(data);
+	GPUSkinnedMeshes = Loader::loadMeshes(data);
 
-	for (auto& mesh : CPUSkinnedMeshes)
+	for (auto& mesh : GPUSkinnedMeshes)
 	{
 		rearrangeSkeletalMesh(mesh, boneMap);
 	}
-
-	GPUSkinnedMeshes = CPUSkinnedMeshes;
 	
-	AnimationPose restPose = skeleton.getRestPose();
-	AnimationPose bindPose = skeleton.getBindPose();
-
-	GPUAnimationInfo.animationPose = restPose;
-	GPUAnimationInfo.animationPosePalette.resize(restPose.getSize());
-	CPUAnimationInfo.animationPose = restPose;
-	CPUAnimationInfo.animationPosePalette.resize(restPose.getSize());
-	
-	//CPUSkinnedMeshes[0].hasAnimation() = false;
-	//GPUSkinnedMeshes[0].hasAnimation() = false;
-	
-	if (CPUSkinnedMeshes[0].hasAnimation())
-	{
-		CPUSkinnedMeshes[0].CPUSkinUseMatrixPalette(skeleton, bindPose);
-
-		restPoseDebugDraw = std::make_shared<DebugDraw>();
-		restPoseDebugDraw->FromAnimationPose(CPUAnimationInfo.animationPose);
-		restPoseDebugDraw->UpdateOpenGLBuffers();
-
-		currentPoseDebugDraw = std::make_shared<DebugDraw>();
-		currentPoseDebugDraw->FromAnimationPose(CPUAnimationInfo.animationPose);
-		currentPoseDebugDraw->UpdateOpenGLBuffers();
-	}
+	additiveTime = 0.0f;
+	additiveDirection = 1.0f;
 
 	currentClip = 0;
 	currentFrame = 0;
+	additiveIndex = 0;
+
+	auto size = fastAnimationClips.size();
+
+	for (uint32_t i = 0; i < size; i++)
+	{
+		if (fastAnimationClips[i].getName() == "Lean_Left")
+		{
+			additiveIndex = i;
+		}
+
+		if (fastAnimationClips[i].getName() == "Walking")
+		{
+			currentClip = i;
+		}
+	}
+
+	additiveBase = makeAdditivePose(skeleton, fastAnimationClips[additiveIndex]);
+	fastAnimationClips[additiveIndex].setLooping(false);
+
+	currentPose = skeleton.getRestPose();
+	addPose = skeleton.getRestPose();
+	playbackTime = 0.0f;
+	
+	//GPUSkinnedMeshes[0].hasAnimation() = false;
 	
 	Loader::freeGLTFFile(data);
 }
 
-void DemoApplication::shutdown()
+void AdditiveBlendingApplication::shutdown()
 {
 	// Cleanup
 	ImGui_ImplOpenGL3_Shutdown();
@@ -516,7 +285,7 @@ void DemoApplication::shutdown()
 	glfwTerminate();
 }
 
-void DemoApplication::update(float deltaTime)
+void AdditiveBlendingApplication::update(float deltaTime)
 {
 	if (bUpdateRotation)
 	{
@@ -525,22 +294,6 @@ void DemoApplication::update(float deltaTime)
 	
 	updateAnimationPose(deltaTime);
 
-	if (CPUSkinnedMeshes[0].hasAnimation())
-	{
-		if (bPrecomputeSkin)
-		{
-			updatePrecomputedCPUSkin();
-			updatePrecomputedGPUSkin();
-		}
-		else
-		{
-			updateCPUSkin();
-			updateGPUSkin();
-		}
-
-		currentPoseDebugDraw->FromAnimationPose(CPUAnimationInfo.animationPose);
-	}
-
 	updateImGui();
 
 	// input
@@ -548,16 +301,38 @@ void DemoApplication::update(float deltaTime)
 	processInput();
 }
 
-void DemoApplication::updateAnimationPose(float deltaTime)
+void AdditiveBlendingApplication::updateAnimationPose(float deltaTime)
 {
-	if (CPUSkinnedMeshes[0].hasAnimation())
+	//updateAdditiveTime(deltaTime);
+
+	playbackTime = fastAnimationClips[currentClip].sample(currentPose, playbackTime + deltaTime);
+	float time = fastAnimationClips[additiveIndex].getStartTime() + (fastAnimationClips[additiveIndex].getDuration() * additiveTime);
+	
+	fastAnimationClips[additiveIndex].sample(addPose, time);
+	
+	add(currentPose, currentPose, addPose, additiveBase, -1);
+
+	currentPose.getMatrixPalette(posePalette);
+}
+
+void AdditiveBlendingApplication::updateAdditiveTime(float deltaTime)
+{
+	additiveTime += deltaTime * additiveDirection;
+
+	if (additiveTime < 0.0f)
 	{
-		CPUAnimationInfo.time = fastAnimationClips[currentClip].sample(CPUAnimationInfo.animationPose, CPUAnimationInfo.time + deltaTime);
-		GPUAnimationInfo.time = fastAnimationClips[currentClip].sample(GPUAnimationInfo.animationPose, GPUAnimationInfo.time + deltaTime);
+		additiveTime = 0.0f;
+		additiveDirection *= -1.0f;
+	}
+
+	if (additiveTime > 1.0f)
+	{
+		additiveTime = 1.0f;
+		additiveDirection *= -1.0f;
 	}
 }
 
-void DemoApplication::run()
+void AdditiveBlendingApplication::run()
 {
 	static float simulationTime = 0.0f;
 
@@ -587,7 +362,7 @@ void DemoApplication::run()
 	}
 }
 
-void DemoApplication::render()
+void AdditiveBlendingApplication::render()
 {
 	// Poll and handle events (inputs, window resize, etc.)
 	// You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
@@ -616,59 +391,11 @@ void DemoApplication::render()
 
 	//model = Matrix4::Identity;
 
-	glBindVertexArray(VAO);
-	
-	shader->bind();
-
-	//vertexPositions->bindTo(shader->getAttribute("aPosition"));
-	//vertexNormals->bindTo(shader->getAttribute("aNormal"));  
-	//vertexTexCoords->bindTo(shader->getAttribute("aUV"));
-
-	Uniform<Matrix4>::set(shader->getUniform("model"), model);
-	Uniform<Matrix4>::set(shader->getUniform("view"), view);
-	Uniform<Matrix4>::set(shader->getUniform("projection"), projection);
-
-	Uniform<Vector3>::set(shader->getUniform("lightDirection"), Vector3(1.0f, 1.0f, 1.0f));
-
-	displayTexture->bind(shader->getUniform("baseTexture"), 0);
-
-	//draw(*indexBuffer.get(), RenderMode::Triangles);
-	
-	displayTexture->unbind(0);
-
-	//vertexPositions->unbindFrom(shader->getAttribute("aPosition"));
-	//vertexNormals->unbindFrom(shader->getAttribute("aNormal"));
-	//vertexTexCoords->unbindFrom(shader->getAttribute("aUV"));
-
-	shader->unbind();
-
 	glBindVertexArray(animationVAO);
-
-	meshShader->bind();
-
-	model.m03 += 2.5f;
-	
-	Uniform<Matrix4>::set(meshShader->getUniform("model"), model);
-	Uniform<Matrix4>::set(meshShader->getUniform("view"), view);
-	Uniform<Matrix4>::set(meshShader->getUniform("projection"), projection);
-
-	Uniform<Vector3>::set(meshShader->getUniform("lightDirection"), Vector3(1.0f, 1.0f, 1.0f));
-
-	displayTexture->bind(meshShader->getUniform("baseTexture"), 0);
-
-	CPUSkinnedMeshes[0].bind(0, 1, 2, -1, -1);
-	CPUSkinnedMeshes[0].draw();
-	CPUSkinnedMeshes[0].unbind(0, 1, 2, -1, -1);
-
-	displayTexture->unbind(0);
-
-	meshShader->unbind();
 	
 	if (GPUSkinnedMeshes[0].hasAnimation())
 	{
 		skinnedMeshShader->bind();
-
-		model.m03 -= 5.5f;
 
 		Uniform<Matrix4>::set(skinnedMeshShader->getUniform("model"), model);
 		Uniform<Matrix4>::set(skinnedMeshShader->getUniform("view"), view);
@@ -676,7 +403,7 @@ void DemoApplication::render()
 
 		Uniform<Vector3>::set(skinnedMeshShader->getUniform("lightDirection"), Vector3(1.0f, 1.0f, 1.0f));
 
-		Uniform<Matrix4>::set(skinnedMeshShader->getUniform("animationPose"), GPUAnimationInfo.animationPosePalette);
+		Uniform<Matrix4>::set(skinnedMeshShader->getUniform("animationPose"), posePalette);
 
 		if (!bPrecomputeSkin)
 		{
@@ -685,20 +412,13 @@ void DemoApplication::render()
 
 		displayTexture->bind(skinnedMeshShader->getUniform("baseTexture"), 0);
 
-		//debugDraw->Draw(DebugDrawMode::Lines, Vector3(1.0f, 0.0f, 0.0f), mvp);
-
 		GPUSkinnedMeshes[0].bind(0, 1, 2, 3, 4);
 		GPUSkinnedMeshes[0].draw();
 		GPUSkinnedMeshes[0].unbind(0, 1, 2, 3, 4);
 
 		displayTexture->unbind(0);
 
-		skinnedMeshShader->unbind();
-
-		restPoseDebugDraw->Draw(DebugDrawMode::Lines, Vector3(1.0f, 0.0f, 0.0f), mvp);
-
-		currentPoseDebugDraw->UpdateOpenGLBuffers();
-		currentPoseDebugDraw->Draw(DebugDrawMode::Lines, Vector3(0, 0, 1), mvp);		
+		skinnedMeshShader->unbind();	
 	}
 
 	renderImGui();
@@ -708,14 +428,14 @@ void DemoApplication::render()
 	glfwSwapBuffers(window);
 }  
 
-void DemoApplication::onFramebufferSizeCallback(GLFWwindow* window, int32_t width, int32_t height)
+void AdditiveBlendingApplication::onFramebufferSizeCallback(GLFWwindow* window, int32_t width, int32_t height)
 {
 	// make sure the viewport matches the new window dimensions; note that width and 
 	// height will be significantly larger than specified on retina displays.
 	glViewport(0, 0, width, height);
 }
 
-void DemoApplication::onMouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset)
+void AdditiveBlendingApplication::onMouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset)
 {
 	if (ImGui::GetIO().WantCaptureMouse) {
 		return;
@@ -723,7 +443,7 @@ void DemoApplication::onMouseScrollCallback(GLFWwindow* window, double xOffset, 
 	
 	spdlog::info("{0}, {1}", xOffset, yOffset);
 
-	auto* app = static_cast<DemoApplication*>(glfwGetWindowUserPointer(window));
+	auto* app = static_cast<AdditiveBlendingApplication*>(glfwGetWindowUserPointer(window));
 
 	if (yOffset > 0.0f)
 	{
@@ -735,9 +455,9 @@ void DemoApplication::onMouseScrollCallback(GLFWwindow* window, double xOffset, 
 	}
 }
 
-void DemoApplication::onKeyCallback(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods)
+void AdditiveBlendingApplication::onKeyCallback(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods)
 {
-	auto* app = static_cast<DemoApplication*>(glfwGetWindowUserPointer(window));
+	auto* app = static_cast<AdditiveBlendingApplication*>(glfwGetWindowUserPointer(window));
 	
 	if (key == GLFW_KEY_R && action == GLFW_PRESS)
 	{
@@ -755,7 +475,7 @@ void DemoApplication::onKeyCallback(GLFWwindow* window, int32_t key, int32_t sca
 	}
 }
 
-void DemoApplication::processInput()
+void AdditiveBlendingApplication::processInput()
 {
 	if (ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard)
 	{
@@ -768,55 +488,12 @@ void DemoApplication::processInput()
 	}
 }
 
-void DemoApplication::toggleUpdateRotation()
+void AdditiveBlendingApplication::toggleUpdateRotation()
 {
 	bUpdateRotation = !bUpdateRotation;
 }
 
-void DemoApplication::updateCPUSkin()
-{
-	for (auto i = 0; i < CPUSkinnedMeshes.size(); i++)
-	{
-		//Util::Timer timer;
-		CPUSkinnedMeshes[i].CPUSkinUseMatrixPalette(skeleton, CPUAnimationInfo.animationPose);
-	}
-}
-
-void DemoApplication::updatePrecomputedCPUSkin()
-{
-	CPUAnimationInfo.animationPose.getMatrixPalette(CPUAnimationInfo.animationPosePalette);
-
-	std::vector<Matrix4> inverseBindPose = skeleton.getInverseBindPose();
-
-	for (int32_t i = 0; i < CPUAnimationInfo.animationPosePalette.size(); i++)
-	{
-		CPUAnimationInfo.animationPosePalette[i] = CPUAnimationInfo.animationPosePalette[i] * inverseBindPose[i];
-	}
-
-	for (auto i = 0; i < CPUSkinnedMeshes.size(); i++)
-	{
-		//Util::Timer timer;
-		CPUSkinnedMeshes[i].CPUSkinUseMatrixPalette(CPUAnimationInfo.animationPosePalette);
-	}
-}
-
-void DemoApplication::updateGPUSkin()
-{
-	GPUAnimationInfo.animationPose.getMatrixPalette(GPUAnimationInfo.animationPosePalette);
-}
-
-void DemoApplication::updatePrecomputedGPUSkin()
-{
-	GPUAnimationInfo.animationPose.getMatrixPalette(GPUAnimationInfo.animationPosePalette);
-	std::vector<Matrix4> inverseBindPose = skeleton.getInverseBindPose();
-
-	for (int32_t i = 0; i < GPUAnimationInfo.animationPosePalette.size(); i++)
-	{
-		GPUAnimationInfo.animationPosePalette[i] = GPUAnimationInfo.animationPosePalette[i] * inverseBindPose[i];
-	}
-}
-
-void DemoApplication::updateImGui()
+void AdditiveBlendingApplication::updateImGui()
 {
 	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame();
@@ -824,19 +501,20 @@ void DemoApplication::updateImGui()
 	ImGui::NewFrame();
 
 	// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-	if (show_demo_window)
-		ImGui::ShowDemoWindow(&show_demo_window);
+	if (showDemoWindow)
+		ImGui::ShowDemoWindow(&showDemoWindow);
 
 	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 	{
-		static float f = 0.0f;
 		static int counter = 0;
+
+		static float f = 0.0f;
 
 		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
 
 		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-		ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-		ImGui::Checkbox("Another Window", &show_another_window);
+		ImGui::Checkbox("Demo Window", &showDemoWindow);      // Edit bools storing our window open/close state
+		ImGui::Checkbox("Another Window", &showAnotherWindow);
 
 		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		ImGui::ColorEdit3("clear color", (float*)&clearColor); // Edit 3 floats representing a color
@@ -851,6 +529,8 @@ void DemoApplication::updateImGui()
 		ImGui::SetNextItemWidth(100);
 
 		ImGui::NewLine();
+
+		ImGui::SliderFloat("Additive Time", &additiveTime, 0.0f, 1.0f);
 
 		ImGui::Text("%s%s", "Animations", "(cm)");
 		ImGui::SameLine();
@@ -871,17 +551,17 @@ void DemoApplication::updateImGui()
 	}
 
 	// 3. Show another simple window.
-	if (show_another_window)
+	if (showAnotherWindow)
 	{
-		ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+		ImGui::Begin("Another Window", &showAnotherWindow);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
 		ImGui::Text("Hello from another window!");
 		if (ImGui::Button("Close Me"))
-			show_another_window = false;
+			showAnotherWindow = false;
 		ImGui::End();
 	}
 }
 
-void DemoApplication::renderImGui()
+void AdditiveBlendingApplication::renderImGui()
 {
 	// Rendering
 	ImGui::Render();
