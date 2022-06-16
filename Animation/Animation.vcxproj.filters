@@ -55,6 +55,12 @@
     <Filter Include="Sources\UI\imgui">
       <UniqueIdentifier>{418ff1ea-19b4-4c55-bc49-bef9786c54ff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Includes\Animation\IK">
+      <UniqueIdentifier>{a74307e0-ff60-468d-a36b-afbae7467508}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Animation\IK">
+      <UniqueIdentifier>{3c436372-9704-4149-8232-ea04971e9859}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -182,6 +188,9 @@
     </ClCompile>
     <ClCompile Include="src\AdditiveBlendingApplication.cpp">
       <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\IK\CCDIKSolver.cpp">
+      <Filter>Sources\Animation\IK</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -328,6 +337,12 @@
     </ClInclude>
     <ClInclude Include="src\AdditiveBlendingApplication.h">
       <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\IK\CCDIKSolver.h">
+      <Filter>Includes\Animation\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\IK\FABRIKSolver.h">
+      <Filter>Includes\Animation\IK</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -175,7 +175,7 @@ namespace GLTFHelpers
 				{
 					Vector3 normal = Vector3(scalars[index + 0], scalars[index + 1], scalars[index + 2]);
 
-					if (lengthSqure(normal) < Math::Epsilon)
+					if (lengthSqured(normal) < Math::Epsilon)
 					{
 						normal = Vector3(0.0f, 1.0f, 0.0f);
 					}

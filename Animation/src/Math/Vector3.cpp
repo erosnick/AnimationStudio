@@ -40,7 +40,7 @@ namespace Math
 	bool operator==(const Vector3& v1, const Vector3& v2)
 	{
 		Vector3 diff(v1 - v2);
-		return lengthSqure(diff) < Epsilon;
+		return lengthSqured(diff) < Epsilon;
 	}
 
 	bool operator!=(const Vector3& v1, const Vector3& v2)
@@ -53,14 +53,14 @@ namespace Math
 		return (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z);
 	}
 
-	float lengthSqure(const Vector3& v)
+	float lengthSqured(const Vector3& v)
 	{
 		return dot(v, v);
 	}
 
 	float length(const Vector3& v)
 	{
-		float squredLength = lengthSqure(v);
+		float squredLength = lengthSqured(v);
 
 		if (squredLength < Epsilon)
 		{
@@ -72,7 +72,7 @@ namespace Math
 
 	void normalize(Vector3& v)
 	{
-		float squredLength = lengthSqure(v);
+		float squredLength = lengthSqured(v);
 
 		if (squredLength < Epsilon)
 		{
@@ -88,7 +88,7 @@ namespace Math
 
 	Vector3 normalized(const Vector3& v)
 	{
-		float squredLength = lengthSqure(v);
+		float squredLength = lengthSqured(v);
 
 		if (squredLength < Epsilon)
 		{
@@ -104,8 +104,8 @@ namespace Math
 
 	float angle(const Vector3& v1, const Vector3& v2)
 	{
-		float squredLength1 = lengthSqure(v1);
-		float squredLength2 = lengthSqure(v2);
+		float squredLength1 = lengthSqured(v1);
+		float squredLength2 = lengthSqured(v2);
 
 		if (squredLength1 < Epsilon || squredLength2 < Epsilon)
 		{

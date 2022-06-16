@@ -31,6 +31,7 @@
     <ClCompile Include="src\Animation\Blending.cpp" />
     <ClCompile Include="src\Animation\CrossFadeController.cpp" />
     <ClCompile Include="src\Animation\FastAnimationTrack.cpp" />
+    <ClCompile Include="src\Animation\IK\CCDIKSolver.cpp" />
     <ClCompile Include="src\Animation\RearrangeBones.cpp" />
     <ClCompile Include="src\Animation\SkeletalMesh.cpp" />
     <ClCompile Include="src\Animation\Skeleton.cpp" />
@@ -84,6 +85,8 @@
     <ClInclude Include="src\Animation\CrossFadeController.h" />
     <ClInclude Include="src\Animation\CrossFadeTarget.h" />
     <ClInclude Include="src\Animation\FastAnimationTrack.h" />
+    <ClInclude Include="src\Animation\IK\CCDIKSolver.h" />
+    <ClInclude Include="src\Animation\IK\FABRIKSolver.h" />
     <ClInclude Include="src\Animation\RearrangeBones.h" />
     <ClInclude Include="src\Animation\SkeletalMesh.h" />
     <ClInclude Include="src\Animation\Skeleton.h" />
