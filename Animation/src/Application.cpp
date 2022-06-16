@@ -1,13 +1,13 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "AdditiveBlendingApplication.h"
+#include "DemoApplication.h"
 
 #include <iostream>
 
 int main()
 {
-    AdditiveBlendingApplication app;
+    DemoApplication app;
 
     app.startup();
 

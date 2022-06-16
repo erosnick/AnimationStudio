@@ -34,7 +34,7 @@ constexpr float fixTimestep = 0.016f;
 
 using namespace Animation;
 
-bool bPrecomputeSkin = false;
+bool bPrecomputeSkin = true;
 
 uint32_t VAO = 0;
 uint32_t animationVAO = 0;
@@ -448,6 +448,7 @@ void DemoApplication::prepareAnimationDebugData()
 	
 	cgltf_data* data = Loader::loadGLTFFile("Assets/Models/Woman.gltf");
 	//cgltf_data* data = Loader::loadGLTFFile("Assets/Models/suzanne.gltf");
+	//cgltf_data* data = Loader::loadGLTFFile("Assets/Models/mech-drone.gltf");
 
 	skeleton = Loader::loadSkeleton(data);
 
@@ -484,6 +485,8 @@ void DemoApplication::prepareAnimationDebugData()
 	
 	//CPUSkinnedMeshes[0].hasAnimation() = false;
 	//GPUSkinnedMeshes[0].hasAnimation() = false;
+
+	currentPoseDebugDraw = std::make_shared<DebugDraw>();
 	
 	if (CPUSkinnedMeshes[0].hasAnimation())
 	{
@@ -493,7 +496,6 @@ void DemoApplication::prepareAnimationDebugData()
 		restPoseDebugDraw->FromAnimationPose(CPUAnimationInfo.animationPose);
 		restPoseDebugDraw->UpdateOpenGLBuffers();
 
-		currentPoseDebugDraw = std::make_shared<DebugDraw>();
 		currentPoseDebugDraw->FromAnimationPose(CPUAnimationInfo.animationPose);
 		currentPoseDebugDraw->UpdateOpenGLBuffers();
 	}
@@ -525,21 +527,18 @@ void DemoApplication::update(float deltaTime)
 	
 	updateAnimationPose(deltaTime);
 
-	if (CPUSkinnedMeshes[0].hasAnimation())
+	if (bPrecomputeSkin)
 	{
-		if (bPrecomputeSkin)
-		{
-			updatePrecomputedCPUSkin();
-			updatePrecomputedGPUSkin();
-		}
-		else
-		{
-			updateCPUSkin();
-			updateGPUSkin();
-		}
-
-		currentPoseDebugDraw->FromAnimationPose(CPUAnimationInfo.animationPose);
+		updatePrecomputedCPUSkin();
+		updatePrecomputedGPUSkin();
 	}
+	else
+	{
+		updateCPUSkin();
+		updateGPUSkin();
+	}
+
+	currentPoseDebugDraw->FromAnimationPose(CPUAnimationInfo.animationPose);
 
 	updateImGui();
 
@@ -656,9 +655,12 @@ void DemoApplication::render()
 
 	displayTexture->bind(meshShader->getUniform("baseTexture"), 0);
 
-	CPUSkinnedMeshes[0].bind(0, 1, 2, -1, -1);
-	CPUSkinnedMeshes[0].draw();
-	CPUSkinnedMeshes[0].unbind(0, 1, 2, -1, -1);
+	for (auto i = 0; i < GPUSkinnedMeshes.size(); i++)
+	{
+		CPUSkinnedMeshes[i].bind(0, 1, 2, -1, -1);
+		CPUSkinnedMeshes[i].draw();
+		CPUSkinnedMeshes[i].unbind(0, 1, 2, -1, -1);
+	}
 
 	displayTexture->unbind(0);
 
@@ -686,10 +688,13 @@ void DemoApplication::render()
 		displayTexture->bind(skinnedMeshShader->getUniform("baseTexture"), 0);
 
 		//debugDraw->Draw(DebugDrawMode::Lines, Vector3(1.0f, 0.0f, 0.0f), mvp);
-
-		GPUSkinnedMeshes[0].bind(0, 1, 2, 3, 4);
-		GPUSkinnedMeshes[0].draw();
-		GPUSkinnedMeshes[0].unbind(0, 1, 2, 3, 4);
+		
+		for (auto i = 0; i < GPUSkinnedMeshes.size(); i++)
+		{
+			GPUSkinnedMeshes[i].bind(0, 1, 2, 3, 4);
+			GPUSkinnedMeshes[i].draw();
+			GPUSkinnedMeshes[i].unbind(0, 1, 2, 3, 4);
+		}
 
 		displayTexture->unbind(0);
 
@@ -777,8 +782,11 @@ void DemoApplication::updateCPUSkin()
 {
 	for (auto i = 0; i < CPUSkinnedMeshes.size(); i++)
 	{
-		//Util::Timer timer;
-		CPUSkinnedMeshes[i].CPUSkinUseMatrixPalette(skeleton, CPUAnimationInfo.animationPose);
+		if (CPUSkinnedMeshes[i].hasAnimation())
+		{
+			//Util::Timer timer;
+			CPUSkinnedMeshes[i].CPUSkinUseMatrixPalette(skeleton, CPUAnimationInfo.animationPose);
+		}
 	}
 }
 
