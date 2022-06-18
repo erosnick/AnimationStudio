@@ -195,6 +195,12 @@
     <ClCompile Include="src\Animation\IK\FABRIKSolver.cpp">
       <Filter>Sources\Animation\IK</Filter>
     </ClCompile>
+    <ClCompile Include="src\Math\DualQuaternion.cpp">
+      <Filter>Sources\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DualQuaternionApplication.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -347,6 +353,12 @@
     <ClInclude Include="src\Animation\IK\FABRIKSolver.h">
       <Filter>Includes\Animation\IK</Filter>
     </ClInclude>
+    <ClInclude Include="src\Math\DualQuaternion.h">
+      <Filter>Includes\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DualQuaternionApplication.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Assets\Shaders\Lit.frag">
@@ -367,16 +379,22 @@
     <CustomBuild Include="Assets\Shaders\Mesh.frag">
       <Filter>Assets\Shaders</Filter>
     </CustomBuild>
-    <CustomBuild Include="Assets\Shaders\SkinnedMesh.vert">
+    <CustomBuild Include="Assets\Shaders\LinearBlendingSkinning.vert">
       <Filter>Assets\Shaders</Filter>
     </CustomBuild>
-    <CustomBuild Include="Assets\Shaders\SkinnedMesh.frag">
+    <CustomBuild Include="Assets\Shaders\LinearBlendingSkinning.frag">
       <Filter>Assets\Shaders</Filter>
     </CustomBuild>
     <CustomBuild Include="Assets\Shaders\PrecomputeSkinnedMesh.vert">
       <Filter>Assets\Shaders</Filter>
     </CustomBuild>
     <CustomBuild Include="Assets\Shaders\PrecomputeSkinnedMesh.frag">
+      <Filter>Assets\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\DualQuaternionSkinning.vert">
+      <Filter>Assets\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\DualQuaternionSkinning.frag">
       <Filter>Assets\Shaders</Filter>
     </CustomBuild>
   </ItemGroup>

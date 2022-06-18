@@ -44,13 +44,15 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\DemoApplication.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="src\DualQuaternionApplication.cpp" />
     <ClCompile Include="src\Loader\cgltf.cpp" />
     <ClCompile Include="src\Loader\glad.c" />
     <ClCompile Include="src\Loader\GLTFLoader.cpp" />
     <ClCompile Include="src\Loader\stb_image.cpp" />
     <ClCompile Include="src\Math\Bezier.cpp" />
+    <ClCompile Include="src\Math\DualQuaternion.cpp" />
     <ClCompile Include="src\Math\Interpolation.cpp" />
     <ClCompile Include="src\Math\Math.cpp" />
     <ClCompile Include="src\Math\Matrix4.cpp" />
@@ -99,13 +101,15 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="src\DemoApplication.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="src\DualQuaternionApplication.h" />
     <ClInclude Include="src\Loader\cgltf.h" />
     <ClInclude Include="src\Loader\cgltf_write.h" />
     <ClInclude Include="src\Loader\GLTFLoader.h" />
     <ClInclude Include="src\Loader\stb_image.h" />
     <ClInclude Include="src\Math\Bezier.h" />
+    <ClInclude Include="src\Math\DualQuaternion.h" />
     <ClInclude Include="src\Math\Interpolation.h" />
     <ClInclude Include="src\Math\Math.h" />
     <ClInclude Include="src\Math\Matrix4.h" />
@@ -171,14 +175,14 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Assets\Shaders\SkinnedMesh.vert">
+    <CustomBuild Include="Assets\Shaders\LinearBlendingSkinning.vert">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).vert.spv</Outputs>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Assets\Shaders\SkinnedMesh.frag">
+    <CustomBuild Include="Assets\Shaders\LinearBlendingSkinning.frag">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).frag.spv</Outputs>
@@ -191,6 +195,18 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).frag.spv</Outputs>
     </CustomBuild>
     <CustomBuild Include="Assets\Shaders\PrecomputeSkinnedMesh.vert">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).vert.spv</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Assets\Shaders\DualQuaternionSkinning.frag">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).frag.spv</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\DualQuaternionSkinning.vert">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).vert.spv</Outputs>

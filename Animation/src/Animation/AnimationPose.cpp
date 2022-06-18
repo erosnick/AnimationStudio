@@ -148,6 +148,36 @@ namespace Animation
 #endif
 	}
 
+	void AnimationPose::getDualQuaternionPalette(std::vector<DualQuaternion>& out)
+	{
+		uint32_t size = getSize();
+
+		if (out.size() != size)
+		{
+			out.resize(size);
+		}
+
+		for (uint32_t i = 0; i < size; i++)
+		{
+			out[i] = getGlobalDualQuaternion(i);
+		}
+	}
+
+	DualQuaternion AnimationPose::getGlobalDualQuaternion(uint32_t index)
+	{
+		DualQuaternion result = transformToDualQuaternion(joints[index]);
+
+		for (int32_t parentId = parents[index]; parentId >= 0; parentId = parents[parentId])
+		{
+			DualQuaternion parent = transformToDualQuaternion(joints[parentId]);
+			
+			// Remember, multiplication is in reverse!
+			result = result * parent;
+		}
+		
+		return result;
+	}
+
 	bool AnimationPose::operator!=(const AnimationPose& other)
 	{
 		return !(*this == other);
