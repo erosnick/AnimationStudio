@@ -213,8 +213,8 @@
     <ClCompile Include="src\App\DualQuaternionApplication.cpp">
       <Filter>Sources\App</Filter>
     </ClCompile>
-    <ClCompile Include="AnimationTexture.cpp">
-      <Filter>Sources</Filter>
+    <ClCompile Include="src\Animation\AnimationTexture.cpp">
+      <Filter>Sources\Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -374,8 +374,11 @@
     <ClInclude Include="src\App\DualQuaternionApplication.h">
       <Filter>Includes\App</Filter>
     </ClInclude>
-    <ClInclude Include="AnimationTexture.h">
-      <Filter>Includes</Filter>
+    <ClInclude Include="src\Animation\AnimationBaker.h">
+      <Filter>Includes\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\AnimationTexture.h">
+      <Filter>Includes\Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

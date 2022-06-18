@@ -19,10 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AnimationTexture.cpp" />
     <ClCompile Include="src\Animation\AnimationClip.cpp" />
     <ClCompile Include="src\Animation\AnimationKeyFrame.cpp" />
     <ClCompile Include="src\Animation\AnimationPose.cpp" />
+    <ClCompile Include="src\Animation\AnimationTexture.cpp" />
     <ClCompile Include="src\Animation\AnimationTrack.cpp" />
     <ClCompile Include="src\Animation\AnimationTrackHelpers.cpp" />
     <ClCompile Include="src\Animation\AnimationTransformTrack.cpp" />
@@ -69,10 +69,11 @@
     <ClCompile Include="src\Utils\Debug.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AnimationTexture.h" />
+    <ClInclude Include="src\Animation\AnimationBaker.h" />
     <ClInclude Include="src\Animation\AnimationClip.h" />
     <ClInclude Include="src\Animation\AnimationKeyFrame.h" />
     <ClInclude Include="src\Animation\AnimationPose.h" />
+    <ClInclude Include="src\Animation\AnimationTexture.h" />
     <ClInclude Include="src\Animation\AnimationTrack.h" />
     <ClInclude Include="src\Animation\AnimationTrackHelpers.h" />
     <ClInclude Include="src\Animation\AnimationTransformTrack.h" />
