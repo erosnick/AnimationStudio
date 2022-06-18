@@ -51,7 +51,7 @@ namespace Animation
 	}
 
 	template <typename T, int32_t N>
-	T AnimationTrack<T, N>::sample(float time, bool bLooping)
+	T AnimationTrack<T, N>::sample(float time, bool bLooping) const
 	{
 		if (interpolation == Interpolation::Constant)
 		{
@@ -74,7 +74,7 @@ namespace Animation
 	}
 
 	template <typename T, int32_t N>
-	T AnimationTrack<T, N>::sampleConstant(float time, bool bLooping)
+	T AnimationTrack<T, N>::sampleConstant(float time, bool bLooping) const
 	{
 		int32_t frame = frameIndex(time, bLooping);
 
@@ -87,7 +87,7 @@ namespace Animation
 	}
 
 	template <typename T, int32_t N>
-	T AnimationTrack<T, N>::sampleLinear(float time, bool bLooping)
+	T AnimationTrack<T, N>::sampleLinear(float time, bool bLooping) const
 	{
 		int32_t currentFrame = frameIndex(time, bLooping);
 
@@ -116,7 +116,7 @@ namespace Animation
 	}
 
 	template <typename T, int32_t N>
-	T AnimationTrack<T, N>::sampleCubic(float time, bool bLooping)
+	T AnimationTrack<T, N>::sampleCubic(float time, bool bLooping) const
 	{
 		int32_t currentFrame = frameIndex(time, bLooping);
 
@@ -154,7 +154,7 @@ namespace Animation
 	}
 
 	template <typename T, int32_t N>
-	T AnimationTrack<T, N>::hermite(float time, const T& p1, const T& s1, const T& p2, const T& s2)
+	T AnimationTrack<T, N>::hermite(float time, const T& p1, const T& s1, const T& p2, const T& s2) const
 	{
 		T adjustedP2 = p2;
 		
@@ -169,7 +169,7 @@ namespace Animation
 	}
 
 	template <typename T, int32_t N>
-	int32_t AnimationTrack<T, N>::frameIndex(float time, bool bLooping)
+	int32_t AnimationTrack<T, N>::frameIndex(float time, bool bLooping) const
 	{
 		uint32_t size = static_cast<uint32_t>(keyframes.size());
 
@@ -227,7 +227,7 @@ namespace Animation
 	}
 
 	template <typename T, int32_t N>
-	float AnimationTrack<T, N>::adjustTimeToFitTrack(float time, bool bLooping)
+	float AnimationTrack<T, N>::adjustTimeToFitTrack(float time, bool bLooping) const
 	{
 		uint32_t size = static_cast<uint32_t>(keyframes.size());
 
@@ -273,19 +273,19 @@ namespace Animation
 	}
 
 	template <>
-	float AnimationTrack<float, 1>::cast(float* value)
+	float AnimationTrack<float, 1>::cast(const float* value) const
 	{
 		return value[0];
 	}
 
 	template <>
-	Vector3 AnimationTrack<Vector3, 3>::cast(float* value)
+	Vector3 AnimationTrack<Vector3, 3>::cast(const float* value) const
 	{
 		return Vector3(value[0], value[1], value[2]);
 	}
 
 	template <>
-	Quaternion AnimationTrack<Quaternion, 4>::cast(float* value)
+	Quaternion AnimationTrack<Quaternion, 4>::cast(const float* value) const
 	{
 		Quaternion result = Quaternion(value[0], value[1], value[2], value[3]);
 		return normalized(result);

@@ -142,7 +142,7 @@ namespace Animation
 	}
 
 	template <typename TVectorTrack, typename TQuaternionTrack>
-	Transform TAnimationTransformTrack<TVectorTrack, TQuaternionTrack>::sample(const Transform& reference, float time, bool bLooping)
+	Transform TAnimationTransformTrack<TVectorTrack, TQuaternionTrack>::sample(const Transform& reference, float time, bool bLooping) const
 	{
 		// Assign default values
 		Transform result = reference;

@@ -19,7 +19,7 @@ namespace Animation
 		void setJointIdAtIndex(uint32_t index, uint32_t jointId);
 		uint32_t getSize() const;
 
-		float sample(AnimationPose& outAnimationPose, float inTime);
+		float sample(AnimationPose& outAnimationPose, float inTime) const;
 		TAnimationTransformTrack& operator[](uint32_t jointId);
 
 		void recalculateDuration();
@@ -32,7 +32,7 @@ namespace Animation
 		void setLooping(bool bInLooping);
 		
 	protected:
-		float adjustTimeToFitRange(float inTime);
+		float adjustTimeToFitRange(float inTime) const;
 		
 	protected:
 		std::vector<TAnimationTransformTrack> transformTracks;

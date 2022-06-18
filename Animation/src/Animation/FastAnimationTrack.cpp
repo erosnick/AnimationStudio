@@ -55,12 +55,12 @@ namespace Animation
 	}
 
 	template <typename T, int32_t N>
-	int32_t FastAnimationTrack<T, N>::frameIndex(float time, bool bLooping)
+	int32_t FastAnimationTrack<T, N>::frameIndex(float time, bool bLooping) const
 	{
 		// The FrameIndex function is responsible for finding the frame right before a given time.
 		// The optimized FastTrack class uses a lookup array instead of looping through every
 		// frame of the track.All input times have a very similar performance cost.
-		std::vector<AnimationKeyFrame<N>>& keyframes = AnimationTrack<T, N>::keyframes;
+		const std::vector<AnimationKeyFrame<N>>& keyframes = AnimationTrack<T, N>::keyframes;
 
 		uint32_t size = static_cast<uint32_t>(keyframes.size());
 

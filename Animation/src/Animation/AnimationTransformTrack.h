@@ -24,7 +24,7 @@ namespace Animation
 		float getEndTime() const;
 		bool isValid() const;
 		
-		Transform sample(const Transform& reference, float time, bool bLooping);
+		Transform sample(const Transform& reference, float time, bool bLooping) const;
 	protected:
 		uint32_t jointId;
 		TVectorTrack position;

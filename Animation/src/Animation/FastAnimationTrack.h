@@ -13,7 +13,7 @@ namespace Animation
 	public:
 		void updateIndexLookupTable();
 	protected:
-		virtual int32_t frameIndex(float time, bool bLooping) override;
+		virtual int32_t frameIndex(float time, bool bLooping) const override;
 		
 	protected:
 		std::vector<uint32_t> sampledFrames;

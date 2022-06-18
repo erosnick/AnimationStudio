@@ -40,7 +40,7 @@ namespace Animation
 	}
 
 	template <typename TAnimationTransformTrack>
-	float TAnimationClip<TAnimationTransformTrack>::sample(AnimationPose& outAnimationPose, float inTime)
+	float TAnimationClip<TAnimationTransformTrack>::sample(AnimationPose& outAnimationPose, float inTime) const
 	{
 		if (getDuration() == 0.0f)
 		{
@@ -155,7 +155,7 @@ namespace Animation
 	}
 
 	template <typename TAnimationTransformTrack>
-	float TAnimationClip<TAnimationTransformTrack>::adjustTimeToFitRange(float inTime)
+	float TAnimationClip<TAnimationTransformTrack>::adjustTimeToFitRange(float inTime) const
 	{
 		float time = inTime;
 		

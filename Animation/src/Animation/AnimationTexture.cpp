@@ -99,7 +99,7 @@ namespace Animation
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	uint32_t AnimationTexture::getSize()
+	uint32_t AnimationTexture::getSize() const
 	{
 		return size;
 	}

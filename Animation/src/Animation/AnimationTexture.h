@@ -24,7 +24,7 @@ namespace Animation
 		
 		void uploadTextureDataToGPU();
 
-		uint32_t getSize();
+		uint32_t getSize() const;
 		void resize(uint32_t newSize);
 		
 		const std::vector<float>& getData() const;
