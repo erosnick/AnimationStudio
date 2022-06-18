@@ -34,7 +34,7 @@ struct AnimationInstance {
 	inline AnimationInstance() : clipIndex(0), time(0.0f) { }
 };
 
-class DualQuaternionApplication : public Application
+class DemoApplication : public Application
 {
 public:
 	void startup() override;
@@ -43,7 +43,9 @@ public:
 	void initImGui();
 
 	void prepareRenderResources();
-	
+
+	void prepareCubeData();
+	void prepareDebugData();
 	void prepareAnimationDebugData();
 
 	void shutdown() override;
@@ -63,6 +65,13 @@ public:
 	// ---------------------------------------------------------------------------------------------------------
 	void processInput();
 
+	void toggleUpdateRotation();
+
+	void updateCPUSkin();			// CPU蒙皮更新(变换顶点时计算AnimationPosePalette * inverseBindPose)
+	void updatePrecomputedCPUSkin();	// 预计算CPU蒙皮更新(变换顶点前预计算AnimationPosePalette * inverseBindPose)
+	void updateGPUSkin();			// GPU蒙皮矩阵调色板更新(顶点着色器计算AnimationPosePalette * inverseBindPose)
+	void updatePrecomputedGPUSkin();	// 预计算GPU蒙皮矩阵调色板更新(传入顶点着色器前预计算AnimationPosePalette * inverseBindPose)
+
 private:
 	void updateImGui();
 
@@ -72,23 +81,25 @@ protected:
 	const unsigned int SCREEN_HEIGHT = 720;
 	GLFWwindow* window = nullptr;
 
-	std::shared_ptr<Shader> linearBlendingSkinningShader;
-	std::shared_ptr<Shader> dualQuaternionSkinningShader;
+	std::shared_ptr<Shader> shader;
+	std::shared_ptr<Shader> meshShader;
+	std::shared_ptr<Shader> skinnedMeshShader;
+	std::shared_ptr<Attribute<Vector3>> vertexPositions;
+	std::shared_ptr<Attribute<Vector3>> vertexNormals;
+	std::shared_ptr<Attribute<Vector2>> vertexTexCoords;
+	std::shared_ptr<IndexBuffer> indexBuffer;
 	std::shared_ptr<Texture> displayTexture;
+	std::shared_ptr<DebugDraw> debugDraw;
+	std::shared_ptr<DebugDraw> restPoseDebugDraw;
+	std::shared_ptr<DebugDraw> currentPoseDebugDraw;
+	float angle;
+	Vector3 eye = { 0.0f, 5.0f, 7.0f };
+	Vector3 center = { 0.0f, 3.0f, 0.0f };
+	bool bUpdateRotation = false;
 
-	Vector3 eye = { 0.0f, 3.0f, 14.0f };
-	Vector3 center = { 0.0f, 0.0f, 0.0f };
-
-	std::vector<SkeletalMesh> meshes;
+	std::vector<SkeletalMesh> CPUSkinnedMeshes;
+	std::vector<SkeletalMesh> GPUSkinnedMeshes;
 	Skeleton skeleton;
-
-	AnimationPose currentPose;
-
-	std::vector<DualQuaternion> dualQuaternionPosePalette;
-	std::vector<DualQuaternion> dualQuaternionInverseBindPosePalette;
-	std::vector<Matrix4> linearBlendingPosePalette;
-	std::vector<Matrix4> linearBlendingInverseBindPosePalette;
-		
 	int32_t currentClip;
 	std::vector<FastAnimationClip> fastAnimationClips;
 	std::vector<std::string> animationNames;
@@ -96,10 +107,17 @@ protected:
 
 	float playbackTime;
 	int32_t currentFrame = 0;
-	
+	AnimationInstance GPUAnimationInfo;
+	AnimationInstance CPUAnimationInfo;
+
 	// Our state
-	bool show_demo_window = true;
-	bool show_another_window = false;
+	bool bShowDemoWindow = true;
+	bool bShowAnotherWindow = false;
+	bool bPrecomputeSkin = true;
+
+	uint32_t VAO = 0;
+	uint32_t animationVAO = 0;
+	
 	Vector4 clearColor = { 0.45f, 0.55f, 0.60f, 1.0f };
 private:
 	void renderImGui();

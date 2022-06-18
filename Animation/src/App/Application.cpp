@@ -1,13 +1,13 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "DualQuaternionApplication.h"
+#include "DemoApplication.h"
 
 #include <iostream>
 
 int main()
 {
-    DualQuaternionApplication app;
+    DemoApplication app;
 
     app.startup();
 

@@ -61,14 +61,17 @@
     <Filter Include="Sources\UI\imgui">
       <UniqueIdentifier>{418ff1ea-19b4-4c55-bc49-bef9786c54ff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Utils">
+      <UniqueIdentifier>{50cd8a61-1dcb-4bed-a344-fa9b40201c11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\App">
+      <UniqueIdentifier>{f5ef3fb9-fd3e-430b-9923-5db82d94dd71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\App">
+      <UniqueIdentifier>{1caba743-206a-4ccb-b285-9f14d817432a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Application.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DemoApplication.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\Math\Vector3.cpp">
       <Filter>Sources\Math</Filter>
     </ClCompile>
@@ -180,15 +183,6 @@
     <ClCompile Include="src\Animation\Blending.cpp">
       <Filter>Sources\Animation</Filter>
     </ClCompile>
-    <ClCompile Include="src\BlendingApplication.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\CrossFadingApplication.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AdditiveBlendingApplication.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\Animation\IK\CCDIKSolver.cpp">
       <Filter>Sources\Animation\IK</Filter>
     </ClCompile>
@@ -198,17 +192,32 @@
     <ClCompile Include="src\Math\DualQuaternion.cpp">
       <Filter>Sources\Math</Filter>
     </ClCompile>
-    <ClCompile Include="src\DualQuaternionApplication.cpp">
+    <ClCompile Include="src\Utils\Debug.cpp">
+      <Filter>Sources\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\App\AdditiveBlendingApplication.cpp">
+      <Filter>Sources\App</Filter>
+    </ClCompile>
+    <ClCompile Include="src\App\Application.cpp">
+      <Filter>Sources\App</Filter>
+    </ClCompile>
+    <ClCompile Include="src\App\BlendingApplication.cpp">
+      <Filter>Sources\App</Filter>
+    </ClCompile>
+    <ClCompile Include="src\App\CrossFadingApplication.cpp">
+      <Filter>Sources\App</Filter>
+    </ClCompile>
+    <ClCompile Include="src\App\DemoApplication.cpp">
+      <Filter>Sources\App</Filter>
+    </ClCompile>
+    <ClCompile Include="src\App\DualQuaternionApplication.cpp">
+      <Filter>Sources\App</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationTexture.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Application.h">
-      <Filter>Includes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\stb_image.h">
-      <Filter>Includes</Filter>
-    </ClInclude>
     <ClInclude Include="src\Math\Vector3.h">
       <Filter>Includes\Math</Filter>
     </ClInclude>
@@ -335,18 +344,6 @@
     <ClInclude Include="src\Animation\Blending.h">
       <Filter>Includes\Animation</Filter>
     </ClInclude>
-    <ClInclude Include="src\DemoApplication.h">
-      <Filter>Includes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlendingApplication.h">
-      <Filter>Includes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\CrossFadingApplication.h">
-      <Filter>Includes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AdditiveBlendingApplication.h">
-      <Filter>Includes</Filter>
-    </ClInclude>
     <ClInclude Include="src\Animation\IK\CCDIKSolver.h">
       <Filter>Includes\Animation\IK</Filter>
     </ClInclude>
@@ -356,7 +353,28 @@
     <ClInclude Include="src\Math\DualQuaternion.h">
       <Filter>Includes\Math</Filter>
     </ClInclude>
-    <ClInclude Include="src\DualQuaternionApplication.h">
+    <ClInclude Include="src\Utils\Debug.h">
+      <Filter>Includes\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\App\AdditiveBlendingApplication.h">
+      <Filter>Includes\App</Filter>
+    </ClInclude>
+    <ClInclude Include="src\App\Application.h">
+      <Filter>Includes\App</Filter>
+    </ClInclude>
+    <ClInclude Include="src\App\BlendingApplication.h">
+      <Filter>Includes\App</Filter>
+    </ClInclude>
+    <ClInclude Include="src\App\CrossFadingApplication.h">
+      <Filter>Includes\App</Filter>
+    </ClInclude>
+    <ClInclude Include="src\App\DemoApplication.h">
+      <Filter>Includes\App</Filter>
+    </ClInclude>
+    <ClInclude Include="src\App\DualQuaternionApplication.h">
+      <Filter>Includes\App</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationTexture.h">
       <Filter>Includes</Filter>
     </ClInclude>
   </ItemGroup>

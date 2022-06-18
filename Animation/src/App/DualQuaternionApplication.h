@@ -25,8 +25,8 @@ using namespace Debug;
 struct GLFWwindow;
 
 struct AnimationInstance {
-	AnimationPose pose;
-	std::vector <Matrix4> posePalette;
+	AnimationPose animationPose;
+	std::vector <Matrix4> animationPosePalette;
 	unsigned int clipIndex;
 	float time;
 	Transform model;
@@ -34,7 +34,7 @@ struct AnimationInstance {
 	inline AnimationInstance() : clipIndex(0), time(0.0f) { }
 };
 
-class AdditiveBlendingApplication : public Application
+class DualQuaternionApplication : public Application
 {
 public:
 	void startup() override;
@@ -43,6 +43,7 @@ public:
 	void initImGui();
 
 	void prepareRenderResources();
+	
 	void prepareAnimationDebugData();
 
 	void shutdown() override;
@@ -50,10 +51,12 @@ public:
 
 	void updateAnimationPose(float deltaTime);
 
-	void updateAdditiveTime(float deltaTime);
-
 	void run() override;
 	void render() override;
+	
+	bool WGLExtensionSupported(const std::string& extension);
+
+	void toggleVSync();
 	
 	// glfw: whenever the window size changed (by OS or user resize) this callback function executes
 	// ---------------------------------------------------------------------------------------------
@@ -64,8 +67,6 @@ public:
 	// ---------------------------------------------------------------------------------------------------------
 	void processInput();
 
-	void toggleUpdateRotation();
-	
 private:
 	void updateImGui();
 
@@ -75,39 +76,41 @@ protected:
 	const unsigned int SCREEN_HEIGHT = 720;
 	GLFWwindow* window = nullptr;
 
-	std::shared_ptr<Shader> skinnedMeshShader;
+	std::shared_ptr<Shader> linearBlendingSkinningShader;
+	std::shared_ptr<Shader> dualQuaternionSkinningShader;
 	std::shared_ptr<Texture> displayTexture;
-	
-	float angle;
-	Vector3 eye = { 0.0f, 5.0f, 7.0f };
-	Vector3 center = { 0.0f, 3.0f, 0.0f };
-	bool bUpdateRotation = false;
 
-	std::vector<SkeletalMesh> GPUSkinnedMeshes;
+	Vector3 eye = { 0.0f, 3.0f, 14.0f };
+	Vector3 center = { 0.0f, 0.0f, 0.0f };
+
+	std::vector<SkeletalMesh> meshes;
 	Skeleton skeleton;
-	std::vector<AnimationClip> animationClips;
+
+	AnimationPose currentPose;
+
+	std::vector<DualQuaternion> dualQuaternionPosePalette;
+	std::vector<DualQuaternion> dualQuaternionInverseBindPosePalette;
+	std::vector<Matrix4> linearBlendingPosePalette;
+	std::vector<Matrix4> linearBlendingInverseBindPosePalette;
+		
+	int32_t currentClip;
 	std::vector<FastAnimationClip> fastAnimationClips;
 	std::vector<std::string> animationNames;
 	std::vector<char*> animationNamesArray;
 
-	AnimationPose currentPose;
-	AnimationPose addPose;
-	AnimationPose additiveBase;
+	float playbackTime;
+	int32_t currentFrame = 0;
 	
-	std::vector<Matrix4> posePalette;
-	
-	float additiveTime = 0.0f;
-	float additiveDirection = 1.0f;
-	float playbackTime = 0.0f;
-
-	uint32_t additiveIndex = 0;
-
-	int32_t currentClip;
-	int32_t currentFrame;
-
 	// Our state
-	bool showDemoWindow = true;
-	bool showAnotherWindow = false;
+	bool bShowDemoWindow = true;
+	bool bShowAnotherWindow = false;
+	bool bVSync = false;
+
+	bool bPrecomputeSkin = true;
+
+	uint32_t VAO = 0;
+	uint32_t animationVAO = 0;
+
 	Vector4 clearColor = { 0.45f, 0.55f, 0.60f, 1.0f };
 private:
 	void renderImGui();

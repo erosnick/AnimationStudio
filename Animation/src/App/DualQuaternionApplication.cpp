@@ -10,6 +10,7 @@
 #include "Renderer/Renderer.h"
 #include "Loader/GLTFLoader.h"
 #include "Utils/Timer.h"
+#include "Utils/Debug.h"
 
 #include "Animation/RearrangeBones.h"
 
@@ -20,6 +21,8 @@
 #include <UI/imgui/imgui_impl_opengl3.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <Windows.h>
+#include <GLFW/wglext.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -33,72 +36,6 @@
 constexpr float fixTimestep = 0.016f;
 
 using namespace Animation;
-
-bool bPrecomputeSkin = true;
-
-uint32_t VAO = 0;
-uint32_t animationVAO = 0;
-
-#pragma region OpenGL Debug
-void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum severity,
-	GLsizei length, const char* message, const void* userParam);
-
-void APIENTRY glDebugOutput(GLenum source,
-	GLenum type,
-	unsigned int id,
-	GLenum severity,
-	GLsizei length,
-	const char* message,
-	const void* userParam)
-{
-	// ignore non-significant error/warning codes
-	if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
-
-	spdlog::info("---------------\n");
-	spdlog::info("Debug message ({0}): {1}\n", id, message);
-
-	switch (source)
-	{
-		case GL_DEBUG_SOURCE_API:             spdlog::info("Source: API"); ; break;
-		case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   spdlog::info("Source: Window System"); break;
-		case GL_DEBUG_SOURCE_SHADER_COMPILER: spdlog::info("Source: Shader Compiler"); break;
-		case GL_DEBUG_SOURCE_THIRD_PARTY:     spdlog::info("Source: Third Party"); break;
-		case GL_DEBUG_SOURCE_APPLICATION:     spdlog::info("Source: Application"); break;
-		case GL_DEBUG_SOURCE_OTHER:           spdlog::info("Source: Other"); break;
-	}
-	spdlog::info("\n");
-
-	switch (type)
-	{
-		case GL_DEBUG_TYPE_ERROR:               spdlog::info("Type: Error"); break;
-		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: spdlog::info("Type: Deprecated Behaviour"); break;
-		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  spdlog::info("Type: Undefined Behaviour"); break;
-		case GL_DEBUG_TYPE_PORTABILITY:         spdlog::info("Type: Portability"); break;
-		case GL_DEBUG_TYPE_PERFORMANCE:         spdlog::info("Type: Performance"); break;
-		case GL_DEBUG_TYPE_MARKER:              spdlog::info("Type: Marker"); break;
-		case GL_DEBUG_TYPE_PUSH_GROUP:          spdlog::info("Type: Push Group"); break;
-		case GL_DEBUG_TYPE_POP_GROUP:           spdlog::info("Type: Pop Group"); break;
-		case GL_DEBUG_TYPE_OTHER:               spdlog::info("Type: Other"); break;
-	}
-	spdlog::info("\n");
-
-	switch (severity)
-	{
-		case GL_DEBUG_SEVERITY_HIGH:         spdlog::info("Severity: high"); break;
-		case GL_DEBUG_SEVERITY_MEDIUM:       spdlog::info("Severity: medium"); break;
-		case GL_DEBUG_SEVERITY_LOW:          spdlog::info("Severity: low"); break;
-		case GL_DEBUG_SEVERITY_NOTIFICATION: spdlog::info("Severity: notification"); break;
-	} 
-	spdlog::info("\n\n");
-}
-#pragma endregion OpenGL Debug
-
-char* convert(const std::string& s)
-{
-	char* pc = new char[s.size() + 1];
-	std::strcpy(pc, s.c_str());
-	return pc;
-}
 
 void DualQuaternionApplication::startup()
 {
@@ -150,7 +87,7 @@ void DualQuaternionApplication::initGLFW()
 	{
 		glEnable(GL_DEBUG_OUTPUT);
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-		glDebugMessageCallback(glDebugOutput, nullptr);
+		glDebugMessageCallback(Debug::glDebugOutput, nullptr);
 		glDebugMessageControl(GL_DEBUG_SOURCE_API, GL_DEBUG_TYPE_ERROR, GL_DEBUG_SEVERITY_HIGH, 0, nullptr, GL_TRUE);
 	}
 }
@@ -205,7 +142,7 @@ void DualQuaternionApplication::prepareAnimationDebugData()
 {
 	glGenVertexArrays(1, &animationVAO);
 	
-	cgltf_data* data = Loader::loadGLTFFile("Assets/Models/dq.gltf");
+	cgltf_data* data = Loader::loadGLTFFile("Assets/Models/DualQuaternion.gltf");
 
 	skeleton = Loader::loadSkeleton(data);
 
@@ -221,7 +158,7 @@ void DualQuaternionApplication::prepareAnimationDebugData()
 		animationNames.emplace_back(animationClips[i].getName());
 	}
 
-	std::transform(animationNames.begin(), animationNames.end(), std::back_inserter(animationNamesArray), convert);
+	std::transform(animationNames.begin(), animationNames.end(), std::back_inserter(animationNamesArray), Debug::convert);
 	
 	meshes = Loader::loadMeshes(data);
 
@@ -387,7 +324,44 @@ void DualQuaternionApplication::render()
 	// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 	// -------------------------------------------------------------------------------
 	glfwSwapBuffers(window);
-}  
+}
+
+bool DualQuaternionApplication::WGLExtensionSupported(const std::string& extension)
+{
+	PFNWGLGETEXTENSIONSSTRINGEXTPROC _wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)wglGetProcAddress("wglGetExtensionsStringEXT");
+	bool swapControlSupported = strstr(_wglGetExtensionsStringEXT(), "WGL_EXT_swap_control") != 0;
+
+	return swapControlSupported;
+}
+
+void DualQuaternionApplication::toggleVSync()
+{
+	PFNWGLSWAPINTERVALEXTPROC       wglSwapIntervalEXT = nullptr;
+	PFNWGLGETSWAPINTERVALEXTPROC    wglGetSwapIntervalEXT = nullptr;
+
+	if (WGLExtensionSupported("WGL_EXT_swap_control"))
+	{
+		bVSync = !bVSync;
+		
+		PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+		PFNWGLGETSWAPINTERVALEXTPROC wglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC)wglGetProcAddress("wglGetSwapIntervalEXT");
+
+		wglSwapIntervalEXT(bVSync);
+		
+		if (bVSync)
+		{
+			std::cout << "Enabled vsync\n";
+		}
+		else
+		{
+			std::cout << "Disabled vsync\n";
+		}
+	}
+	else
+	{ // !swapControlSupported
+		std::cout << "WGL_EXT_swap_control not supported\n";
+	}
+}
 
 void DualQuaternionApplication::onFramebufferSizeCallback(GLFWwindow* window, int32_t width, int32_t height)
 {
@@ -424,6 +398,11 @@ void DualQuaternionApplication::onKeyCallback(GLFWwindow* window, int32_t key, i
 	{
 	}
 
+	if (key == GLFW_KEY_V && action == GLFW_PRESS)
+	{
+		app->toggleVSync();
+	}
+
 	if (key == GLFW_KEY_UP && action == GLFW_PRESS)
 	{
 		app->currentFrame = (app->currentFrame + 1) % app->fastAnimationClips[app->currentClip].getSize();
@@ -456,8 +435,8 @@ void DualQuaternionApplication::updateImGui()
 	ImGui::NewFrame();
 
 	// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-	if (show_demo_window)
-		ImGui::ShowDemoWindow(&show_demo_window);
+	if (bShowDemoWindow)
+		ImGui::ShowDemoWindow(&bShowDemoWindow);
 
 	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 	{
@@ -467,8 +446,9 @@ void DualQuaternionApplication::updateImGui()
 		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
 
 		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-		ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-		ImGui::Checkbox("Another Window", &show_another_window);
+		ImGui::Checkbox("Demo Window", &bShowDemoWindow);      // Edit bools storing our window open/close state
+		ImGui::Checkbox("Another Window", &bShowAnotherWindow);
+		ImGui::Checkbox("VSync", &bVSync);
 
 		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		ImGui::ColorEdit3("clear color", (float*)&clearColor); // Edit 3 floats representing a color
@@ -503,12 +483,12 @@ void DualQuaternionApplication::updateImGui()
 	}
 
 	// 3. Show another simple window.
-	if (show_another_window)
+	if (bShowAnotherWindow)
 	{
-		ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+		ImGui::Begin("Another Window", &bShowAnotherWindow);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
 		ImGui::Text("Hello from another window!");
 		if (ImGui::Button("Close Me"))
-			show_another_window = false;
+			bShowAnotherWindow = false;
 		ImGui::End();
 	}
 }

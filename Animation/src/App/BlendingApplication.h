@@ -103,8 +103,12 @@ protected:
 	int32_t currentFrame;
 
 	// Our state
-	bool show_demo_window = true;
-	bool show_another_window = false;
+	bool bShowDemoWindow = true;
+	bool bShowAnotherWindow = false;
+	bool bPrecomputeSkin = false;
+
+	uint32_t animationVAO = 0;
+	
 	Vector4 clearColor = { 0.45f, 0.55f, 0.60f, 1.0f };
 private:
 	void renderImGui();

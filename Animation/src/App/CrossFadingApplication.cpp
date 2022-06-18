@@ -1,6 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include "BlendingApplication.h"
+#include "CrossFadingApplication.h"
 
 #include "Math/Matrix4.h"
 #include "Math/Quaternion.h"
@@ -10,9 +10,10 @@
 #include "Renderer/Renderer.h"
 #include "Loader/GLTFLoader.h"
 #include "Utils/Timer.h"
+#include "Utils/Debug.h"
 
-#include <Animation/RearrangeBones.h>
 #include <Animation/Blending.h>
+#include <Animation/RearrangeBones.h>
 
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
 
@@ -35,72 +36,7 @@ constexpr float fixTimestep = 0.016f;
 
 using namespace Animation;
 
-bool bPrecomputeSkin = false;
-
-uint32_t animationVAO = 0;
-
-#pragma region OpenGL Debug
-void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum severity,
-	GLsizei length, const char* message, const void* userParam);
-
-void APIENTRY glDebugOutput(GLenum source,
-	GLenum type,
-	unsigned int id,
-	GLenum severity,
-	GLsizei length,
-	const char* message,
-	const void* userParam)
-{
-	// ignore non-significant error/warning codes
-	if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
-
-	spdlog::info("---------------\n");
-	spdlog::info("Debug message ({0}): {1}\n", id, message);
-
-	switch (source)
-	{
-		case GL_DEBUG_SOURCE_API:             spdlog::info("Source: API"); ; break;
-		case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   spdlog::info("Source: Window System"); break;
-		case GL_DEBUG_SOURCE_SHADER_COMPILER: spdlog::info("Source: Shader Compiler"); break;
-		case GL_DEBUG_SOURCE_THIRD_PARTY:     spdlog::info("Source: Third Party"); break;
-		case GL_DEBUG_SOURCE_APPLICATION:     spdlog::info("Source: Application"); break;
-		case GL_DEBUG_SOURCE_OTHER:           spdlog::info("Source: Other"); break;
-	}
-	spdlog::info("\n");
-
-	switch (type)
-	{
-		case GL_DEBUG_TYPE_ERROR:               spdlog::info("Type: Error"); break;
-		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: spdlog::info("Type: Deprecated Behaviour"); break;
-		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  spdlog::info("Type: Undefined Behaviour"); break;
-		case GL_DEBUG_TYPE_PORTABILITY:         spdlog::info("Type: Portability"); break;
-		case GL_DEBUG_TYPE_PERFORMANCE:         spdlog::info("Type: Performance"); break;
-		case GL_DEBUG_TYPE_MARKER:              spdlog::info("Type: Marker"); break;
-		case GL_DEBUG_TYPE_PUSH_GROUP:          spdlog::info("Type: Push Group"); break;
-		case GL_DEBUG_TYPE_POP_GROUP:           spdlog::info("Type: Pop Group"); break;
-		case GL_DEBUG_TYPE_OTHER:               spdlog::info("Type: Other"); break;
-	}
-	spdlog::info("\n");
-
-	switch (severity)
-	{
-		case GL_DEBUG_SEVERITY_HIGH:         spdlog::info("Severity: high"); break;
-		case GL_DEBUG_SEVERITY_MEDIUM:       spdlog::info("Severity: medium"); break;
-		case GL_DEBUG_SEVERITY_LOW:          spdlog::info("Severity: low"); break;
-		case GL_DEBUG_SEVERITY_NOTIFICATION: spdlog::info("Severity: notification"); break;
-	} 
-	spdlog::info("\n\n");
-}
-#pragma endregion OpenGL Debug
-
-char* convert(const std::string& s)
-{
-	char* pc = new char[s.size() + 1];
-	std::strcpy(pc, s.c_str());
-	return pc;
-}
-
-void BlendingApplication::startup()
+void CrossFadingApplication::startup()
 {
 	initGLFW();
 	initImGui();
@@ -111,7 +47,7 @@ void BlendingApplication::startup()
 	prepareAnimationDebugData();
 }
 
-void BlendingApplication::initGLFW()
+void CrossFadingApplication::initGLFW()
 {
 	// glfw: initialize and configure
 // ------------------------------
@@ -152,12 +88,12 @@ void BlendingApplication::initGLFW()
 	{
 		glEnable(GL_DEBUG_OUTPUT);
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-		glDebugMessageCallback(glDebugOutput, nullptr);
+		glDebugMessageCallback(Debug::glDebugOutput, nullptr);
 		glDebugMessageControl(GL_DEBUG_SOURCE_API, GL_DEBUG_TYPE_ERROR, GL_DEBUG_SEVERITY_HIGH, 0, nullptr, GL_TRUE);
 	}
 }
 
-void BlendingApplication::initImGui()
+void CrossFadingApplication::initImGui()
 {
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
@@ -194,7 +130,7 @@ void BlendingApplication::initImGui()
 	//IM_ASSERT(font != NULL);
 }
 
-void BlendingApplication::prepareRenderResources()
+void CrossFadingApplication::prepareRenderResources()
 {
 	if (bPrecomputeSkin)
 	{
@@ -209,7 +145,7 @@ void BlendingApplication::prepareRenderResources()
 	displayTexture = std::make_shared<Texture>("Assets/Models/Woman.png");
 }
 
-void BlendingApplication::prepareAnimationDebugData()
+void CrossFadingApplication::prepareAnimationDebugData()
 {
 	glGenVertexArrays(1, &animationVAO);
 	
@@ -220,7 +156,7 @@ void BlendingApplication::prepareAnimationDebugData()
 
 	BoneMap boneMap = rearrangeSkeleton(skeleton);
 
-	animationClips = Loader::loadAnimationClips(data);
+	auto animationClips = Loader::loadAnimationClips(data);
 	fastAnimationClips.resize(animationClips.size());
 
 	for (auto i = 0; i < animationClips.size(); i++)
@@ -230,7 +166,7 @@ void BlendingApplication::prepareAnimationDebugData()
 		animationNames.emplace_back(animationClips[i].getName());
 	}
 
-	std::transform(animationNames.begin(), animationNames.end(), std::back_inserter(animationNamesArray), convert);
+	std::transform(animationNames.begin(), animationNames.end(), std::back_inserter(animationNamesArray), Debug::convert);
 	
 	GPUSkinnedMeshes = Loader::loadMeshes(data);
 
@@ -242,37 +178,10 @@ void BlendingApplication::prepareAnimationDebugData()
 	AnimationPose restPose = skeleton.getRestPose();
 	AnimationPose bindPose = skeleton.getBindPose();
 
-	source.pose = restPose;
-	source.posePalette.resize(restPose.getSize());
-	
-	target.pose = restPose;
-	target.posePalette.resize(restPose.getSize());
-
-	source.clipIndex = 0;
-	target.clipIndex = 1;
-
-	blendPose = skeleton.getRestPose();
-	blendPose.getMatrixPalette(blendPosePalette);
-
-	blendTime = 0.0f;
-
-	invertBlend = false;
-	
-	uint32_t size = static_cast<uint32_t>(animationClips.size());
-	
-	for (uint32_t i = 0; i < size; i++)
-	{
-		if (animationClips[i].getName() == "Walking")
-		{
-			source.clipIndex = i;
-			source.time = animationClips[i].getStartTime();
-		}
-		else if (animationClips[i].getName() == "Running")
-		{
-			target.clipIndex = i;
-			target.time = animationClips[i].getStartTime();
-		}
-	}
+	crossFadeController.setSkeleton(skeleton);
+	crossFadeController.play(&fastAnimationClips[0]);
+	crossFadeController.update(0.0f);
+	crossFadeController.getCurrentAnimationPose().getMatrixPalette(posePalette);
 
 	//GPUSkinnedMeshes[0].hasAnimation() = false;
 
@@ -282,7 +191,7 @@ void BlendingApplication::prepareAnimationDebugData()
 	Loader::freeGLTFFile(data);
 }
 
-void BlendingApplication::shutdown()
+void CrossFadingApplication::shutdown()
 {
 	// Cleanup
 	ImGui_ImplOpenGL3_Shutdown();
@@ -294,26 +203,34 @@ void BlendingApplication::shutdown()
 	glfwTerminate();
 }
 
-void BlendingApplication::update(float deltaTime)
+void CrossFadingApplication::update(float deltaTime)
 {
 	if (bUpdateRotation)
 	{
 		angle += deltaTime * 45.0f;
 	}
 	
-	updateAnimationPose(deltaTime);
+	crossFadeController.update(deltaTime);
 
-	if (GPUSkinnedMeshes[0].hasAnimation())
+	fadeTimer -= deltaTime;
+
+	if (fadeTimer < 0.0f)
 	{
-		if (bPrecomputeSkin)
+		fadeTimer = 3.0f;
+
+		uint32_t clip = currentClip;
+
+		while (clip == currentClip)
 		{
-			updatePrecomputedGPUSkin();
+			clip = rand() % fastAnimationClips.size();	
 		}
-		else
-		{
-			//updateGPUSkin();
-		}
+
+		currentClip = clip;
+
+		crossFadeController.fadeTo(&fastAnimationClips[clip], 0.5f);
 	}
+
+	crossFadeController.getCurrentAnimationPose().getMatrixPalette(posePalette);
 
 	updateImGui();
 
@@ -322,45 +239,7 @@ void BlendingApplication::update(float deltaTime)
 	processInput();
 }
 
-void BlendingApplication::updateAnimationPose(float deltaTime)
-{
-	if (GPUSkinnedMeshes[0].hasAnimation())
-	{
-		source.time = fastAnimationClips[source.clipIndex].sample(source.pose, source.time + deltaTime);
-		target.time = fastAnimationClips[target.clipIndex].sample(target.pose, target.time + deltaTime);
-		
-		float adjustBlendTime = blendTime;
-
-		if (adjustBlendTime < 0.0f)
-		{
-			adjustBlendTime = 0.0f;
-		}
-		
-		if (adjustBlendTime > 1.0f)
-		{
-			adjustBlendTime = 1.0f;
-		}
-
-		if (invertBlend)
-		{
-			adjustBlendTime = 1.0f - adjustBlendTime;
-		}
-
-		blend(blendPose, source.pose, target.pose, adjustBlendTime, -1);
-		blendPose.getMatrixPalette(blendPosePalette);
-		
-		blendTime += deltaTime;
-
-		if (blendTime >= 2.0f)
-		{
-			blendTime = 0.0f;
-			invertBlend = !invertBlend;
-			blendPose = skeleton.getRestPose();
-		}
-	}
-}
-
-void BlendingApplication::run()
+void CrossFadingApplication::run()
 {
 	static float simulationTime = 0.0f;
 
@@ -390,7 +269,7 @@ void BlendingApplication::run()
 	}
 }
 
-void BlendingApplication::render()
+void CrossFadingApplication::render()
 {
 	// Poll and handle events (inputs, window resize, etc.)
 	// You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
@@ -431,7 +310,7 @@ void BlendingApplication::render()
 
 		Uniform<Vector3>::set(skinnedMeshShader->getUniform("lightDirection"), Vector3(1.0f, 1.0f, 1.0f));
 
-		Uniform<Matrix4>::set(skinnedMeshShader->getUniform("animationPose"), blendPosePalette);
+		Uniform<Matrix4>::set(skinnedMeshShader->getUniform("animationPose"), posePalette);
 
 		if (!bPrecomputeSkin)
 		{
@@ -456,14 +335,14 @@ void BlendingApplication::render()
 	glfwSwapBuffers(window);
 }  
 
-void BlendingApplication::onFramebufferSizeCallback(GLFWwindow* window, int32_t width, int32_t height)
+void CrossFadingApplication::onFramebufferSizeCallback(GLFWwindow* window, int32_t width, int32_t height)
 {
 	// make sure the viewport matches the new window dimensions; note that width and 
 	// height will be significantly larger than specified on retina displays.
 	glViewport(0, 0, width, height);
 }
 
-void BlendingApplication::onMouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset)
+void CrossFadingApplication::onMouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset)
 {
 	if (ImGui::GetIO().WantCaptureMouse) {
 		return;
@@ -471,7 +350,7 @@ void BlendingApplication::onMouseScrollCallback(GLFWwindow* window, double xOffs
 	
 	spdlog::info("{0}, {1}", xOffset, yOffset);
 
-	auto* app = static_cast<BlendingApplication*>(glfwGetWindowUserPointer(window));
+	auto* app = static_cast<CrossFadingApplication*>(glfwGetWindowUserPointer(window));
 
 	if (yOffset > 0.0f)
 	{
@@ -483,9 +362,9 @@ void BlendingApplication::onMouseScrollCallback(GLFWwindow* window, double xOffs
 	}
 }
 
-void BlendingApplication::onKeyCallback(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods)
+void CrossFadingApplication::onKeyCallback(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods)
 {
-	auto* app = static_cast<BlendingApplication*>(glfwGetWindowUserPointer(window));
+	auto* app = static_cast<CrossFadingApplication*>(glfwGetWindowUserPointer(window));
 	
 	if (key == GLFW_KEY_R && action == GLFW_PRESS)
 	{
@@ -503,7 +382,7 @@ void BlendingApplication::onKeyCallback(GLFWwindow* window, int32_t key, int32_t
 	}
 }
 
-void BlendingApplication::processInput()
+void CrossFadingApplication::processInput()
 {
 	if (ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard)
 	{
@@ -516,28 +395,12 @@ void BlendingApplication::processInput()
 	}
 }
 
-void BlendingApplication::toggleUpdateRotation()
+void CrossFadingApplication::toggleUpdateRotation()
 {
 	bUpdateRotation = !bUpdateRotation;
 }
 
-void BlendingApplication::updateGPUSkin()
-{
-	blendPose.getMatrixPalette(blendPosePalette);
-}
-
-void BlendingApplication::updatePrecomputedGPUSkin()
-{
-	blendPose.getMatrixPalette(blendPosePalette);
-	std::vector<Matrix4> inverseBindPose = skeleton.getInverseBindPose();
-
-	for (int32_t i = 0; i < blendPosePalette.size(); i++)
-	{
-		blendPosePalette[i] = blendPosePalette[i] * inverseBindPose[i];
-	}
-}
-
-void BlendingApplication::updateImGui()
+void CrossFadingApplication::updateImGui()
 {
 	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame();
@@ -545,8 +408,8 @@ void BlendingApplication::updateImGui()
 	ImGui::NewFrame();
 
 	// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-	if (show_demo_window)
-		ImGui::ShowDemoWindow(&show_demo_window);
+	if (bShowDemoWindow)
+		ImGui::ShowDemoWindow(&bShowDemoWindow);
 
 	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 	{
@@ -556,7 +419,7 @@ void BlendingApplication::updateImGui()
 		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
 
 		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-		ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+		ImGui::Checkbox("Demo Window", &bShowDemoWindow);      // Edit bools storing our window open/close state
 		ImGui::Checkbox("Another Window", &show_another_window);
 
 		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
@@ -602,7 +465,7 @@ void BlendingApplication::updateImGui()
 	}
 }
 
-void BlendingApplication::renderImGui()
+void CrossFadingApplication::renderImGui()
 {
 	// Rendering
 	ImGui::Render();
