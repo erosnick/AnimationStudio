@@ -178,29 +178,31 @@ namespace Animation
 			return -1;
 		}
 
+		float adjustedTime = time;
+
 		if (bLooping)
 		{
 			float startTime = keyframes[0].time;
 			float endTime = keyframes[size - 1].time;
 			float duration = endTime - startTime;
 
-			time = FMod(time - startTime, duration) + startTime;
+			adjustedTime = FMod(adjustedTime - startTime, duration) + startTime;
 
-			if (time < 0.0f)
+			if (adjustedTime < 0.0f)
 			{
-				time += endTime - startTime;
+				adjustedTime += endTime - startTime;
 			}
 
-			time = time + startTime;
+			adjustedTime = adjustedTime + startTime;
 		}
 		else
 		{
-			if (time <= keyframes[0].time)
+			if (adjustedTime <= keyframes[0].time)
 			{
 				return 0;
 			}
 
-			if (time >= keyframes[size - 2].time)
+			if (adjustedTime >= keyframes[size - 2].time)
 			{
 				return static_cast<int32_t>(size - 2);
 			}
@@ -216,7 +218,7 @@ namespace Animation
 		// to turn this loop into a constant lookup.
 		for (int32_t i = size - 1; i >= 0 ; i--)
 		{
-			if (time >= keyframes[i].time)
+			if (adjustedTime >= keyframes[i].time)
 			{
 				return i;
 			}
@@ -245,31 +247,33 @@ namespace Animation
 			return 0.0f;
 		}
 
+		float adjustedTime = time;
+
 		if (bLooping)
 		{
-			time = FMod(time - startTime, duration);
+			adjustedTime = FMod(adjustedTime - startTime, duration);
 			
-			if (time < 0.0f)
+			if (adjustedTime < 0.0f)
 			{
-				time += duration;
+				adjustedTime += duration;
 			}
 			
-			time += startTime;
+			adjustedTime += startTime;
 		}
 		else
 		{
-			if (time <= keyframes[0].time)
+			if (adjustedTime <= keyframes[0].time)
 			{
-				time = startTime;
+				adjustedTime = startTime;
 			}
 
-			if (time >= keyframes[size - 1].time)
+			if (adjustedTime >= keyframes[size - 1].time)
 			{
-				time = endTime;
+				adjustedTime = endTime;
 			}
 		}
 
-		return time;
+		return adjustedTime;
 	}
 
 	template <>

@@ -29,6 +29,7 @@
     <ClCompile Include="src\Animation\AnimationTransformTrack.cpp" />
     <ClCompile Include="src\Animation\Blending.cpp" />
     <ClCompile Include="src\Animation\CrossFadeController.cpp" />
+    <ClCompile Include="src\Animation\Crowd.cpp" />
     <ClCompile Include="src\Animation\FastAnimationTrack.cpp" />
     <ClCompile Include="src\Animation\IK\CCDIKSolver.cpp" />
     <ClCompile Include="src\Animation\IK\FABRIKSolver.cpp" />
@@ -81,6 +82,7 @@
     <ClInclude Include="src\Animation\Blending.h" />
     <ClInclude Include="src\Animation\CrossFadeController.h" />
     <ClInclude Include="src\Animation\CrossFadeTarget.h" />
+    <ClInclude Include="src\Animation\Crowd.h" />
     <ClInclude Include="src\Animation\FastAnimationTrack.h" />
     <ClInclude Include="src\Animation\IK\CCDIKSolver.h" />
     <ClInclude Include="src\Animation\IK\FABRIKSolver.h" />
@@ -199,6 +201,20 @@
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).vert.spv</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Assets\Shaders\Crowd.vert">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).vert.spv</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Assets\Shaders\Crowd.frag">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).frag.spv</Outputs>
     </CustomBuild>
   </ItemGroup>
   <PropertyGroup Label="Globals">

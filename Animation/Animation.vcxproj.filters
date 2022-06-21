@@ -1,40 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Includes">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Includes\Math">
-      <UniqueIdentifier>{5a1669fe-21f3-481c-b6a1-c2a4ab9d75f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Includes\Utils">
-      <UniqueIdentifier>{1672a316-a6c7-4a34-aa34-90a5b45f0d76}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Includes\Renderer">
-      <UniqueIdentifier>{39a000a1-216a-416a-af1e-c441e7dc0b6b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Assets">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Assets\Shaders">
       <UniqueIdentifier>{b4886472-2d69-43d4-8d8f-d89e51d40e3a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Includes\Loader">
-      <UniqueIdentifier>{9e6daabd-ae48-4fa1-9506-15bd6b0647b0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Includes\Animation">
-      <UniqueIdentifier>{7b0c6c24-e560-4a5e-83ee-71ed2286d2e0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Includes\UI">
-      <UniqueIdentifier>{ad977ded-ad55-499d-9412-123f51a3e13b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Includes\UI\imgui">
-      <UniqueIdentifier>{192208d8-ca04-45a9-84f5-cc748544f548}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Includes\Animation\IK">
-      <UniqueIdentifier>{a74307e0-ff60-468d-a36b-afbae7467508}</UniqueIdentifier>
     </Filter>
     <Filter Include="Sources">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
@@ -66,6 +38,34 @@
     </Filter>
     <Filter Include="Sources\App">
       <UniqueIdentifier>{f5ef3fb9-fd3e-430b-9923-5db82d94dd71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Includes\Math">
+      <UniqueIdentifier>{5a1669fe-21f3-481c-b6a1-c2a4ab9d75f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\Utils">
+      <UniqueIdentifier>{1672a316-a6c7-4a34-aa34-90a5b45f0d76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\Renderer">
+      <UniqueIdentifier>{39a000a1-216a-416a-af1e-c441e7dc0b6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\Loader">
+      <UniqueIdentifier>{9e6daabd-ae48-4fa1-9506-15bd6b0647b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\Animation">
+      <UniqueIdentifier>{7b0c6c24-e560-4a5e-83ee-71ed2286d2e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\Animation\IK">
+      <UniqueIdentifier>{a74307e0-ff60-468d-a36b-afbae7467508}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\UI">
+      <UniqueIdentifier>{ad977ded-ad55-499d-9412-123f51a3e13b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\UI\imgui">
+      <UniqueIdentifier>{192208d8-ca04-45a9-84f5-cc748544f548}</UniqueIdentifier>
     </Filter>
     <Filter Include="Includes\App">
       <UniqueIdentifier>{1caba743-206a-4ccb-b285-9f14d817432a}</UniqueIdentifier>
@@ -217,6 +217,9 @@
       <Filter>Sources\Animation</Filter>
     </ClCompile>
     <ClCompile Include="src\Animation\AnimationBaker.cpp">
+      <Filter>Sources\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\Crowd.cpp">
       <Filter>Sources\Animation</Filter>
     </ClCompile>
   </ItemGroup>
@@ -383,6 +386,9 @@
     <ClInclude Include="src\Animation\AnimationTexture.h">
       <Filter>Includes\Animation</Filter>
     </ClInclude>
+    <ClInclude Include="src\Animation\Crowd.h">
+      <Filter>Includes\Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Assets\Shaders\Lit.frag">
@@ -419,6 +425,12 @@
       <Filter>Assets\Shaders</Filter>
     </CustomBuild>
     <CustomBuild Include="Assets\Shaders\DualQuaternionSkinning.frag">
+      <Filter>Assets\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\Crowd.vert">
+      <Filter>Assets\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\Crowd.frag">
       <Filter>Assets\Shaders</Filter>
     </CustomBuild>
   </ItemGroup>

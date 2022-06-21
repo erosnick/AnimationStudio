@@ -155,9 +155,9 @@ namespace Animation
 	}
 
 	template <typename TAnimationTransformTrack>
-	float TAnimationClip<TAnimationTransformTrack>::adjustTimeToFitRange(float inTime) const
+	float TAnimationClip<TAnimationTransformTrack>::adjustTimeToFitRange(float time) const
 	{
-		float time = inTime;
+		float adjustedTime = time;
 		
 		if (bLooping)
 		{
@@ -168,29 +168,29 @@ namespace Animation
 				duration = 0.0f;
 			}
 
-			time = FMod(inTime - startTime, endTime - startTime);
+			adjustedTime = FMod(adjustedTime - startTime, endTime - startTime);
 			
-			if (time < 0.0f)
+			if (adjustedTime < 0.0f)
 			{
-				time += duration;
+				adjustedTime += duration;
 			}
 
-			time += startTime;
+			adjustedTime += startTime;
 		}
 		else
 		{
-			if (time < startTime)
+			if (adjustedTime < startTime)
 			{
-				time = startTime;
+				adjustedTime = startTime;
 			}
 
-			if (time > endTime)
+			if (adjustedTime > endTime)
 			{
-				time = endTime;
+				adjustedTime = endTime;
 			}
 		}
 
-		return time;
+		return adjustedTime;
 	}
 
 	FastAnimationClip optimizeAnimationClip(AnimationClip& input)

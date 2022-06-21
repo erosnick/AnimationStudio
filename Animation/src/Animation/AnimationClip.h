@@ -32,7 +32,7 @@ namespace Animation
 		void setLooping(bool bInLooping);
 		
 	protected:
-		float adjustTimeToFitRange(float inTime) const;
+		float adjustTimeToFitRange(float time) const;
 		
 	protected:
 		std::vector<TAnimationTransformTrack> transformTracks;
