@@ -36,6 +36,19 @@ namespace Animation
 		return inverseBindPose;
 	}
 
+	void Skeleton::getInverseBindPose(std::vector<DualQuaternion>& outInverseBindPose)
+	{
+		uint32_t size = bindPose.getSize();
+
+		outInverseBindPose.resize(size);
+
+		for (uint32_t i = 0; i < size; i++)
+		{
+			DualQuaternion world = bindPose.getGlobalDualQuaternion(i);
+			outInverseBindPose[i] = conjugate(world);
+		}
+	}
+
 	const std::vector<std::string>& Skeleton::getJointNames() const
 	{
 		return jointNames;

@@ -1,6 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Assets\Shaders">
+      <UniqueIdentifier>{b4886472-2d69-43d4-8d8f-d89e51d40e3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Sources\Math">
+      <UniqueIdentifier>{586da84a-6801-4c9d-a07a-a32652b8a505}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Renderer">
+      <UniqueIdentifier>{c51e4469-67b8-4ffd-9632-3d5db91afab5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Loader">
+      <UniqueIdentifier>{0c6ee39c-9add-45a6-9181-2995f08232cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Animation">
+      <UniqueIdentifier>{8ada8f15-40ad-476d-8df7-4496326796c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Animation\IK">
+      <UniqueIdentifier>{3c436372-9704-4149-8232-ea04971e9859}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\UI">
+      <UniqueIdentifier>{155b75f3-697a-4099-aa7d-01e986825dd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\UI\imgui">
+      <UniqueIdentifier>{418ff1ea-19b4-4c55-bc49-bef9786c54ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Utils">
+      <UniqueIdentifier>{50cd8a61-1dcb-4bed-a344-fa9b40201c11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\App">
+      <UniqueIdentifier>{f5ef3fb9-fd3e-430b-9923-5db82d94dd71}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Includes">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
@@ -14,43 +52,26 @@
     <Filter Include="Includes\Renderer">
       <UniqueIdentifier>{39a000a1-216a-416a-af1e-c441e7dc0b6b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sources">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Sources\Math">
-      <UniqueIdentifier>{586da84a-6801-4c9d-a07a-a32652b8a505}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sources\Renderer">
-      <UniqueIdentifier>{c51e4469-67b8-4ffd-9632-3d5db91afab5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Assets">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Assets\Shaders">
-      <UniqueIdentifier>{b4886472-2d69-43d4-8d8f-d89e51d40e3a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Includes\Loader">
       <UniqueIdentifier>{9e6daabd-ae48-4fa1-9506-15bd6b0647b0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sources\Loader">
-      <UniqueIdentifier>{0c6ee39c-9add-45a6-9181-2995f08232cc}</UniqueIdentifier>
     </Filter>
     <Filter Include="Includes\Animation">
       <UniqueIdentifier>{7b0c6c24-e560-4a5e-83ee-71ed2286d2e0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sources\Animation">
-      <UniqueIdentifier>{8ada8f15-40ad-476d-8df7-4496326796c1}</UniqueIdentifier>
+    <Filter Include="Includes\Animation\IK">
+      <UniqueIdentifier>{a74307e0-ff60-468d-a36b-afbae7467508}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\UI">
+      <UniqueIdentifier>{ad977ded-ad55-499d-9412-123f51a3e13b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\UI\imgui">
+      <UniqueIdentifier>{192208d8-ca04-45a9-84f5-cc748544f548}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\App">
+      <UniqueIdentifier>{1caba743-206a-4ccb-b285-9f14d817432a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Application.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DemoApplication.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\Math\Vector3.cpp">
       <Filter>Sources\Math</Filter>
     </ClCompile>
@@ -129,17 +150,80 @@
     <ClCompile Include="src\Animation\SkeletalMesh.cpp">
       <Filter>Sources\Animation</Filter>
     </ClCompile>
+    <ClCompile Include="src\UI\imgui\imgui.cpp">
+      <Filter>Sources\UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\imgui\imgui_demo.cpp">
+      <Filter>Sources\UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\imgui\imgui_draw.cpp">
+      <Filter>Sources\UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\imgui\imgui_impl_glfw.cpp">
+      <Filter>Sources\UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\imgui\imgui_tables.cpp">
+      <Filter>Sources\UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\imgui\imgui_widgets.cpp">
+      <Filter>Sources\UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\imgui\imgui_impl_opengl3.cpp">
+      <Filter>Sources\UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\FastAnimationTrack.cpp">
+      <Filter>Sources\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\RearrangeBones.cpp">
+      <Filter>Sources\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\CrossFadeController.cpp">
+      <Filter>Sources\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\Blending.cpp">
+      <Filter>Sources\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\IK\CCDIKSolver.cpp">
+      <Filter>Sources\Animation\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\IK\FABRIKSolver.cpp">
+      <Filter>Sources\Animation\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\DualQuaternion.cpp">
+      <Filter>Sources\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utils\Debug.cpp">
+      <Filter>Sources\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\App\AdditiveBlendingApplication.cpp">
+      <Filter>Sources\App</Filter>
+    </ClCompile>
+    <ClCompile Include="src\App\Application.cpp">
+      <Filter>Sources\App</Filter>
+    </ClCompile>
+    <ClCompile Include="src\App\BlendingApplication.cpp">
+      <Filter>Sources\App</Filter>
+    </ClCompile>
+    <ClCompile Include="src\App\CrossFadingApplication.cpp">
+      <Filter>Sources\App</Filter>
+    </ClCompile>
+    <ClCompile Include="src\App\DemoApplication.cpp">
+      <Filter>Sources\App</Filter>
+    </ClCompile>
+    <ClCompile Include="src\App\DualQuaternionApplication.cpp">
+      <Filter>Sources\App</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\AnimationTexture.cpp">
+      <Filter>Sources\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\AnimationBaker.cpp">
+      <Filter>Sources\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animation\Crowd.cpp">
+      <Filter>Sources\Animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Application.h">
-      <Filter>Includes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DemoApplication.h">
-      <Filter>Includes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\stb_image.h">
-      <Filter>Includes</Filter>
-    </ClInclude>
     <ClInclude Include="src\Math\Vector3.h">
       <Filter>Includes\Math</Filter>
     </ClInclude>
@@ -224,6 +308,87 @@
     <ClInclude Include="src\Animation\SkeletalMesh.h">
       <Filter>Includes\Animation</Filter>
     </ClInclude>
+    <ClInclude Include="src\UI\imgui\imconfig.h">
+      <Filter>Includes\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\imgui\imgui.h">
+      <Filter>Includes\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\imgui\imgui_impl_glfw.h">
+      <Filter>Includes\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\imgui\imgui_internal.h">
+      <Filter>Includes\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\imgui\imstb_rectpack.h">
+      <Filter>Includes\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\imgui\imstb_textedit.h">
+      <Filter>Includes\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\imgui\imstb_truetype.h">
+      <Filter>Includes\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\imgui\imgui_impl_opengl3.h">
+      <Filter>Includes\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\imgui\imgui_impl_opengl3_loader.h">
+      <Filter>Includes\UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\FastAnimationTrack.h">
+      <Filter>Includes\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\RearrangeBones.h">
+      <Filter>Includes\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\CrossFadeTarget.h">
+      <Filter>Includes\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\CrossFadeController.h">
+      <Filter>Includes\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\Blending.h">
+      <Filter>Includes\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\IK\CCDIKSolver.h">
+      <Filter>Includes\Animation\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\IK\FABRIKSolver.h">
+      <Filter>Includes\Animation\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\DualQuaternion.h">
+      <Filter>Includes\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\Debug.h">
+      <Filter>Includes\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\App\AdditiveBlendingApplication.h">
+      <Filter>Includes\App</Filter>
+    </ClInclude>
+    <ClInclude Include="src\App\Application.h">
+      <Filter>Includes\App</Filter>
+    </ClInclude>
+    <ClInclude Include="src\App\BlendingApplication.h">
+      <Filter>Includes\App</Filter>
+    </ClInclude>
+    <ClInclude Include="src\App\CrossFadingApplication.h">
+      <Filter>Includes\App</Filter>
+    </ClInclude>
+    <ClInclude Include="src\App\DemoApplication.h">
+      <Filter>Includes\App</Filter>
+    </ClInclude>
+    <ClInclude Include="src\App\DualQuaternionApplication.h">
+      <Filter>Includes\App</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\AnimationBaker.h">
+      <Filter>Includes\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\AnimationTexture.h">
+      <Filter>Includes\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\Crowd.h">
+      <Filter>Includes\Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Assets\Shaders\Lit.frag">
@@ -244,7 +409,28 @@
     <CustomBuild Include="Assets\Shaders\Mesh.frag">
       <Filter>Assets\Shaders</Filter>
     </CustomBuild>
-    <CustomBuild Include="Assets\Shaders\Skinned.vert">
+    <CustomBuild Include="Assets\Shaders\LinearBlendingSkinning.vert">
+      <Filter>Assets\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\LinearBlendingSkinning.frag">
+      <Filter>Assets\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\PrecomputeSkinnedMesh.vert">
+      <Filter>Assets\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\PrecomputeSkinnedMesh.frag">
+      <Filter>Assets\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\DualQuaternionSkinning.vert">
+      <Filter>Assets\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\DualQuaternionSkinning.frag">
+      <Filter>Assets\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\Crowd.vert">
+      <Filter>Assets\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\Crowd.frag">
       <Filter>Assets\Shaders</Filter>
     </CustomBuild>
   </ItemGroup>

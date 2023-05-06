@@ -9,17 +9,18 @@
 
 namespace Animation
 {
-	class AnimationClip
+	template <typename TAnimationTransformTrack>
+	class TAnimationClip
 	{
 	public:
-		AnimationClip();
+		TAnimationClip();
 		
-		uint32_t getJointIdAtIndex(uint32_t index);
+		uint32_t getJointIdAtIndex(uint32_t index) const;
 		void setJointIdAtIndex(uint32_t index, uint32_t jointId);
-		uint32_t getSize();
+		uint32_t getSize() const;
 
-		float sample(AnimationPose& outAnimationPose, float inTime);
-		AnimationTransformTrack& operator[](uint32_t jointId);
+		float sample(AnimationPose& outAnimationPose, float inTime) const;
+		TAnimationTransformTrack& operator[](uint32_t jointId);
 
 		void recalculateDuration();
 		std::string getName() const;
@@ -31,13 +32,18 @@ namespace Animation
 		void setLooping(bool bInLooping);
 		
 	protected:
-		float adjustTimeToFitRange(float inTime);
+		float adjustTimeToFitRange(float time) const;
 		
 	protected:
-		std::vector<AnimationTransformTrack> transformTracks;
+		std::vector<TAnimationTransformTrack> transformTracks;
 		std::string name;
 		float startTime;
 		float endTime;
 		bool bLooping;
 	};
+
+	using AnimationClip = TAnimationClip<AnimationTransformTrack>;
+	using FastAnimationClip = TAnimationClip<FastAnimationTransformTrack>;
+
+	FastAnimationClip optimizeAnimationClip(AnimationClip& input);
 }

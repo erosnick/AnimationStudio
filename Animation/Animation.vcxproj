@@ -19,21 +19,35 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Animation\AnimationBaker.cpp" />
     <ClCompile Include="src\Animation\AnimationClip.cpp" />
     <ClCompile Include="src\Animation\AnimationKeyFrame.cpp" />
     <ClCompile Include="src\Animation\AnimationPose.cpp" />
+    <ClCompile Include="src\Animation\AnimationTexture.cpp" />
     <ClCompile Include="src\Animation\AnimationTrack.cpp" />
     <ClCompile Include="src\Animation\AnimationTrackHelpers.cpp" />
     <ClCompile Include="src\Animation\AnimationTransformTrack.cpp" />
+    <ClCompile Include="src\Animation\Blending.cpp" />
+    <ClCompile Include="src\Animation\CrossFadeController.cpp" />
+    <ClCompile Include="src\Animation\Crowd.cpp" />
+    <ClCompile Include="src\Animation\FastAnimationTrack.cpp" />
+    <ClCompile Include="src\Animation\IK\CCDIKSolver.cpp" />
+    <ClCompile Include="src\Animation\IK\FABRIKSolver.cpp" />
+    <ClCompile Include="src\Animation\RearrangeBones.cpp" />
     <ClCompile Include="src\Animation\SkeletalMesh.cpp" />
     <ClCompile Include="src\Animation\Skeleton.cpp" />
-    <ClCompile Include="src\Application.cpp" />
-    <ClCompile Include="src\DemoApplication.cpp" />
+    <ClCompile Include="src\App\AdditiveBlendingApplication.cpp" />
+    <ClCompile Include="src\App\Application.cpp" />
+    <ClCompile Include="src\App\BlendingApplication.cpp" />
+    <ClCompile Include="src\App\CrossFadingApplication.cpp" />
+    <ClCompile Include="src\App\DemoApplication.cpp" />
+    <ClCompile Include="src\App\DualQuaternionApplication.cpp" />
     <ClCompile Include="src\Loader\cgltf.cpp" />
     <ClCompile Include="src\Loader\glad.c" />
     <ClCompile Include="src\Loader\GLTFLoader.cpp" />
     <ClCompile Include="src\Loader\stb_image.cpp" />
     <ClCompile Include="src\Math\Bezier.cpp" />
+    <ClCompile Include="src\Math\DualQuaternion.cpp" />
     <ClCompile Include="src\Math\Interpolation.cpp" />
     <ClCompile Include="src\Math\Math.cpp" />
     <ClCompile Include="src\Math\Matrix4.cpp" />
@@ -47,23 +61,46 @@
     <ClCompile Include="src\Renderer\Shader.cpp" />
     <ClCompile Include="Src\Renderer\Texture.cpp" />
     <ClCompile Include="src\Renderer\Uniform.cpp" />
+    <ClCompile Include="src\UI\imgui\imgui.cpp" />
+    <ClCompile Include="src\UI\imgui\imgui_demo.cpp" />
+    <ClCompile Include="src\UI\imgui\imgui_draw.cpp" />
+    <ClCompile Include="src\UI\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\UI\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\UI\imgui\imgui_tables.cpp" />
+    <ClCompile Include="src\UI\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\Utils\Debug.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Animation\AnimationBaker.h" />
     <ClInclude Include="src\Animation\AnimationClip.h" />
     <ClInclude Include="src\Animation\AnimationKeyFrame.h" />
     <ClInclude Include="src\Animation\AnimationPose.h" />
+    <ClInclude Include="src\Animation\AnimationTexture.h" />
     <ClInclude Include="src\Animation\AnimationTrack.h" />
     <ClInclude Include="src\Animation\AnimationTrackHelpers.h" />
     <ClInclude Include="src\Animation\AnimationTransformTrack.h" />
+    <ClInclude Include="src\Animation\Blending.h" />
+    <ClInclude Include="src\Animation\CrossFadeController.h" />
+    <ClInclude Include="src\Animation\CrossFadeTarget.h" />
+    <ClInclude Include="src\Animation\Crowd.h" />
+    <ClInclude Include="src\Animation\FastAnimationTrack.h" />
+    <ClInclude Include="src\Animation\IK\CCDIKSolver.h" />
+    <ClInclude Include="src\Animation\IK\FABRIKSolver.h" />
+    <ClInclude Include="src\Animation\RearrangeBones.h" />
     <ClInclude Include="src\Animation\SkeletalMesh.h" />
     <ClInclude Include="src\Animation\Skeleton.h" />
-    <ClInclude Include="src\Application.h" />
-    <ClInclude Include="src\DemoApplication.h" />
+    <ClInclude Include="src\App\AdditiveBlendingApplication.h" />
+    <ClInclude Include="src\App\Application.h" />
+    <ClInclude Include="src\App\BlendingApplication.h" />
+    <ClInclude Include="src\App\CrossFadingApplication.h" />
+    <ClInclude Include="src\App\DemoApplication.h" />
+    <ClInclude Include="src\App\DualQuaternionApplication.h" />
     <ClInclude Include="src\Loader\cgltf.h" />
     <ClInclude Include="src\Loader\cgltf_write.h" />
     <ClInclude Include="src\Loader\GLTFLoader.h" />
     <ClInclude Include="src\Loader\stb_image.h" />
     <ClInclude Include="src\Math\Bezier.h" />
+    <ClInclude Include="src\Math\DualQuaternion.h" />
     <ClInclude Include="src\Math\Interpolation.h" />
     <ClInclude Include="src\Math\Math.h" />
     <ClInclude Include="src\Math\Matrix4.h" />
@@ -78,7 +115,16 @@
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Renderer\Shader.h" />
     <ClInclude Include="src\Renderer\Uniform.h" />
-    <ClInclude Include="src\stb_image.h" />
+    <ClInclude Include="src\UI\imgui\imconfig.h" />
+    <ClInclude Include="src\UI\imgui\imgui.h" />
+    <ClInclude Include="src\UI\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="src\UI\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\UI\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="src\UI\imgui\imgui_internal.h" />
+    <ClInclude Include="src\UI\imgui\imstb_rectpack.h" />
+    <ClInclude Include="src\UI\imgui\imstb_textedit.h" />
+    <ClInclude Include="src\UI\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\Utils\Debug.h" />
     <ClInclude Include="src\Utils\Timer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -120,10 +166,55 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Assets\Shaders\Skinned.vert">
+    <CustomBuild Include="Assets\Shaders\LinearBlendingSkinning.vert">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).vert.spv</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Assets\Shaders\LinearBlendingSkinning.frag">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).frag.spv</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Assets\Shaders\PrecomputeSkinnedMesh.frag">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).frag.spv</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\PrecomputeSkinnedMesh.vert">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).vert.spv</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Assets\Shaders\DualQuaternionSkinning.frag">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).frag.spv</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\DualQuaternionSkinning.vert">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).vert.spv</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Assets\Shaders\Crowd.vert">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).vert.spv</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Assets\Shaders\Crowd.frag">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslangValidator --auto-map-locations -G -o %(FullPath).spv %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assets/Shaders/%(FileName).frag.spv</Outputs>
     </CustomBuild>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -219,7 +310,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../Thirdparty/GLFW</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;Opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

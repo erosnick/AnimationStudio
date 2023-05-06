@@ -43,8 +43,10 @@ namespace Animation
 		const std::vector<Vector4i>& getInfluenceJoints() const;
 		const std::vector<uint32_t>& getIndices() const;
 		
-		void cpuSkinUseTransform(const Skeleton& skeleton, const AnimationPose& animationPose);
-		void cpuSkinUseMatrixPalette(const Skeleton& skeleton, const AnimationPose& animationPose);
+		void CPUSkinUseTransform(const Skeleton& skeleton, const AnimationPose& animationPose);
+		void CPUSkinUseMatrixPalette(const Skeleton& skeleton, const AnimationPose& animationPose);
+		void CPUSkinUseMatrixPalette(const std::vector<Matrix4>& animationtPose);
+		
 		void updateOpenGLBuffers();
 		
 		void bind(int32_t position, int32_t normal, int32_t texcoord, int32_t weights, int32_t influences);
@@ -52,6 +54,8 @@ namespace Animation
 		
 		void draw();
 		void drawInstanced(uint32_t numInstances);
+		
+		inline bool& hasAnimation() { return bHasAnimation; }
 
 	protected:
 		std::vector<Vector3> positions;
@@ -74,5 +78,7 @@ namespace Animation
 		std::vector<Vector3> skinnedPosition;
 		std::vector<Vector3> skinnedNormal;
 		std::vector<Matrix4> animationPosePalette;
+
+		bool bHasAnimation;
 	};
 }

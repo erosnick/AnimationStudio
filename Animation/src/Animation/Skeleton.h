@@ -1,7 +1,9 @@
 #pragma once
 
 #include "AnimationPose.h"
+
 #include <Math/Matrix4.h>
+#include <Math/DualQuaternion.h>
 
 #include <string>
 #include <vector>
@@ -21,6 +23,7 @@ namespace Animation
 		const AnimationPose& getBindPose() const;
 		const AnimationPose& getRestPose() const;
 		const std::vector<Matrix4>& getInverseBindPose() const;
+		void getInverseBindPose(std::vector<DualQuaternion>& outInverseBindPose);
 		const std::vector<std::string>& getJointNames() const;
 		const std::string& getJointName(uint32_t index) const;
 		

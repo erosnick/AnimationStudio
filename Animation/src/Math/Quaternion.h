@@ -54,7 +54,7 @@ namespace Math
 	void normalize(Quaternion& quaternion);
 	Quaternion normalized(const Quaternion& quaternion);
 	Quaternion conjugate(const Quaternion& quaternion);
-	Quaternion inverse(const Quaternion& matrix);
+	Quaternion inverse(const Quaternion& quaternion);
 	Quaternion mix(const Quaternion& from, const Quaternion& to, float t);
 	Quaternion nlerp(const Quaternion& from, const Quaternion& to, float t);
 	Quaternion operator^(const Quaternion& quaternion, float power);

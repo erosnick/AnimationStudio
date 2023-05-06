@@ -169,9 +169,9 @@ namespace Math
 		return Quaternion(-quaternion.x, -quaternion.y, -quaternion.z, quaternion.w);
 	}
 
-	Quaternion inverse(const Quaternion& matrix)
+	Quaternion inverse(const Quaternion& quaternion)
 	{
-		return conjugate(matrix) / lengthSqured(matrix);
+		return conjugate(quaternion) / lengthSqured(quaternion);
 	}
 
 	Quaternion mix(const Quaternion& from, const Quaternion& to, float t)

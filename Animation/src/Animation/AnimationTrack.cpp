@@ -5,8 +5,8 @@
 namespace Animation
 {
 	template AnimationTrack<float, 1>;
-	template AnimationTrack<Math::Vector3, 3>;
-	template AnimationTrack<Math::Quaternion, 4>;
+	template AnimationTrack<Vector3, 3>;
+	template AnimationTrack<Quaternion, 4>;
 
 	template <typename T, int32_t N>
 	AnimationTrack<T, N>::AnimationTrack()
@@ -51,7 +51,7 @@ namespace Animation
 	}
 
 	template <typename T, int32_t N>
-	T AnimationTrack<T, N>::sample(float time, bool bLooping)
+	T AnimationTrack<T, N>::sample(float time, bool bLooping) const
 	{
 		if (interpolation == Interpolation::Constant)
 		{
@@ -74,7 +74,7 @@ namespace Animation
 	}
 
 	template <typename T, int32_t N>
-	T AnimationTrack<T, N>::sampleConstant(float time, bool bLooping)
+	T AnimationTrack<T, N>::sampleConstant(float time, bool bLooping) const
 	{
 		int32_t frame = frameIndex(time, bLooping);
 
@@ -87,7 +87,7 @@ namespace Animation
 	}
 
 	template <typename T, int32_t N>
-	T AnimationTrack<T, N>::sampleLinear(float time, bool bLooping)
+	T AnimationTrack<T, N>::sampleLinear(float time, bool bLooping) const
 	{
 		int32_t currentFrame = frameIndex(time, bLooping);
 
@@ -116,7 +116,7 @@ namespace Animation
 	}
 
 	template <typename T, int32_t N>
-	T AnimationTrack<T, N>::sampleCubic(float time, bool bLooping)
+	T AnimationTrack<T, N>::sampleCubic(float time, bool bLooping) const
 	{
 		int32_t currentFrame = frameIndex(time, bLooping);
 
@@ -154,7 +154,7 @@ namespace Animation
 	}
 
 	template <typename T, int32_t N>
-	T AnimationTrack<T, N>::hermite(float time, const T& p1, const T& s1, const T& p2, const T& s2)
+	T AnimationTrack<T, N>::hermite(float time, const T& p1, const T& s1, const T& p2, const T& s2) const
 	{
 		T adjustedP2 = p2;
 		
@@ -178,37 +178,47 @@ namespace Animation
 			return -1;
 		}
 
+		float adjustedTime = time;
+
 		if (bLooping)
 		{
 			float startTime = keyframes[0].time;
 			float endTime = keyframes[size - 1].time;
 			float duration = endTime - startTime;
 
-			time = FMod(time - startTime, duration) + startTime;
+			adjustedTime = FMod(adjustedTime - startTime, duration) + startTime;
 
-			if (time < 0.0f)
+			if (adjustedTime < 0.0f)
 			{
-				time += endTime - startTime;
+				adjustedTime += endTime - startTime;
 			}
 
-			time = time + startTime;
+			adjustedTime = adjustedTime + startTime;
 		}
 		else
 		{
-			if (time <= keyframes[0].time)
+			if (adjustedTime <= keyframes[0].time)
 			{
 				return 0;
 			}
 
-			if (time >= keyframes[size - 2].time)
+			if (adjustedTime >= keyframes[size - 2].time)
 			{
 				return static_cast<int32_t>(size - 2);
 			}
 		}
 
-		for (uint32_t i = size - 1; i >= 0 ; i--)
+		// The presented loop goes through every frame in the track. If an animation has a lot of 
+		// frames, the performance starts to get worse. Remember, this bit of code is executed for 
+		// each animated component of each animated bone in an animation clip.
+
+		// This function currently does a linear search, but it can be optimized with a more
+		// efficient search.Since time only ever increases, performing a binary search is a natural
+		// optimization to use here.However, binary search isn't the best optimization. It's possible
+		// to turn this loop into a constant lookup.
+		for (int32_t i = size - 1; i >= 0 ; i--)
 		{
-			if (time >= keyframes[i].time)
+			if (adjustedTime >= keyframes[i].time)
 			{
 				return i;
 			}
@@ -237,47 +247,49 @@ namespace Animation
 			return 0.0f;
 		}
 
+		float adjustedTime = time;
+
 		if (bLooping)
 		{
-			time = FMod(time - startTime, duration);
+			adjustedTime = FMod(adjustedTime - startTime, duration);
 			
-			if (time < 0.0f)
+			if (adjustedTime < 0.0f)
 			{
-				time += duration;
+				adjustedTime += duration;
 			}
 			
-			time += startTime;
+			adjustedTime += startTime;
 		}
 		else
 		{
-			if (time <= keyframes[0].time)
+			if (adjustedTime <= keyframes[0].time)
 			{
-				time = startTime;
+				adjustedTime = startTime;
 			}
 
-			if (time >= keyframes[size - 1].time)
+			if (adjustedTime >= keyframes[size - 1].time)
 			{
-				time = endTime;
+				adjustedTime = endTime;
 			}
 		}
 
-		return time;
+		return adjustedTime;
 	}
 
 	template <>
-	float AnimationTrack<float, 1>::cast(float* value)
+	float AnimationTrack<float, 1>::cast(const float* value) const
 	{
 		return value[0];
 	}
 
 	template <>
-	Vector3 AnimationTrack<Vector3, 3>::cast(float* value)
+	Vector3 AnimationTrack<Vector3, 3>::cast(const float* value) const
 	{
 		return Vector3(value[0], value[1], value[2]);
 	}
 
 	template <>
-	Quaternion AnimationTrack<Quaternion, 4>::cast(float* value)
+	Quaternion AnimationTrack<Quaternion, 4>::cast(const float* value) const
 	{
 		Quaternion result = Quaternion(value[0], value[1], value[2], value[3]);
 		return normalized(result);

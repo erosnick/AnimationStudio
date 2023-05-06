@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <Math/Transform.h>
+#include <Math/DualQuaternion.h>
 
 using namespace Math;
 
@@ -32,6 +33,9 @@ namespace Animation
 		const Transform operator[](uint32_t index) const;
 
 		void getMatrixPalette(std::vector<Matrix4>& out) const;
+
+		void getDualQuaternionPalette(std::vector<DualQuaternion>& out);
+		DualQuaternion getGlobalDualQuaternion(uint32_t index);
 
 		bool operator==(const AnimationPose& other);
 		bool operator!=(const AnimationPose& other);

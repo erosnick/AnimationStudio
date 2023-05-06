@@ -2,28 +2,38 @@
 
 #include <cstdint>
 #include "AnimationTrack.h"
+#include "FastAnimationTrack.h"
 #include <Math/Transform.h>
 
 namespace Animation
 {
-	class AnimationTransformTrack
+	template <typename TVectorTrack, typename TQuaternionTrack>
+	class TAnimationTransformTrack
 	{
 	public:
-		AnimationTransformTrack();
+		TAnimationTransformTrack();
 		uint32_t getJointId() const;
 		void setJointId(uint32_t inJointId);
-		VectorTrack& getPositionTrack();
-		QuaternionTrack& getRotationTrack();
-		VectorTrack& getScaleTrack();
+		TVectorTrack& getPositionTrack();
+		TQuaternionTrack& getRotationTrack();
+		TVectorTrack& getScaleTrack();
+		const TVectorTrack& getPositionTrack() const;
+		const TQuaternionTrack& getRotationTrack() const;
+		const TVectorTrack& getScaleTrack() const;
 		float getStartTime() const;
 		float getEndTime() const;
 		bool isValid() const;
 		
-		Transform sample(const Transform& reference, float time, bool bLooping);
+		Transform sample(const Transform& reference, float time, bool bLooping) const;
 	protected:
 		uint32_t jointId;
-		VectorTrack position;
-		QuaternionTrack rotation;
-		VectorTrack scale;
+		TVectorTrack position;
+		TQuaternionTrack rotation;
+		TVectorTrack scale;
 	};
+
+	using AnimationTransformTrack = TAnimationTransformTrack<VectorTrack, QuaternionTrack>;
+	using FastAnimationTransformTrack = TAnimationTransformTrack<FastVectorTrack, FastQuaternionTrack>;
+
+	FastAnimationTransformTrack optimizeAnimationTransformTrack(AnimationTransformTrack& input);
 }

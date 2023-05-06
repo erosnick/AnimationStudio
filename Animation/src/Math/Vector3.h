@@ -49,7 +49,7 @@ namespace Math
 	bool operator!=(const Vector3& v1, const Vector3& v2);
 
 	float dot(const Vector3& v1, const Vector3& v2);
-	float lengthSqure(const Vector3& v);
+	float lengthSqured(const Vector3& v);
 	float length(const Vector3& v);
 	void normalize(Vector3& v);
 	Vector3 normalized(const Vector3& v);

@@ -175,7 +175,7 @@ namespace GLTFHelpers
 				{
 					Vector3 normal = Vector3(scalars[index + 0], scalars[index + 1], scalars[index + 2]);
 
-					if (lengthSqure(normal) < Math::Epsilon)
+					if (lengthSqured(normal) < Math::Epsilon)
 					{
 						normal = Vector3(0.0f, 1.0f, 0.0f);
 					}
@@ -274,20 +274,20 @@ namespace Loader
 	{
 		uint32_t boneCount = static_cast<uint32_t>(data->nodes_count);
 
-		AnimationPose result(boneCount);
+		AnimationPose restPose(boneCount);
 
 		for (uint32_t i = 0; i < boneCount; i++)
 		{
 			cgltf_node* node = &(data->nodes[i]);
 
 			Transform localTransform = GLTFHelpers::getLocalTransform(*node);
-			result.setLocalTransform(i, localTransform);
+			restPose.setLocalTransform(i, localTransform);
 
 			int32_t parentId = GLTFHelpers::getNodeIndex(node->parent, data->nodes, boneCount);
-			result.setParent(i, parentId);
+			restPose.setParent(i, parentId);
 		}
 
-		return result;
+		return restPose;
 	}
 	
 	std::vector<std::string> loadJointNames(cgltf_data* data)
@@ -372,17 +372,17 @@ namespace Loader
 		for (uint32_t i = 0; i < numSkins; i++)
 		{
 			cgltf_skin* skin = &(data->skins[i]);
-			std::vector<float> inverseBindAccessor;
+			std::vector<float> inverseBindMatrices;
 
-			GLTFHelpers::getScalarValues(inverseBindAccessor, 16, *skin->inverse_bind_matrices);
+			GLTFHelpers::getScalarValues(inverseBindMatrices, 16, *skin->inverse_bind_matrices);
 
 			uint32_t numJoints = static_cast<uint32_t>(skin->joints_count);
 
 			for (uint32_t j = 0; j < numJoints; j++)
 			{
 				// Read the inverse bind matrix of the joint
-				float* matrix = &(inverseBindAccessor[j * 16]);
-				Matrix4 inverseBindMatrix = Matrix4(matrix);
+				float* values = &(inverseBindMatrices[j * 16]);
+				Matrix4 inverseBindMatrix = Matrix4(values);
 
 				// Invert, convert to transform
 				Matrix4 bindMatrix = inverse(inverseBindMatrix);
@@ -437,9 +437,16 @@ namespace Loader
 		{
 			cgltf_node* node = &(nodes[i]);
 
-			if (node->mesh == nullptr || node->skin == nullptr)
+			if (node->mesh == nullptr)
 			{
 				continue;
+			}
+
+			bool bHasAnimation = true;
+			
+			if (node->skin == nullptr)
+			{
+				bHasAnimation = false;
 			}
 
 			int32_t numPrimitives = static_cast<int32_t>(node->mesh->primitives_count);
@@ -447,6 +454,8 @@ namespace Loader
 			for (int32_t j = 0; j < numPrimitives; j++)
 			{
 				SkeletalMesh mesh;
+
+				mesh.hasAnimation() = bHasAnimation;
 
 				cgltf_primitive* primitive = &(node->mesh->primitives[j]);
 

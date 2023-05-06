@@ -28,19 +28,19 @@ namespace Animation
 		float getStartTime() const;
 		float getEndTime() const;
 		
-		T sample(float time, bool bLooping);
+		T sample(float time, bool bLooping) const;
 		
 		AnimationKeyFrame<N>& operator[](uint32_t index);
 	protected:
-		T sampleConstant(float time, bool bLooping);
-		T sampleLinear(float time, bool bLooping);
-		T sampleCubic(float time, bool bLooping);
-		T hermite(float time, const T& p1, const T& s1, const T& p2, const T& s2);
+		T sampleConstant(float time, bool bLooping) const;
+		T sampleLinear(float time, bool bLooping) const;
+		T sampleCubic(float time, bool bLooping) const;
+		T hermite(float time, const T& p1, const T& s1, const T& p2, const T& s2) const;
 		
-		int32_t frameIndex(float time, bool bLooping) const;
+		virtual int32_t frameIndex(float time, bool bLooping) const;
 		float adjustTimeToFitTrack(float time, bool bLooping) const;
 
-		T cast(float* value);	// Will be specialized
+		T cast(const float* value) const;	// Will be specialized
 	protected:
 		std::vector<AnimationKeyFrame<N>> keyframes;
 		Interpolation interpolation;
